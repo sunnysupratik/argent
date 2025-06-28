@@ -1,0 +1,470 @@
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Shield, BarChart3 } from 'lucide-react';
+import AnimatedSection from '../components/AnimatedSection';
+import { useAuth } from '../hooks/useAuth';
+import { InteractiveHoverButton } from '../components/ui/interactive-hover-button';
+
+const ContactPage: React.FC = () => {
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
+  const getUserName = () => {
+    if (user?.full_name) {
+      const firstName = user.full_name.split(' ')[0];
+      return firstName.replace(/\s*(test|user|demo).*$/i, '');
+    }
+    const email = user?.email?.split('@')[0] || 'User';
+    return email.replace(/\s*(test|user|demo).*$/i, '');
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setIsSubmitting(false);
+    // Reset form
+    setFormData({ name: '', email: '', subject: '', message: '' });
+    
+    // Show success message (you could implement a toast notification here)
+    alert('Thank you for your message! We\'ll get back to you soon.');
+  };
+
+  const contactInfo = [
+    {
+      icon: Mail,
+      title: 'Email Support',
+      content: 'support@argent.com',
+      description: 'Get help with your account',
+      gradient: 'from-blue-500 to-blue-600'
+    },
+    {
+      icon: Phone,
+      title: 'Phone Support',
+      content: '+1 (555) 123-4567',
+      description: '24/7 customer service',
+      gradient: 'from-green-500 to-green-600'
+    },
+    {
+      icon: MapPin,
+      title: 'Office Location',
+      content: 'San Francisco, CA',
+      description: '123 Financial District',
+      gradient: 'from-purple-500 to-purple-600'
+    },
+    {
+      icon: Clock,
+      title: 'Business Hours',
+      content: '24/7 Available',
+      description: 'Always here to help',
+      gradient: 'from-orange-500 to-orange-600'
+    }
+  ];
+
+  const supportChannels = [
+    {
+      icon: MessageCircle,
+      title: 'Live Chat',
+      description: 'Chat with our support team in real-time',
+      action: 'Start Chat',
+      gradient: 'from-blue-500 to-blue-600'
+    },
+    {
+      icon: Shield,
+      title: 'Security Center',
+      description: 'Report security issues or concerns',
+      action: 'Report Issue',
+      gradient: 'from-red-500 to-red-600'
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#030303] transition-colors duration-500 relative overflow-hidden">
+      {/* Aurora background effect */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/5 via-indigo-50/3 to-violet-50/5 animate-aurora opacity-30" />
+      </div>
+
+      {/* Header - Same Black Style as Homepage */}
+      <motion.header 
+        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl transition-colors duration-500 relative z-50"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <nav className="flex justify-between items-center max-w-7xl mx-auto">
+          <motion.div 
+            className="relative"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="text-2xl lg:text-3xl font-black tracking-tight text-white transition-colors duration-500">
+              AR
+              <span className="relative">
+                G
+                <motion.div 
+                  className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45"
+                  animate={{ rotate: [45, 90, 45] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                />
+              </span>
+              ENT
+            </div>
+            <motion.div 
+              className="absolute -bottom-1 left-0 w-8 lg:w-12 h-0.5 bg-accent-blue"
+              initial={{ width: 0 }}
+              animate={{ width: window.innerWidth >= 1024 ? 48 : 32 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            />
+          </motion.div>
+          
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center space-x-4">
+            <motion.div 
+              className="flex space-x-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <InteractiveHoverButton 
+                variant="white" 
+                text="About" 
+                onClick={() => navigate('/about')}
+                className="text-sm px-4 py-2"
+              />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="Contact" 
+                className="text-sm px-4 py-2"
+              />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="Home" 
+                onClick={() => navigate('/')}
+                className="text-sm px-4 py-2"
+              />
+              
+              {/* My Dashboard - Only show when logged in */}
+              {user && (
+                <InteractiveHoverButton 
+                  variant="blue" 
+                  text="My Dashboard" 
+                  icon={<BarChart3 size={16} />}
+                  onClick={() => navigate('/app/dashboard')}
+                  className="text-sm px-4 py-2"
+                />
+              )}
+            </motion.div>
+
+            {user ? (
+              <div className="flex items-center space-x-4">
+                {/* NO WELCOME MESSAGE HERE - HIDDEN ON CONTACT PAGE */}
+                <InteractiveHoverButton 
+                  variant="white" 
+                  text="Sign Out" 
+                  onClick={handleSignOut}
+                  className="text-sm px-4 py-2"
+                />
+              </div>
+            ) : (
+              <InteractiveHoverButton 
+                variant="blue" 
+                text="Sign In" 
+                onClick={() => navigate('/login')}
+                className="text-sm px-6 py-2"
+              />
+            )}
+          </div>
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className="w-6 h-6 flex flex-col justify-center space-y-1">
+              <div className="w-full h-0.5 bg-white"></div>
+              <div className="w-full h-0.5 bg-white"></div>
+              <div className="w-full h-0.5 bg-white"></div>
+            </div>
+          </motion.button>
+        </nav>
+      </motion.header>
+
+      <div className="relative mobile-spacing lg:p-8 space-y-8 lg:space-y-12">
+        {/* Enhanced Page Header */}
+        <AnimatedSection className="text-center max-w-4xl mx-auto pt-8 lg:pt-16">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="space-y-6"
+          >
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] border border-white/[0.15] backdrop-blur-sm"
+            >
+              <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse" />
+              <span className="text-sm text-white/70 tracking-wide font-medium">
+                Get in Touch
+              </span>
+            </motion.div>
+
+            {/* Main Title - Same Typography as Homepage */}
+            <motion.h1 
+              className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular mx-auto"
+              style={{ 
+                lineHeight: '1.15', 
+                paddingTop: '1rem', 
+                paddingBottom: '1rem',
+                letterSpacing: '-0.02em'
+              }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <div className="text-white">Contact Our</div>
+              <div className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
+                Support Team
+              </div>
+            </motion.h1>
+
+            {/* Enhanced Description - Same Typography as Homepage */}
+            <motion.p 
+              className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              We're here to help you with any questions about Argent. Our dedicated support team 
+              is available 24/7 to ensure you get the most out of your financial management experience.
+            </motion.p>
+
+            {/* Decorative Line */}
+            <motion.div 
+              className="w-24 h-px bg-gradient-to-r from-transparent via-accent-blue to-transparent mx-auto"
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: 96, opacity: 1 }}
+              transition={{ duration: 1.2, delay: 0.7 }}
+            />
+          </motion.div>
+        </AnimatedSection>
+
+        {/* Contact Information Cards */}
+        <AnimatedSection className="mb-8 lg:mb-16" delay={0.4}>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.6 }}
+            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"
+          >
+            {contactInfo.map((info, index) => {
+              const Icon = info.icon;
+              return (
+                <motion.div
+                  key={index}
+                  className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 text-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
+                  whileHover={{ scale: 1.02, y: -4 }}
+                >
+                  <div className={`w-16 h-16 bg-gradient-to-r ${info.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                    <Icon size={24} className="text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2">{info.title}</h3>
+                  <p className="text-accent-blue font-medium mb-1">{info.content}</p>
+                  <p className="text-white/60 text-sm">{info.description}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </AnimatedSection>
+
+        {/* Contact Form and Support Channels */}
+        <AnimatedSection className="mb-8 lg:mb-16" delay={0.8}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Contact Form */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 1.0 }}
+              className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-8"
+            >
+              <h3 className="text-2xl font-bold text-white mb-6">Send us a Message</h3>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-white/70 text-sm font-medium mb-2">Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
+                      placeholder="Your full name"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-white/70 text-sm font-medium mb-2">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
+                      placeholder="your.email@example.com"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-white/70 text-sm font-medium mb-2">Subject</label>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
+                    placeholder="How can we help you?"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-white/70 text-sm font-medium mb-2">Message</label>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    required
+                    rows={5}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors resize-none"
+                    placeholder="Tell us more about your inquiry..."
+                  />
+                </div>
+                
+                <InteractiveHoverButton
+                  type="submit"
+                  disabled={isSubmitting}
+                  variant="blue"
+                  text={isSubmitting ? "Sending..." : "Send Message"}
+                  icon={<Send size={16} />}
+                  className="w-full py-3 disabled:opacity-50"
+                />
+              </form>
+            </motion.div>
+
+            {/* Support Channels */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 1.2 }}
+              className="space-y-6"
+            >
+              <h3 className="text-2xl font-bold text-white mb-6">Other Ways to Reach Us</h3>
+              
+              {supportChannels.map((channel, index) => {
+                const Icon = channel.icon;
+                return (
+                  <motion.div
+                    key={index}
+                    className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 1.3 + index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
+                  >
+                    <div className="flex items-start space-x-4">
+                      <div className={`w-12 h-12 bg-gradient-to-r ${channel.gradient} rounded-xl flex items-center justify-center shadow-lg`}>
+                        <Icon size={20} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-lg font-bold text-white mb-2">{channel.title}</h4>
+                        <p className="text-white/60 mb-4">{channel.description}</p>
+                        <InteractiveHoverButton
+                          variant="white"
+                          text={channel.action}
+                          className="px-4 py-2 text-sm"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          </div>
+        </AnimatedSection>
+
+        {/* FAQ Section */}
+        <AnimatedSection className="text-center max-w-4xl mx-auto pb-16" delay={1.4}>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.6 }}
+            className="space-y-6"
+          >
+            <h2 className="text-2xl lg:text-3xl font-bold text-white">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-white/60 leading-relaxed">
+              Can't find what you're looking for? Check out our comprehensive help center 
+              or reach out to our support team directly.
+            </p>
+            
+            <div className="flex flex-col lg:flex-row gap-4 justify-center">
+              <InteractiveHoverButton
+                variant="blue"
+                text="Visit Help Center"
+                onClick={() => window.open('#', '_blank')}
+                className="px-8 py-3"
+              />
+              <InteractiveHoverButton
+                variant="white"
+                text="Schedule a Call"
+                onClick={() => window.open('#', '_blank')}
+                className="px-8 py-3"
+              />
+            </div>
+          </motion.div>
+        </AnimatedSection>
+      </div>
+    </div>
+  );
+};
+
+export default ContactPage;
