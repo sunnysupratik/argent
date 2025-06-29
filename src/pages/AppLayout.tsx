@@ -108,11 +108,6 @@ const AppLayout: React.FC = () => {
     setActiveAssistant('chat');
   };
 
-  const handleSendMessage = () => {
-    // This would open a direct message or feedback form
-    console.log('Send message clicked');
-  };
-
   // Show loading state while checking authentication
   if (loading) {
     return (
@@ -176,7 +171,6 @@ const AppLayout: React.FC = () => {
         onVideoClick={handleVideoClick}
         onVoiceToggle={toggleVoiceAssistant}
         onChatClick={handleChatClick}
-        onSendMessage={handleSendMessage}
         showVoiceAssistant={showNeedHelp}
         activeAssistant={activeAssistant}
       />
