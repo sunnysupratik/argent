@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Video, Phone } from 'lucide-react';
+import { Video, Phone } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -19,7 +19,6 @@ import { useAuth } from '../hooks/useAuth';
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showNeedHelp, setShowNeedHelp] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -83,6 +82,13 @@ const AppLayout: React.FC = () => {
     window.open('https://effortless-cucurucho-5a3e21.netlify.app/', '_blank', 'noopener,noreferrer');
   };
 
+  const handleCallClick = () => {
+    // Simple action - could open a modal, make a call, or show a notification
+    console.log('Call button clicked');
+    // You can add any simple action here like showing a toast notification
+    alert('Voice assistant feature coming soon!');
+  };
+
   // Show loading state while checking authentication
   if (loading) {
     return (
@@ -141,7 +147,7 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Enhanced Floating Action Buttons - Bottom Right */}
+      {/* Small Sleek Floating Action Buttons - Bottom Right */}
       <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
         {/* Video Button */}
         <motion.button
@@ -156,7 +162,7 @@ const AppLayout: React.FC = () => {
           }}
           whileTap={{ scale: 0.95 }}
         >
-          {/* Animated background pulse */}
+          {/* Subtle animated background pulse */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-full"
             animate={{
@@ -190,9 +196,9 @@ const AppLayout: React.FC = () => {
           </motion.div>
         </motion.button>
 
-        {/* Call Button - Smaller and More Sleek */}
+        {/* Simple Call Button - Small and Sleek */}
         <motion.button
-          onClick={() => setShowNeedHelp(!showNeedHelp)}
+          onClick={handleCallClick}
           className="group relative w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -249,37 +255,6 @@ const AppLayout: React.FC = () => {
           </motion.div>
         </motion.button>
       </div>
-
-      {/* ElevenLabs Widget - Smaller and More Compact */}
-      <AnimatePresence>
-        {showNeedHelp && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-40"
-            style={{ 
-              transform: 'scale(0.85)', 
-              transformOrigin: 'bottom right',
-              maxWidth: '320px',
-              maxHeight: '400px'
-            }}
-          >
-            {/* Custom wrapper to make it smaller */}
-            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-              <elevenlabs-convai 
-                agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-                style={{
-                  width: '300px',
-                  height: '350px',
-                  border: 'none',
-                  borderRadius: '16px'
-                }}
-              ></elevenlabs-convai>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
