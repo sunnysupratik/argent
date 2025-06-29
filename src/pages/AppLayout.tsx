@@ -250,24 +250,48 @@ const AppLayout: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* ElevenLabs Widget - Positioned to the LEFT of the buttons */}
+      {/* ElevenLabs Widget - FORCED positioning to bottom right */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, x: 50 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
             exit={{ opacity: 0, scale: 0.8, x: 50 }}
+            transition={{ duration: 0.3 }}
             className="fixed bottom-6 right-32 z-40"
+            style={{
+              position: 'fixed !important',
+              bottom: '24px !important',
+              right: '128px !important',
+              zIndex: 40,
+            }}
           >
-            {/* Custom wrapper */}
-            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+            {/* Force positioning wrapper with aggressive CSS */}
+            <div 
+              className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+              style={{
+                position: 'relative',
+                width: '300px',
+                height: '350px',
+                maxWidth: '300px',
+                maxHeight: '350px',
+              }}
+            >
               <elevenlabs-convai 
                 agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
                 style={{
-                  width: '300px',
-                  height: '350px',
-                  border: 'none',
-                  borderRadius: '16px'
+                  width: '100% !important',
+                  height: '100% !important',
+                  border: 'none !important',
+                  borderRadius: '16px !important',
+                  position: 'relative !important',
+                  top: '0 !important',
+                  left: '0 !important',
+                  right: 'auto !important',
+                  bottom: 'auto !important',
+                  transform: 'none !important',
+                  margin: '0 !important',
+                  padding: '0 !important',
                 }}
               ></elevenlabs-convai>
             </div>
