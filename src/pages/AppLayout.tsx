@@ -140,71 +140,74 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Video Button - Bottom Right */}
-      <motion.button
-        onClick={handleVideoClick}
-        className="group fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 1.8 }}
-        whileHover={{ 
-          scale: 1.1,
-          boxShadow: "0 8px 25px rgba(239, 68, 68, 0.4)"
-        }}
-        whileTap={{ scale: 0.95 }}
-      >
-        {/* Animated background pulse */}
+      {/* Bottom Right Widget Area */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-4">
+        {/* ElevenLabs Call Interface - Above the video button */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-full"
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.7, 0.3, 0.7],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-        
-        {/* Icon */}
-        <motion.div
-          className="relative z-10"
-          whileHover={{ rotate: 15 }}
-          transition={{ duration: 0.2 }}
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.8 }}
+          className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
         >
-          <Video size={22} />
+          <elevenlabs-convai 
+            agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+            style={{
+              width: '320px',
+              height: '400px',
+              border: 'none',
+              borderRadius: '16px',
+              display: 'block'
+            }}
+          ></elevenlabs-convai>
         </motion.div>
-        
-        {/* Tooltip */}
-        <motion.div
-          className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-          initial={{ x: 10, opacity: 0 }}
-          whileHover={{ x: 0, opacity: 1 }}
-        >
-          Video Advisor
-          <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
-        </motion.div>
-      </motion.button>
 
-      {/* ElevenLabs Call Interface - Bottom Right, positioned to the left of video button */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: 20 }}
-        animate={{ opacity: 1, scale: 1, x: 0 }}
-        transition={{ duration: 0.8, delay: 2.0 }}
-        className="fixed bottom-6 right-24 z-40 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
-      >
-        <elevenlabs-convai 
-          agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-          style={{
-            width: '320px',
-            height: '400px',
-            border: 'none',
-            borderRadius: '16px',
-            display: 'block'
+        {/* Video Button - Below the call widget */}
+        <motion.button
+          onClick={handleVideoClick}
+          className="group w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
+          whileHover={{ 
+            scale: 1.1,
+            boxShadow: "0 8px 25px rgba(239, 68, 68, 0.4)"
           }}
-        ></elevenlabs-convai>
-      </motion.div>
+          whileTap={{ scale: 0.95 }}
+        >
+          {/* Animated background pulse */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-full"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.7, 0.3, 0.7],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          
+          {/* Icon */}
+          <motion.div
+            className="relative z-10"
+            whileHover={{ rotate: 15 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Video size={22} />
+          </motion.div>
+          
+          {/* Tooltip */}
+          <motion.div
+            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            initial={{ x: 10, opacity: 0 }}
+            whileHover={{ x: 0, opacity: 1 }}
+          >
+            Video Advisor
+            <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
+          </motion.div>
+        </motion.button>
+      </div>
     </div>
   );
 };
