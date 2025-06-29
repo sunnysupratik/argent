@@ -4,10 +4,17 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://example.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'public-anon-key';
 
+// Check if we're using placeholder values
+const isUsingPlaceholders = supabaseUrl === 'https://example.supabase.co' || supabaseAnonKey === 'public-anon-key';
+
 // Log environment variables for debugging (only in development)
 if (import.meta.env.DEV) {
   console.log('Supabase URL:', supabaseUrl);
   console.log('Supabase Anon Key:', supabaseAnonKey ? 'Exists (not shown for security)' : 'Missing');
+  
+  if (isUsingPlaceholders) {
+    console.warn('⚠️ SUPABASE NOT CONFIGURED: Using placeholder values. Please connect to Supabase to enable authentication.');
+  }
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -76,6 +83,18 @@ export const customAuth = {
     try {
       console.log('CustomAuth.signIn - Attempting login for:', username);
       
+      // Check if Supabase is properly configured
+      if (isUsingPlaceholders) {
+        console.error('CustomAuth.signIn - Supabase not configured');
+        return { 
+          user: null, 
+          error: { 
+            message: 'Database connection not configured. Please connect to Supabase first.',
+            code: 'SUPABASE_NOT_CONFIGURED'
+          } 
+        };
+      }
+      
       // Try to authenticate with Supabase
       const { data, error } = await supabase
         .from('custom_users')
@@ -86,6 +105,18 @@ export const customAuth = {
 
       if (error || !data) {
         console.log('CustomAuth.signIn - Login failed:', error?.message || 'User not found');
+        
+        // Provide more helpful error messages
+        if (error?.code === 'PGRST116') {
+          return { 
+            user: null, 
+            error: { 
+              message: 'Invalid username or password. If this is a demo account, make sure the demo users have been created in your database.',
+              code: 'INVALID_CREDENTIALS'
+            } 
+          };
+        }
+        
         return { user: null, error: { message: 'Invalid username or password' } };
       }
 
@@ -95,15 +126,39 @@ export const customAuth = {
       localStorage.setItem('customUser', JSON.stringify(data));
       
       return { user: data, error: null };
-    } catch (err) {
+    } catch (err: any) {
       console.error('CustomAuth.signIn - Unexpected error:', err);
-      return { user: null, error: { message: 'Authentication failed' } };
+      
+      // Handle network errors specifically
+      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        return { 
+          user: null, 
+          error: { 
+            message: 'Unable to connect to database. Please check your Supabase configuration and ensure you have an active internet connection.',
+            code: 'NETWORK_ERROR'
+          } 
+        };
+      }
+      
+      return { user: null, error: { message: 'Authentication failed. Please try again.' } };
     }
   },
 
   signUp: async (username: string, password: string, fullName: string, email: string) => {
     try {
       console.log('CustomAuth.signUp - Attempting signup for:', username);
+      
+      // Check if Supabase is properly configured
+      if (isUsingPlaceholders) {
+        console.error('CustomAuth.signUp - Supabase not configured');
+        return { 
+          user: null, 
+          error: { 
+            message: 'Database connection not configured. Please connect to Supabase first.',
+            code: 'SUPABASE_NOT_CONFIGURED'
+          } 
+        };
+      }
       
       // Check if username or email already exists
       const { data: existingUser, error: checkError } = await supabase
@@ -147,9 +202,21 @@ export const customAuth = {
       localStorage.setItem('customUser', JSON.stringify(data));
       
       return { user: data, error: null };
-    } catch (err) {
+    } catch (err: any) {
       console.error('CustomAuth.signUp - Unexpected error:', err);
-      return { user: null, error: { message: 'Sign up failed' } };
+      
+      // Handle network errors specifically
+      if (err.name === 'TypeError' && err.message.includes('Failed to fetch')) {
+        return { 
+          user: null, 
+          error: { 
+            message: 'Unable to connect to database. Please check your Supabase configuration and ensure you have an active internet connection.',
+            code: 'NETWORK_ERROR'
+          } 
+        };
+      }
+      
+      return { user: null, error: { message: 'Sign up failed. Please try again.' } };
     }
   },
 
@@ -170,5 +237,8 @@ export const customAuth = {
     }
     
     return user;
-  }
+  },
+
+  // Helper function to check if Supabase is configured
+  isConfigured: () => !isUsingPlaceholders
 };

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, User } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, AlertCircle, CheckCircle, User, Database, Wifi } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
+import { customAuth } from '../lib/supabase';
 import { InteractiveHoverButton } from '../components/ui/interactive-hover-button';
 
 const LoginPage: React.FC = () => {
@@ -12,6 +13,7 @@ const LoginPage: React.FC = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSupabaseConfigured, setIsSupabaseConfigured] = useState(true);
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -19,6 +21,11 @@ const LoginPage: React.FC = () => {
     fullName: '',
     email: ''
   });
+
+  // Check Supabase configuration on component mount
+  useEffect(() => {
+    setIsSupabaseConfigured(customAuth.isConfigured());
+  }, []);
 
   // Redirect if already authenticated - go directly to dashboard
   useEffect(() => {
@@ -81,8 +88,18 @@ const LoginPage: React.FC = () => {
     const { error } = await signIn(username, password);
     
     if (error) {
-      setError(`Demo login failed: ${error.message}`);
       console.error('Demo login error:', error);
+      
+      // Provide specific error messages based on error type
+      if (error.code === 'SUPABASE_NOT_CONFIGURED') {
+        setError('Please connect to Supabase first by clicking the "Connect to Supabase" button in the top right corner.');
+      } else if (error.code === 'NETWORK_ERROR') {
+        setError('Unable to connect to the database. Please check your internet connection and Supabase configuration.');
+      } else if (error.code === 'INVALID_CREDENTIALS') {
+        setError('Demo user not found. Please run the demo users migration or create the demo user manually in your Supabase database.');
+      } else {
+        setError(`Demo login failed: ${error.message}`);
+      }
     } else {
       setSuccessMessage('Demo login successful!');
       console.log('Demo login successful, navigating to dashboard...');
@@ -145,6 +162,26 @@ const LoginPage: React.FC = () => {
             </div>
           </motion.div>
 
+          {/* Supabase Configuration Warning */}
+          {!isSupabaseConfigured && (
+            <motion.div 
+              className="p-4 bg-amber-50 border border-amber-200 rounded-lg flex items-start space-x-3"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+            >
+              <Database className="w-5 h-5 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <h3 className="text-amber-800 font-medium text-sm mb-1">Supabase Not Connected</h3>
+                <p className="text-amber-700 text-sm mb-2">
+                  To use authentication, please connect to Supabase by clicking the "Connect to Supabase" button in the top right corner.
+                </p>
+                <p className="text-amber-600 text-xs">
+                  After connecting, run the demo users migration to create test accounts.
+                </p>
+              </div>
+            </motion.div>
+          )}
+
           {/* Demo Account - Show prominently */}
           {!isSignUp && (
             <motion.div 
@@ -156,7 +193,7 @@ const LoginPage: React.FC = () => {
               <h3 className="text-sm font-medium text-gray-700 uppercase tracking-wide">Try Demo Account</h3>
               <motion.button
                 onClick={() => handleDemoLogin(demoAccount.username, demoAccount.password)}
-                disabled={loading}
+                disabled={loading || !isSupabaseConfigured}
                 className="group relative overflow-hidden w-full p-4 border-2 border-accent-blue bg-gradient-to-r from-accent-blue/5 to-accent-blue/10 hover:from-accent-blue/10 hover:to-accent-blue/15 rounded-2xl text-left transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 whileHover={{ y: -2, scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
@@ -179,7 +216,7 @@ const LoginPage: React.FC = () => {
                   </div>
                   <div className="text-right">
                     <div className="text-xs font-medium text-accent-blue">
-                      {loading ? 'Signing in...' : 'Click to login'}
+                      {loading ? 'Signing in...' : !isSupabaseConfigured ? 'Connect Supabase' : 'Click to login'}
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                       {demoAccount.password}
@@ -244,7 +281,8 @@ const LoginPage: React.FC = () => {
                 value={formData.username}
                 onChange={handleInputChange}
                 required
-                className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                disabled={!isSupabaseConfigured}
+                className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 placeholder="johndoe"
               />
             </div>
@@ -262,7 +300,8 @@ const LoginPage: React.FC = () => {
                     value={formData.fullName}
                     onChange={handleInputChange}
                     required={isSignUp}
-                    className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                    disabled={!isSupabaseConfigured}
+                    className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="John Doe"
                   />
                 </div>
@@ -278,7 +317,8 @@ const LoginPage: React.FC = () => {
                     value={formData.email}
                     onChange={handleInputChange}
                     required={isSignUp}
-                    className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                    disabled={!isSupabaseConfigured}
+                    className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -297,13 +337,15 @@ const LoginPage: React.FC = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 pr-12 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                  disabled={!isSupabaseConfigured}
+                  className="w-full px-4 py-3 pr-12 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 apple-glass-icon-dark p-1 flex items-center justify-center"
+                  disabled={!isSupabaseConfigured}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 apple-glass-icon-dark p-1 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -322,7 +364,8 @@ const LoginPage: React.FC = () => {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   required={isSignUp}
-                  className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                  disabled={!isSupabaseConfigured}
+                  className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="••••••••"
                 />
               </div>
@@ -333,7 +376,8 @@ const LoginPage: React.FC = () => {
                 <label className="flex items-center">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-accent-blue border-graphic-subtle focus:ring-accent-blue rounded"
+                    disabled={!isSupabaseConfigured}
+                    className="w-4 h-4 text-accent-blue border-graphic-subtle focus:ring-accent-blue rounded disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                   <span className="ml-2 text-sm inter-navigation text-text-primary">Remember me</span>
                 </label>
@@ -346,7 +390,7 @@ const LoginPage: React.FC = () => {
 
             <InteractiveHoverButton
               type="submit"
-              disabled={loading}
+              disabled={loading || !isSupabaseConfigured}
               variant="blue"
               text={loading ? 'Loading...' : (isSignUp ? 'Create Account' : 'Sign In')}
               className="w-full py-3 text-base lg:text-lg disabled:opacity-50 disabled:cursor-not-allowed"
@@ -364,7 +408,8 @@ const LoginPage: React.FC = () => {
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
                 onClick={toggleMode}
-                className="inter-navigation text-accent-blue hover:underline"
+                disabled={!isSupabaseConfigured}
+                className="inter-navigation text-accent-blue hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </button>
@@ -433,6 +478,9 @@ const LoginPage: React.FC = () => {
             <div className="text-sm text-overlay-bg text-left">
               <p className="font-medium">{demoAccount.name}</p>
               <p className="opacity-80">{demoAccount.username} / {demoAccount.password}</p>
+              {!isSupabaseConfigured && (
+                <p className="text-xs opacity-60 mt-2">Connect Supabase to enable</p>
+              )}
             </div>
           </motion.div>
 
