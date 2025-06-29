@@ -142,17 +142,17 @@ const AppLayout: React.FC = () => {
       </main>
 
       {/* Enhanced Floating Action Buttons - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
         {/* Video Button */}
         <motion.button
           onClick={handleVideoClick}
-          className="group relative w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
+          className="group relative w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 overflow-hidden"
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.8 }}
           whileHover={{ 
             scale: 1.1,
-            boxShadow: "0 8px 25px rgba(239, 68, 68, 0.4)"
+            boxShadow: "0 20px 40px rgba(239, 68, 68, 0.4)"
           }}
           whileTap={{ scale: 0.95 }}
         >
@@ -170,18 +170,28 @@ const AppLayout: React.FC = () => {
             }}
           />
           
+          {/* Ripple effect on hover */}
+          <motion.div
+            className="absolute inset-0 bg-white rounded-full opacity-0 group-hover:opacity-20"
+            initial={{ scale: 0 }}
+            whileHover={{ 
+              scale: 1,
+              transition: { duration: 0.3 }
+            }}
+          />
+          
           {/* Icon */}
           <motion.div
             className="relative z-10"
             whileHover={{ rotate: 15 }}
             transition={{ duration: 0.2 }}
           >
-            <Video size={20} />
+            <Video size={24} />
           </motion.div>
           
           {/* Tooltip */}
           <motion.div
-            className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
             initial={{ x: 10, opacity: 0 }}
             whileHover={{ x: 0, opacity: 1 }}
           >
@@ -190,42 +200,52 @@ const AppLayout: React.FC = () => {
           </motion.div>
         </motion.button>
 
-        {/* Call Button - Smaller and More Sleek */}
+        {/* Call Button (ElevenLabs) */}
         <motion.button
           onClick={() => setShowNeedHelp(!showNeedHelp)}
-          className="group relative w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
+          className="group relative w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 overflow-hidden"
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 2.0 }}
           whileHover={{ 
             scale: 1.1,
-            boxShadow: "0 8px 25px rgba(59, 130, 246, 0.4)"
+            boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4)"
           }}
           whileTap={{ scale: 0.95 }}
         >
-          {/* Subtle animated background pulse */}
+          {/* Animated background pulse */}
           <motion.div
             className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full"
             animate={{
-              scale: [1, 1.15, 1],
-              opacity: [0.6, 0.2, 0.6],
+              scale: [1, 1.2, 1],
+              opacity: [0.7, 0.3, 0.7],
             }}
             transition={{
-              duration: 3,
+              duration: 2.5,
               repeat: Infinity,
               ease: "easeInOut",
               delay: 0.5,
             }}
           />
           
-          {/* Icon with subtle animation */}
+          {/* Ripple effect on hover */}
+          <motion.div
+            className="absolute inset-0 bg-white rounded-full opacity-0 group-hover:opacity-20"
+            initial={{ scale: 0 }}
+            whileHover={{ 
+              scale: 1,
+              transition: { duration: 0.3 }
+            }}
+          />
+          
+          {/* Icon with enhanced animation */}
           <motion.div
             className="relative z-10"
             animate={{
-              rotate: [0, 3, -3, 0],
+              rotate: [0, 5, -5, 0],
             }}
             transition={{
-              duration: 4,
+              duration: 3,
               repeat: Infinity,
               ease: "easeInOut",
             }}
@@ -235,12 +255,12 @@ const AppLayout: React.FC = () => {
               transition: { duration: 0.2 }
             }}
           >
-            <Phone size={20} />
+            <Phone size={24} />
           </motion.div>
           
           {/* Tooltip */}
           <motion.div
-            className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
             initial={{ x: 10, opacity: 0 }}
             whileHover={{ x: 0, opacity: 1 }}
           >
@@ -250,33 +270,16 @@ const AppLayout: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* ElevenLabs Widget - Smaller and More Compact */}
+      {/* ElevenLabs Widget - Positioned above the buttons when active */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-40"
-            style={{ 
-              transform: 'scale(0.85)', 
-              transformOrigin: 'bottom right',
-              maxWidth: '320px',
-              maxHeight: '400px'
-            }}
+            className="fixed bottom-32 right-6 z-40"
           >
-            {/* Custom wrapper to make it smaller */}
-            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-              <elevenlabs-convai 
-                agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-                style={{
-                  width: '300px',
-                  height: '350px',
-                  border: 'none',
-                  borderRadius: '16px'
-                }}
-              ></elevenlabs-convai>
-            </div>
+            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
           </motion.div>
         )}
       </AnimatePresence>
