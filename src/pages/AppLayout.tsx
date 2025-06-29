@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Video, Phone, X, ChevronUp, ChevronDown, Headphones, PlusCircle } from 'lucide-react';
+import { MessageCircle, Video, Phone, X, ChevronUp, ChevronDown, Headphones, PlusCircle, Sparkles } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -68,6 +68,21 @@ const AppLayout: React.FC = () => {
       document.body.style.overflow = 'unset';
     };
   }, [isMobileMenuOpen, showVideoModal]);
+
+  // Close FAB menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (fabExpanded && !target.closest('.fab-container')) {
+        setFabExpanded(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [fabExpanded]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -153,93 +168,145 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Enhanced Floating Action Button System */}
-      <div className="fixed bottom-10 right-6 z-50">
-        {/* Main FAB Button */}
-        <motion.button
-          onClick={toggleFab}
-          className="relative z-50 w-14 h-14 bg-gradient-to-r from-accent-blue to-blue-600 hover:from-accent-blue-hover hover:to-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ 
-            scale: 1.05,
-            boxShadow: "0 20px 40px rgba(0, 122, 255, 0.4)"
-          }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <motion.div
-            animate={{ rotate: fabExpanded ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
+      {/* Redesigned Floating Action Button System */}
+      <div className="fixed bottom-8 right-8 z-50 fab-container">
+        {/* Main FAB Button with Floating Label */}
+        <div className="relative">
+          {/* Floating Label */}
+          <AnimatePresence>
+            {!fabExpanded && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg whitespace-nowrap"
+              >
+                <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
+                AI Assistants
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Main Button */}
+          <motion.button
+            onClick={toggleFab}
+            className="relative z-50 w-16 h-16 bg-gradient-to-r from-accent-blue to-blue-600 hover:from-accent-blue-hover hover:to-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ 
+              scale: 1.05,
+              boxShadow: "0 20px 40px rgba(0, 122, 255, 0.4)"
+            }}
+            whileTap={{ scale: 0.95 }}
           >
-            {fabExpanded ? <ChevronDown size={24} /> : <ChevronUp size={24} />}
-          </motion.div>
-        </motion.button>
+            <motion.div
+              animate={{ rotate: fabExpanded ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {fabExpanded ? <X size={24} /> : <Sparkles size={24} />}
+            </motion.div>
+          </motion.button>
+        </div>
 
-        {/* FAB Menu Items */}
+        {/* FAB Menu Items - Radial Layout */}
         <AnimatePresence>
           {fabExpanded && (
             <>
-              {/* Video Button - Positioned higher */}
-              <motion.button
-                onClick={handleVideoClick}
-                className="absolute z-40 w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-xl flex items-center justify-center"
-                initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                animate={{ opacity: 1, y: -140, scale: 1 }}
-                exit={{ opacity: 0, y: 0, scale: 0.5 }}
+              {/* Semi-transparent overlay */}
+              <motion.div
+                className="fixed inset-0 bg-black/5 backdrop-blur-sm z-40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setFabExpanded(false)}
+              />
+              
+              {/* Video Button - Top Position */}
+              <motion.div
+                className="absolute z-40"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1, x: -70, y: -70 }}
+                exit={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                whileHover={{ 
-                  scale: 1.1,
-                  boxShadow: "0 15px 30px rgba(239, 68, 68, 0.4)"
-                }}
-                whileTap={{ scale: 0.95 }}
               >
-                <Video size={20} />
-                
-                {/* Tooltip */}
-                <motion.div
-                  className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  initial={{ x: 10, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.2, delay: 0.2 }}
+                <motion.button
+                  onClick={handleVideoClick}
+                  className="group relative w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-xl flex items-center justify-center"
+                  whileHover={{ 
+                    scale: 1.1,
+                    boxShadow: "0 15px 30px rgba(239, 68, 68, 0.4)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  Video Advisor
-                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
-                </motion.div>
-              </motion.button>
+                  <Video size={22} />
+                  
+                  {/* Tooltip */}
+                  <motion.div
+                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    Video Advisor
+                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
+                  </motion.div>
+                </motion.button>
+              </motion.div>
 
-              {/* Voice Assistant Button */}
-              <motion.button
-                onClick={() => setShowNeedHelp(!showNeedHelp)}
-                className="absolute z-40 w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-full shadow-xl flex items-center justify-center"
-                initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                animate={{ opacity: 1, y: -80, scale: 1 }}
-                exit={{ opacity: 0, y: 0, scale: 0.5 }}
+              {/* Voice Assistant Button - Left Position */}
+              <motion.div
+                className="absolute z-40"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1, x: -100, y: 0 }}
+                exit={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.2 }}
-                whileHover={{ 
-                  scale: 1.1,
-                  boxShadow: "0 15px 30px rgba(139, 92, 246, 0.4)"
-                }}
-                whileTap={{ scale: 0.95 }}
               >
-                <Headphones size={20} />
-              </motion.button>
+                <motion.button
+                  onClick={() => setShowNeedHelp(!showNeedHelp)}
+                  className="group relative w-14 h-14 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-full shadow-xl flex items-center justify-center"
+                  whileHover={{ 
+                    scale: 1.1,
+                    boxShadow: "0 15px 30px rgba(139, 92, 246, 0.4)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Headphones size={22} />
+                  
+                  {/* Tooltip */}
+                  <motion.div
+                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    Voice Assistant
+                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
+                  </motion.div>
+                </motion.button>
+              </motion.div>
 
-              {/* Chat Button */}
-              <motion.button
-                onClick={() => navigate('/app/chat')}
-                className="absolute z-40 w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-xl flex items-center justify-center"
-                initial={{ opacity: 0, y: 0, scale: 0.5 }}
-                animate={{ opacity: 1, y: -200, scale: 1 }}
-                exit={{ opacity: 0, y: 0, scale: 0.5 }}
-                transition={{ duration: 0.3, delay: 0 }}
-                whileHover={{ 
-                  scale: 1.1,
-                  boxShadow: "0 15px 30px rgba(16, 185, 129, 0.4)"
-                }}
-                whileTap={{ scale: 0.95 }}
+              {/* Chat Button - Top Left Position */}
+              <motion.div
+                className="absolute z-40"
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1, x: -70, y: 70 }}
+                exit={{ opacity: 0, scale: 0.5, x: 0, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.3 }}
               >
-                <MessageCircle size={20} />
-              </motion.button>
+                <motion.button
+                  onClick={() => navigate('/app/chat')}
+                  className="group relative w-14 h-14 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-xl flex items-center justify-center"
+                  whileHover={{ 
+                    scale: 1.1,
+                    boxShadow: "0 15px 30px rgba(16, 185, 129, 0.4)"
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <MessageCircle size={22} />
+                  
+                  {/* Tooltip */}
+                  <motion.div
+                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                  >
+                    AI Chat
+                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
+                  </motion.div>
+                </motion.button>
+              </motion.div>
             </>
           )}
         </AnimatePresence>
