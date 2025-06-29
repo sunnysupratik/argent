@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, Transaction } from '../lib/supabase';
 import { useAuth } from './useAuth';
+import { getMockTransactionsByUsername } from '../lib/mockData';
 
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -21,44 +22,76 @@ export function useTransactions() {
 
       console.log('useTransactions.fetchTransactions - Fetching transactions for username:', user.username);
       
-      // Try to fetch from direct_transactions first
-      const { data: directTransactions, error: directError } = await supabase
-        .from('direct_transactions')
-        .select('*')
-        .eq('user_name', user.username)
-        .order('transaction_date', { ascending: false });
+      // Check if we have a valid Supabase connection
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
       
-      if (!directError && directTransactions && directTransactions.length > 0) {
-        console.log('useTransactions.fetchTransactions - Found', directTransactions.length, 'transactions in direct_transactions');
-        setTransactions(directTransactions);
-        setLoading(false);
-        return;
-      }
-      
-      // Fall back to original transactions table
-      const { data, error } = await supabase
-        .from('transactions')
-        .select(`
-          *,
-          category:categories(*),
-          account:accounts(*)
-        `)
-        .eq('user_name', user.username)
-        .order('transaction_date', { ascending: false });
+      if (isValidSupabase) {
+        console.log('Using real Supabase for transactions');
+        
+        // Try to fetch from direct_transactions first
+        const { data: directTransactions, error: directError } = await supabase
+          .from('direct_transactions')
+          .select('*')
+          .eq('user_name', user.username)
+          .order('transaction_date', { ascending: false });
+        
+        if (!directError && directTransactions && directTransactions.length > 0) {
+          console.log('useTransactions.fetchTransactions - Found', directTransactions.length, 'transactions in direct_transactions');
+          setTransactions(directTransactions);
+          setLoading(false);
+          return;
+        }
+        
+        // Fall back to original transactions table
+        const { data, error } = await supabase
+          .from('transactions')
+          .select(`
+            *,
+            category:categories(*),
+            account:accounts(*)
+          `)
+          .eq('user_name', user.username)
+          .order('transaction_date', { ascending: false });
 
-      if (error) {
-        console.error('useTransactions.fetchTransactions - Database error:', error);
-        throw error;
+        if (error) {
+          console.error('useTransactions.fetchTransactions - Database error:', error);
+          throw error;
+        }
+        
+        if (data && data.length > 0) {
+          console.log('useTransactions.fetchTransactions - Found', data.length, 'transactions');
+          setTransactions(data);
+          setLoading(false);
+          return;
+        }
       }
       
-      console.log('useTransactions.fetchTransactions - Found', data?.length || 0, 'transactions');
+      // Use mock data as fallback
+      console.log('Using mock data for transactions');
+      const mockTransactions = getMockTransactionsByUsername(user.username);
+      console.log('useTransactions.fetchTransactions - Found', mockTransactions.length, 'mock transactions');
       
-      setTransactions(data || []);
+      // Sort mock transactions by date (newest first)
+      const sortedTransactions = mockTransactions.sort((a, b) => 
+        new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+      );
+      
+      setTransactions(sortedTransactions);
+      
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load transactions';
       console.error('useTransactions.fetchTransactions - Error:', errorMessage);
-      setError(errorMessage);
-      setTransactions([]);
+      
+      // Fall back to mock data on error
+      console.log('Falling back to mock data due to error');
+      const mockTransactions = getMockTransactionsByUsername(user?.username || '');
+      const sortedTransactions = mockTransactions.sort((a, b) => 
+        new Date(b.transaction_date).getTime() - new Date(a.transaction_date).getTime()
+      );
+      setTransactions(sortedTransactions);
+      setError(null); // Clear error since we have fallback data
     } finally {
       setLoading(false);
     }

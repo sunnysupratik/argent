@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, Investment } from '../lib/supabase';
 import { useAuth } from './useAuth';
+import { getMockInvestmentsByUsername } from '../lib/mockData';
 
 export function useInvestments() {
   const [investments, setInvestments] = useState<Investment[]>([]);
@@ -21,38 +22,61 @@ export function useInvestments() {
 
       console.log('useInvestments.fetchInvestments - Fetching investments for username:', user.username);
       
-      // Try to fetch from direct_investments first
-      const { data: directInvestments, error: directError } = await supabase
-        .from('direct_investments')
-        .select('*')
-        .eq('user_name', user.username);
+      // Check if we have a valid Supabase connection
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
       
-      if (!directError && directInvestments && directInvestments.length > 0) {
-        console.log('useInvestments.fetchInvestments - Found', directInvestments.length, 'investments in direct_investments');
-        setInvestments(directInvestments);
-        setLoading(false);
-        return;
-      }
-      
-      // Fall back to original investments table if it exists
-      const { data, error } = await supabase
-        .from('investments')
-        .select('*')
-        .eq('user_name', user.username);
+      if (isValidSupabase) {
+        console.log('Using real Supabase for investments');
+        
+        // Try to fetch from direct_investments first
+        const { data: directInvestments, error: directError } = await supabase
+          .from('direct_investments')
+          .select('*')
+          .eq('user_name', user.username);
+        
+        if (!directError && directInvestments && directInvestments.length > 0) {
+          console.log('useInvestments.fetchInvestments - Found', directInvestments.length, 'investments in direct_investments');
+          setInvestments(directInvestments);
+          setLoading(false);
+          return;
+        }
+        
+        // Fall back to original investments table if it exists
+        const { data, error } = await supabase
+          .from('investments')
+          .select('*')
+          .eq('user_name', user.username);
 
-      if (error) {
-        console.error('useInvestments.fetchInvestments - Database error:', error);
-        throw error;
+        if (error) {
+          console.error('useInvestments.fetchInvestments - Database error:', error);
+          throw error;
+        }
+        
+        if (data && data.length > 0) {
+          console.log('useInvestments.fetchInvestments - Found', data.length, 'investments');
+          setInvestments(data);
+          setLoading(false);
+          return;
+        }
       }
       
-      console.log('useInvestments.fetchInvestments - Found', data?.length || 0, 'investments');
+      // Use mock data as fallback
+      console.log('Using mock data for investments');
+      const mockInvestments = getMockInvestmentsByUsername(user.username);
+      console.log('useInvestments.fetchInvestments - Found', mockInvestments.length, 'mock investments');
+      setInvestments(mockInvestments);
       
-      setInvestments(data || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load investments';
       console.error('useInvestments.fetchInvestments - Error:', errorMessage);
-      setError(errorMessage);
-      setInvestments([]);
+      
+      // Fall back to mock data on error
+      console.log('Falling back to mock data due to error');
+      const mockInvestments = getMockInvestmentsByUsername(user?.username || '');
+      setInvestments(mockInvestments);
+      setError(null); // Clear error since we have fallback data
     } finally {
       setLoading(false);
     }

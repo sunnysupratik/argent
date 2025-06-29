@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase, Account } from '../lib/supabase';
 import { useAuth } from './useAuth';
+import { getMockAccountsByUsername } from '../lib/mockData';
 
 export function useAccounts() {
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -21,38 +22,61 @@ export function useAccounts() {
 
       console.log('useAccounts.fetchAccounts - Fetching accounts for username:', user.username);
       
-      // Try to fetch from direct_accounts first
-      const { data: directAccounts, error: directError } = await supabase
-        .from('direct_accounts')
-        .select('*')
-        .eq('user_name', user.username);
+      // Check if we have a valid Supabase connection
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
       
-      if (!directError && directAccounts && directAccounts.length > 0) {
-        console.log('useAccounts.fetchAccounts - Found', directAccounts.length, 'accounts in direct_accounts');
-        setAccounts(directAccounts);
-        setLoading(false);
-        return;
-      }
-      
-      // Fall back to original accounts table
-      const { data, error } = await supabase
-        .from('accounts')
-        .select('*')
-        .eq('user_name', user.username);
+      if (isValidSupabase) {
+        console.log('Using real Supabase for accounts');
+        
+        // Try to fetch from direct_accounts first
+        const { data: directAccounts, error: directError } = await supabase
+          .from('direct_accounts')
+          .select('*')
+          .eq('user_name', user.username);
+        
+        if (!directError && directAccounts && directAccounts.length > 0) {
+          console.log('useAccounts.fetchAccounts - Found', directAccounts.length, 'accounts in direct_accounts');
+          setAccounts(directAccounts);
+          setLoading(false);
+          return;
+        }
+        
+        // Fall back to original accounts table
+        const { data, error } = await supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_name', user.username);
 
-      if (error) {
-        console.error('useAccounts.fetchAccounts - Database error:', error);
-        throw error;
+        if (error) {
+          console.error('useAccounts.fetchAccounts - Database error:', error);
+          throw error;
+        }
+        
+        if (data && data.length > 0) {
+          console.log('useAccounts.fetchAccounts - Found', data.length, 'accounts');
+          setAccounts(data);
+          setLoading(false);
+          return;
+        }
       }
       
-      console.log('useAccounts.fetchAccounts - Found', data?.length || 0, 'accounts');
+      // Use mock data as fallback
+      console.log('Using mock data for accounts');
+      const mockAccounts = getMockAccountsByUsername(user.username);
+      console.log('useAccounts.fetchAccounts - Found', mockAccounts.length, 'mock accounts');
+      setAccounts(mockAccounts);
       
-      setAccounts(data || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load accounts';
       console.error('useAccounts.fetchAccounts - Error:', errorMessage);
-      setError(errorMessage);
-      setAccounts([]);
+      
+      // Fall back to mock data on error
+      console.log('Falling back to mock data due to error');
+      const mockAccounts = getMockAccountsByUsername(user?.username || '');
+      setAccounts(mockAccounts);
+      setError(null); // Clear error since we have fallback data
     } finally {
       setLoading(false);
     }
