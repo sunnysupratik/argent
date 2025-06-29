@@ -208,31 +208,21 @@ const AppLayout: React.FC = () => {
       />
 
       {/* Voice Assistant */}
-      <AnimatePresence>
-        {showVoiceAssistant && (
-          <motion.div 
-            className="fixed inset-0 z-50 flex items-center justify-center"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            {/* Blurred Background */}
-            <motion.div 
-              className="absolute inset-0 bg-black/50 backdrop-blur-md"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => {
-                setShowVoiceAssistant(false);
-                setActiveAssistant(null);
-              }}
-            />
-            
-            {/* ElevenLabs Widget - No container, just the raw element */}
-            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showVoiceAssistant && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Backdrop for closing */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-md"
+            onClick={() => {
+              setShowVoiceAssistant(false);
+              setActiveAssistant(null);
+            }}
+          />
+          
+          {/* ElevenLabs Widget - Direct embed without any container */}
+          <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+        </div>
+      )}
 
       {/* Video Assistant */}
       <AnimatePresence>
@@ -240,7 +230,7 @@ const AppLayout: React.FC = () => {
           <div className="fixed inset-0 z-50">
             {/* Blurred Background */}
             <motion.div 
-              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              className="absolute inset-0 bg-black/50 backdrop-blur-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -291,7 +281,7 @@ const AppLayout: React.FC = () => {
           <div className="fixed inset-0 z-50">
             {/* Blurred Background */}
             <motion.div 
-              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              className="absolute inset-0 bg-black/50 backdrop-blur-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

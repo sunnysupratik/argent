@@ -1095,55 +1095,30 @@ textarea:focus-visible {
 
 /* ElevenLabs Widget Styling */
 elevenlabs-convai {
-  /* Reset any default styling */
-  all: initial;
+  /* Reset all styles to ensure proper display */
+  all: initial !important;
   
-  /* Ensure the widget is visible and properly positioned */
+  /* Ensure the widget is visible */
   display: block !important;
   position: relative !important;
   z-index: 9999 !important;
   
-  /* Allow the widget to display at its natural size */
+  /* Remove any container constraints */
   width: auto !important;
   height: auto !important;
   max-width: none !important;
   max-height: none !important;
   
-  /* Remove any borders, backgrounds, or container elements */
+  /* Remove any borders or backgrounds */
   border: none !important;
   background: transparent !important;
   box-shadow: none !important;
   
-  /* Ensure it doesn't have any padding or margin */
+  /* Remove any padding or margin */
   padding: 0 !important;
   margin: 0 !important;
   
-  /* Ensure proper font rendering */
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-}
-
-/* Ensure the widget's iframe is displayed properly */
-elevenlabs-convai iframe {
-  border: none !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: none !important;
-  max-height: none !important;
-  position: static !important;
-  display: block !important;
-}
-
-/* Ensure any shadow DOM elements are properly styled */
-elevenlabs-convai::part(container),
-elevenlabs-convai::part(wrapper),
-elevenlabs-convai::part(frame) {
-  all: initial !important;
-  display: block !important;
-  width: auto !important;
-  height: auto !important;
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  /* Ensure proper positioning */
+  transform: none !important;
+  transition: none !important;
 }
