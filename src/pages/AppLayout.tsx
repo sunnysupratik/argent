@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Video, Phone } from 'lucide-react';
+import { MessageCircle, Video, Phone, X } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -12,6 +12,7 @@ import Investments from '../components/Investments';
 import Chat from '../components/Chat';
 import Profile from '../components/Profile';
 import Settings from '../components/Settings';
+import VideoChat from '../components/VideoChat';
 import PageTransition from '../components/PageTransition';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import { useAuth } from '../hooks/useAuth';
@@ -20,6 +21,7 @@ const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showNeedHelp, setShowNeedHelp] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -55,7 +57,7 @@ const AppLayout: React.FC = () => {
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    if (isMobileMenuOpen || showVideoModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -64,7 +66,7 @@ const AppLayout: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, showVideoModal]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -80,7 +82,11 @@ const AppLayout: React.FC = () => {
   };
 
   const handleVideoClick = () => {
-    window.open('https://effortless-cucurucho-5a3e21.netlify.app/', '_blank', 'noopener,noreferrer');
+    setShowVideoModal(true);
+  };
+
+  const closeVideoModal = () => {
+    setShowVideoModal(false);
   };
 
   // Show loading state while checking authentication
@@ -269,6 +275,52 @@ const AppLayout: React.FC = () => {
           </motion.div>
         </motion.button>
       </div>
+
+      {/* Video Modal */}
+      <AnimatePresence>
+        {showVideoModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={closeVideoModal}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                    <Video size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">AI Video Advisor</h2>
+                    <p className="text-sm text-gray-600">Embedded video consultation</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={closeVideoModal}
+                  className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <X size={20} className="text-gray-600" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 relative">
+                <VideoChat />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ElevenLabs Widget - Positioned above the buttons when active */}
       <AnimatePresence>
