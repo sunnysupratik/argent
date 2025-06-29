@@ -32,12 +32,13 @@ const AppLayout: React.FC = () => {
   // Initialize smooth scrolling
   useSmoothScroll();
 
-  // Redirect to login if not authenticated
+  // FIX: Redirect to login if not authenticated - handle route refreshing properly
   useEffect(() => {
     console.log('AppLayout - Auth state:', { user: user?.username, loading });
     if (!loading && !user) {
       console.log('No user found, redirecting to login');
-      navigate('/login');
+      // Use replace to avoid adding to history stack
+      navigate('/login', { replace: true });
     }
   }, [user, loading, navigate]);
 
@@ -121,7 +122,7 @@ const AppLayout: React.FC = () => {
     console.log('Send message clicked');
   };
 
-  // Show loading state while checking authentication
+  // FIX: Show loading state while checking authentication - prevent flash
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -133,7 +134,7 @@ const AppLayout: React.FC = () => {
     );
   }
 
-  // Don't render if not authenticated (will redirect)
+  // FIX: Don't render if not authenticated (will redirect) - prevent flash
   if (!user) {
     return null;
   }

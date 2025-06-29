@@ -90,6 +90,12 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
     onClose();
   };
 
+  // FIX: Handle ARGENT logo click to go to home page
+  const handleLogoClick = () => {
+    navigate('/');
+    onClose();
+  };
+
   const isActive = (path: string) => location.pathname === path;
 
   const getUserName = () => {
@@ -181,11 +187,15 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
               {/* Enhanced Header */}
               <div className="flex items-center justify-between p-6 border-b border-gray-200/50">
                 <div className="relative">
-                  <motion.div 
-                    className="text-2xl font-black text-text-primary tracking-tight"
+                  {/* FIX: Make ARGENT logo clickable to go home */}
+                  <motion.button
+                    onClick={handleLogoClick}
+                    className="text-2xl font-black text-text-primary tracking-tight cursor-pointer"
                     initial={{ scale: 0.8, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     AR
                     <span className="relative">
@@ -197,7 +207,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
                       />
                     </span>
                     ENT
-                  </motion.div>
+                  </motion.button>
                   <motion.div 
                     className="absolute -bottom-1 left-0 w-10 h-0.5 bg-accent-blue"
                     initial={{ width: 0 }}

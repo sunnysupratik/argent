@@ -80,6 +80,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
     navigate('/');
   };
 
+  // FIX: Handle ARGENT logo click to go to home page
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   const isActive = (path: string) => location.pathname === path;
 
   const getUserName = () => {
@@ -115,9 +120,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
       >
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between">
-            {/* Left Side - ARGENT Logo */}
-            <motion.div 
-              className="relative"
+            {/* Left Side - ARGENT Logo - FIX: Make clickable to go home */}
+            <motion.button
+              onClick={handleLogoClick}
+              className="relative cursor-pointer"
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -141,7 +147,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
                 animate={{ width: window.innerWidth >= 1024 ? 48 : 32 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               />
-            </motion.div>
+            </motion.button>
 
             {/* Right Side - User Actions */}
             <motion.div 

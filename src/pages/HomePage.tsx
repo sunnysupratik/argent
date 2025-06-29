@@ -99,8 +99,10 @@ const HomePage: React.FC = () => {
         transition={{ duration: 0.6 }}
       >
         <nav className="flex justify-between items-center max-w-7xl mx-auto">
-          <motion.div 
-            className="relative"
+          {/* FIX: Make ARGENT logo clickable - it's already on home page but ensure it refreshes properly */}
+          <motion.button
+            onClick={() => window.location.href = '/'}
+            className="relative cursor-pointer"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
           >
@@ -122,7 +124,7 @@ const HomePage: React.FC = () => {
               animate={{ width: window.innerWidth >= 1024 ? 48 : 32 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             />
-          </motion.div>
+          </motion.button>
           
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-4">
@@ -381,7 +383,12 @@ const HomePage: React.FC = () => {
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <div className="relative">
+            {/* FIX: Make footer ARGENT logo clickable */}
+            <motion.button
+              onClick={() => window.location.href = '/'}
+              className="relative cursor-pointer"
+              whileHover={{ scale: 1.05 }}
+            >
               <div className="text-xl lg:text-2xl font-black tracking-tight text-white">
                 AR
                 <span className="relative">
@@ -391,7 +398,7 @@ const HomePage: React.FC = () => {
                 ENT
               </div>
               <div className="absolute -bottom-0.5 left-0 w-6 lg:w-8 h-0.5 bg-accent-blue"></div>
-            </div>
+            </motion.button>
             
             <div className="flex space-x-6 lg:space-x-8">
               <a href="#" className="text-white/70 hover:text-accent-blue transition-colors">Privacy</a>

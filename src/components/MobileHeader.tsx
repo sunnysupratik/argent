@@ -28,6 +28,11 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
     return 'Good evening';
   };
 
+  // FIX: Handle ARGENT logo click to go home
+  const handleLogoClick = () => {
+    navigate('/');
+  };
+
   return (
     <motion.div 
       className="bg-white/95 backdrop-blur-xl border-b border-gray-200/30 shadow-sm relative"
