@@ -215,7 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
                 </motion.div>
                 <span className="hidden lg:block text-sm font-medium">Sign Out</span>
               </motion.button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </motion.div>
