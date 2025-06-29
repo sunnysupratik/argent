@@ -19,7 +19,7 @@ import { useAuth } from '../hooks/useAuth';
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showNeedHelp, setShowNeedHelp] = useState(false);
+  const [showCallInterface, setShowCallInterface] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -189,97 +189,53 @@ const AppLayout: React.FC = () => {
             <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
           </motion.div>
         </motion.button>
-
-        {/* Call Button - Smaller and More Sleek */}
-        <motion.button
-          onClick={() => setShowNeedHelp(!showNeedHelp)}
-          className="group relative w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.0 }}
-          whileHover={{ 
-            scale: 1.1,
-            boxShadow: "0 8px 25px rgba(59, 130, 246, 0.4)"
-          }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {/* Subtle animated background pulse */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full"
-            animate={{
-              scale: [1, 1.15, 1],
-              opacity: [0.6, 0.2, 0.6],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.5,
-            }}
-          />
-          
-          {/* Icon with subtle animation */}
-          <motion.div
-            className="relative z-10"
-            animate={{
-              rotate: [0, 3, -3, 0],
-            }}
-            transition={{
-              duration: 4,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            whileHover={{ 
-              scale: 1.1,
-              rotate: 0,
-              transition: { duration: 0.2 }
-            }}
-          >
-            <Phone size={20} />
-          </motion.div>
-          
-          {/* Tooltip */}
-          <motion.div
-            className="absolute right-full mr-3 px-2 py-1 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-            initial={{ x: 10, opacity: 0 }}
-            whileHover={{ x: 0, opacity: 1 }}
-          >
-            Voice Assistant
-            <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
-          </motion.div>
-        </motion.button>
       </div>
 
-      {/* ElevenLabs Widget - Smaller and More Compact */}
+      {/* ElevenLabs Call Interface - Direct Integration */}
       <AnimatePresence>
-        {showNeedHelp && (
+        {showCallInterface && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             className="fixed bottom-24 right-6 z-40"
-            style={{ 
-              transform: 'scale(0.85)', 
-              transformOrigin: 'bottom right',
-              maxWidth: '320px',
-              maxHeight: '400px'
-            }}
           >
-            {/* Custom wrapper to make it smaller */}
-            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
-              <elevenlabs-convai 
-                agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-                style={{
-                  width: '300px',
-                  height: '350px',
-                  border: 'none',
-                  borderRadius: '16px'
-                }}
-              ></elevenlabs-convai>
-            </div>
+            <elevenlabs-convai 
+              agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+              style={{
+                width: '320px',
+                height: '400px',
+                border: 'none',
+                borderRadius: '16px',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
+              }}
+            ></elevenlabs-convai>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Call Interface Toggle - Always Visible */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
+          className="flex flex-col items-end space-y-2"
+        >
+          {/* ElevenLabs Interface - Always Visible */}
+          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+            <elevenlabs-convai 
+              agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+              style={{
+                width: '280px',
+                height: '120px',
+                border: 'none',
+                borderRadius: '16px'
+              }}
+            ></elevenlabs-convai>
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 };
