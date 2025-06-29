@@ -250,16 +250,16 @@ const AppLayout: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* ElevenLabs Widget - Positioned beside the buttons when active */}
+      {/* ElevenLabs Widget - Positioned to the LEFT of the buttons */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: 20 }}
+            initial={{ opacity: 0, scale: 0.8, x: 50 }}
             animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: 20 }}
-            className="fixed bottom-6 right-24 z-40"
+            exit={{ opacity: 0, scale: 0.8, x: 50 }}
+            className="fixed bottom-6 right-32 z-40"
           >
-            {/* Custom wrapper to make it smaller */}
+            {/* Custom wrapper */}
             <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
               <elevenlabs-convai 
                 agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
