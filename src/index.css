@@ -1098,7 +1098,7 @@ elevenlabs-convai {
   /* Reset all styles to ensure proper display */
   all: initial !important;
   
-  /* Ensure the widget is visible */
+  /* Ensure the widget is visible and properly sized */
   display: block !important;
   position: relative !important;
   z-index: 9999 !important;

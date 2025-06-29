@@ -210,16 +210,16 @@ const AppLayout: React.FC = () => {
       {/* Voice Assistant */}
       {showVoiceAssistant && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          {/* Backdrop for closing */}
+          {/* Simple backdrop for closing */}
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-md"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => {
               setShowVoiceAssistant(false);
               setActiveAssistant(null);
             }}
           />
           
-          {/* ElevenLabs Widget - Direct embed without any container */}
+          {/* ElevenLabs Widget - Direct embed with no container */}
           <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
         </div>
       )}
