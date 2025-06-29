@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Video, Phone, X } from 'lucide-react';
+import { MessageCircle, Video, Phone, X, ChevronUp, ChevronDown, Headphones, PlusCircle } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -22,6 +22,7 @@ const AppLayout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showNeedHelp, setShowNeedHelp] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [fabExpanded, setFabExpanded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -83,10 +84,15 @@ const AppLayout: React.FC = () => {
 
   const handleVideoClick = () => {
     setShowVideoModal(true);
+    setFabExpanded(false);
   };
 
   const closeVideoModal = () => {
     setShowVideoModal(false);
+  };
+
+  const toggleFab = () => {
+    setFabExpanded(!fabExpanded);
   };
 
   // Show loading state while checking authentication
@@ -147,133 +153,96 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Enhanced Floating Action Buttons - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
-        {/* Video Button */}
+      {/* Enhanced Floating Action Button System */}
+      <div className="fixed bottom-10 right-6 z-50">
+        {/* Main FAB Button */}
         <motion.button
-          onClick={handleVideoClick}
-          className="group relative w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1.8 }}
+          onClick={toggleFab}
+          className="relative z-50 w-14 h-14 bg-gradient-to-r from-accent-blue to-blue-600 hover:from-accent-blue-hover hover:to-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
           whileHover={{ 
-            scale: 1.1,
-            boxShadow: "0 20px 40px rgba(239, 68, 68, 0.4)"
+            scale: 1.05,
+            boxShadow: "0 20px 40px rgba(0, 122, 255, 0.4)"
           }}
           whileTap={{ scale: 0.95 }}
         >
-          {/* Animated background pulse */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-full"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.7, 0.3, 0.7],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-          
-          {/* Ripple effect on hover */}
-          <motion.div
-            className="absolute inset-0 bg-white rounded-full opacity-0 group-hover:opacity-20"
-            initial={{ scale: 0 }}
-            whileHover={{ 
-              scale: 1,
-              transition: { duration: 0.3 }
-            }}
-          />
-          
-          {/* Icon */}
-          <motion.div
-            className="relative z-10"
-            whileHover={{ rotate: 15 }}
-            transition={{ duration: 0.2 }}
+            animate={{ rotate: fabExpanded ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
           >
-            <Video size={24} />
-          </motion.div>
-          
-          {/* Tooltip */}
-          <motion.div
-            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-            initial={{ x: 10, opacity: 0 }}
-            whileHover={{ x: 0, opacity: 1 }}
-          >
-            Video Advisor
-            <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
+            {fabExpanded ? <ChevronDown size={24} /> : <ChevronUp size={24} />}
           </motion.div>
         </motion.button>
 
-        {/* Call Button (ElevenLabs) */}
-        <motion.button
-          onClick={() => setShowNeedHelp(!showNeedHelp)}
-          className="group relative w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.0 }}
-          whileHover={{ 
-            scale: 1.1,
-            boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4)"
-          }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {/* Animated background pulse */}
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full"
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.7, 0.3, 0.7],
-            }}
-            transition={{
-              duration: 2.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-              delay: 0.5,
-            }}
-          />
-          
-          {/* Ripple effect on hover */}
-          <motion.div
-            className="absolute inset-0 bg-white rounded-full opacity-0 group-hover:opacity-20"
-            initial={{ scale: 0 }}
-            whileHover={{ 
-              scale: 1,
-              transition: { duration: 0.3 }
-            }}
-          />
-          
-          {/* Icon with enhanced animation */}
-          <motion.div
-            className="relative z-10"
-            animate={{
-              rotate: [0, 5, -5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            whileHover={{ 
-              scale: 1.1,
-              rotate: 0,
-              transition: { duration: 0.2 }
-            }}
-          >
-            <Phone size={24} />
-          </motion.div>
-          
-          {/* Tooltip */}
-          <motion.div
-            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-            initial={{ x: 10, opacity: 0 }}
-            whileHover={{ x: 0, opacity: 1 }}
-          >
-            Voice Assistant
-            <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
-          </motion.div>
-        </motion.button>
+        {/* FAB Menu Items */}
+        <AnimatePresence>
+          {fabExpanded && (
+            <>
+              {/* Video Button - Positioned higher */}
+              <motion.button
+                onClick={handleVideoClick}
+                className="absolute z-40 w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-xl flex items-center justify-center"
+                initial={{ opacity: 0, y: 0, scale: 0.5 }}
+                animate={{ opacity: 1, y: -140, scale: 1 }}
+                exit={{ opacity: 0, y: 0, scale: 0.5 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+                whileHover={{ 
+                  scale: 1.1,
+                  boxShadow: "0 15px 30px rgba(239, 68, 68, 0.4)"
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Video size={20} />
+                
+                {/* Tooltip */}
+                <motion.div
+                  className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+                  initial={{ x: 10, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.2, delay: 0.2 }}
+                >
+                  Video Advisor
+                  <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
+                </motion.div>
+              </motion.button>
+
+              {/* Voice Assistant Button */}
+              <motion.button
+                onClick={() => setShowNeedHelp(!showNeedHelp)}
+                className="absolute z-40 w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white rounded-full shadow-xl flex items-center justify-center"
+                initial={{ opacity: 0, y: 0, scale: 0.5 }}
+                animate={{ opacity: 1, y: -80, scale: 1 }}
+                exit={{ opacity: 0, y: 0, scale: 0.5 }}
+                transition={{ duration: 0.3, delay: 0.2 }}
+                whileHover={{ 
+                  scale: 1.1,
+                  boxShadow: "0 15px 30px rgba(139, 92, 246, 0.4)"
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Headphones size={20} />
+              </motion.button>
+
+              {/* Chat Button */}
+              <motion.button
+                onClick={() => navigate('/app/chat')}
+                className="absolute z-40 w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-full shadow-xl flex items-center justify-center"
+                initial={{ opacity: 0, y: 0, scale: 0.5 }}
+                animate={{ opacity: 1, y: -200, scale: 1 }}
+                exit={{ opacity: 0, y: 0, scale: 0.5 }}
+                transition={{ duration: 0.3, delay: 0 }}
+                whileHover={{ 
+                  scale: 1.1,
+                  boxShadow: "0 15px 30px rgba(16, 185, 129, 0.4)"
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <MessageCircle size={20} />
+              </motion.button>
+            </>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Video Modal */}
