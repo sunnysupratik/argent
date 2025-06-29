@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, Maximize2, Minimize2, RefreshCw, ExternalLink, Play, Shield, Zap, Lock, Monitor } from 'lucide-react';
+import { Video, Maximize2, Minimize2, RefreshCw, ExternalLink, Play, Shield, Zap, Lock, Monitor, AlertTriangle, CheckCircle } from 'lucide-react';
 import AnimatedSection from './AnimatedSection';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
 const VideoChat: React.FC = () => {
   const [isMaximized, setIsMaximized] = useState(false);
   const [showAttemptIframe, setShowAttemptIframe] = useState(false);
+  const [iframeStatus, setIframeStatus] = useState<'loading' | 'success' | 'failed' | 'idle'>('idle');
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const videoAppUrl = 'https://effortless-cucurucho-5a3e21.netlify.app/';
 
@@ -20,10 +23,54 @@ const VideoChat: React.FC = () => {
 
   const attemptIframeLoad = () => {
     setShowAttemptIframe(true);
-    // Set a timeout to revert back to fallback if it doesn't work
-    setTimeout(() => {
-      setShowAttemptIframe(false);
-    }, 3000);
+    setIframeStatus('loading');
+    
+    // Set a timeout to check if iframe loaded successfully
+    const timeout = setTimeout(() => {
+      if (iframeStatus === 'loading') {
+        setIframeStatus('failed');
+        // Don't automatically hide - let user see the error
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  };
+
+  const handleIframeLoad = () => {
+    setIframeStatus('success');
+  };
+
+  const handleIframeError = () => {
+    setIframeStatus('failed');
+  };
+
+  const resetIframe = () => {
+    setShowAttemptIframe(false);
+    setIframeStatus('idle');
+  };
+
+  // Try different iframe approaches
+  const tryProxyApproach = () => {
+    // This would require a backend proxy service
+    alert('Proxy approach would require backend implementation. This is a demonstration of the concept.');
+  };
+
+  const tryPostMessageApproach = () => {
+    // Open in popup and try to communicate
+    const popup = window.open(
+      videoAppUrl, 
+      'video-advisor', 
+      'width=1000,height=700,scrollbars=yes,resizable=yes'
+    );
+    
+    if (popup) {
+      // Try to communicate with the popup
+      const checkClosed = setInterval(() => {
+        if (popup.closed) {
+          clearInterval(checkClosed);
+        }
+      }, 1000);
+    }
   };
 
   const MainContent = () => (
@@ -131,6 +178,46 @@ const VideoChat: React.FC = () => {
             />
           </div>
           
+          {/* Advanced Options Toggle */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+              className="text-sm text-gray-500 hover:text-gray-700 underline"
+            >
+              {showAdvancedOptions ? 'Hide' : 'Show'} Advanced Options
+            </button>
+          </div>
+
+          {/* Advanced Options */}
+          <AnimatePresence>
+            {showAdvancedOptions && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="space-y-3"
+              >
+                <div className="flex flex-col lg:flex-row gap-3 justify-center">
+                  <InteractiveHoverButton
+                    variant="white"
+                    text="Popup Window"
+                    icon={<ExternalLink size={16} />}
+                    onClick={tryPostMessageApproach}
+                    className="px-6 py-3 text-sm border border-gray-300"
+                  />
+                  
+                  <InteractiveHoverButton
+                    variant="white"
+                    text="Proxy Method"
+                    icon={<Shield size={16} />}
+                    onClick={tryProxyApproach}
+                    className="px-6 py-3 text-sm border border-gray-300"
+                  />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
           <div className="flex items-center justify-center space-x-3 text-sm text-gray-500">
             <Shield size={16} />
             <span>Secure</span>
@@ -202,15 +289,82 @@ const VideoChat: React.FC = () => {
               <ExternalLink size={16} className="text-white" />
             </div>
             <div className="text-left">
-              <h5 className="font-semibold text-amber-900 mb-2">Why External Launch?</h5>
+              <h5 className="font-semibold text-amber-900 mb-2">Why External Launch Works Best</h5>
               <p className="text-sm text-amber-800 leading-relaxed">
-                For security and optimal performance, the video advisor opens in a dedicated window. 
-                This ensures the best video quality, full feature access, and maintains your privacy during consultations.
+                The target app has CORS restrictions (X-Frame-Options) that prevent iframe embedding. 
+                External launch provides full functionality, better security, and optimal performance.
               </p>
             </div>
           </div>
         </motion.div>
       </div>
+    </div>
+  );
+
+  const IframeContent = () => (
+    <div className="relative w-full h-full">
+      {/* Loading State */}
+      {iframeStatus === 'loading' && (
+        <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
+          <div className="text-center">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading video advisor...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error State */}
+      {iframeStatus === 'failed' && (
+        <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center z-10">
+          <div className="text-center max-w-md mx-auto p-8">
+            <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle size={32} className="text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-red-900 mb-4">Embedding Blocked</h3>
+            <p className="text-red-800 mb-6 leading-relaxed">
+              The video advisor app has CORS restrictions that prevent iframe embedding. 
+              This is a security feature of the target application.
+            </p>
+            <div className="space-y-3">
+              <InteractiveHoverButton
+                variant="blue"
+                text="Launch in New Window"
+                icon={<ExternalLink size={16} />}
+                onClick={openInNewTab}
+                className="w-full py-3"
+              />
+              <InteractiveHoverButton
+                variant="white"
+                text="Back to Main View"
+                onClick={resetIframe}
+                className="w-full py-3"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Success State */}
+      {iframeStatus === 'success' && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="flex items-center space-x-2 px-3 py-2 bg-green-100 rounded-full shadow-lg">
+            <CheckCircle size={16} className="text-green-600" />
+            <span className="text-sm font-medium text-green-800">Connected</span>
+          </div>
+        </div>
+      )}
+
+      {/* The actual iframe */}
+      <iframe
+        ref={iframeRef}
+        src={videoAppUrl}
+        className="w-full h-full border-0"
+        allow="camera; microphone; fullscreen; display-capture"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation"
+        title="AI Video Advisor"
+        onLoad={handleIframeLoad}
+        onError={handleIframeError}
+      />
     </div>
   );
 
@@ -310,17 +464,7 @@ const VideoChat: React.FC = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex-1 relative overflow-hidden"
             >
-              {showAttemptIframe ? (
-                <iframe
-                  src={videoAppUrl}
-                  className="w-full h-full border-0"
-                  allow="camera; microphone; fullscreen; display-capture"
-                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
-                  title="AI Video Advisor - Full Screen"
-                />
-              ) : (
-                <MainContent />
-              )}
+              {showAttemptIframe ? <IframeContent /> : <MainContent />}
             </motion.div>
           </motion.div>
         ) : (
@@ -351,7 +495,9 @@ const VideoChat: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <div className="hidden lg:flex items-center space-x-2 px-3 py-1 bg-green-100 rounded-full">
                       <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs font-medium text-green-700">Ready</span>
+                      <span className="text-xs font-medium text-green-700">
+                        {iframeStatus === 'success' ? 'Connected' : 'Ready'}
+                      </span>
                     </div>
                     <InteractiveHoverButton
                       variant="white"
@@ -366,17 +512,7 @@ const VideoChat: React.FC = () => {
 
               {/* Main Content Area */}
               <div className="flex-1 relative bg-gray-50">
-                {showAttemptIframe ? (
-                  <iframe
-                    src={videoAppUrl}
-                    className="w-full h-full border-0 rounded-b-2xl lg:rounded-b-3xl"
-                    allow="camera; microphone; fullscreen; display-capture"
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
-                    title="AI Video Advisor"
-                  />
-                ) : (
-                  <MainContent />
-                )}
+                {showAttemptIframe ? <IframeContent /> : <MainContent />}
               </div>
 
               {/* Card Footer */}
@@ -384,12 +520,29 @@ const VideoChat: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                      <span>AI Advisor Ready</span>
+                      <div className={`w-2 h-2 rounded-full animate-pulse ${
+                        iframeStatus === 'success' ? 'bg-green-500' : 
+                        iframeStatus === 'failed' ? 'bg-red-500' : 
+                        iframeStatus === 'loading' ? 'bg-yellow-500' : 'bg-blue-500'
+                      }`}></div>
+                      <span>
+                        {iframeStatus === 'success' ? 'AI Advisor Connected' :
+                         iframeStatus === 'failed' ? 'Connection Failed' :
+                         iframeStatus === 'loading' ? 'Connecting...' : 'AI Advisor Ready'}
+                      </span>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
+                    {showAttemptIframe && iframeStatus === 'failed' && (
+                      <InteractiveHoverButton
+                        variant="white"
+                        text="Reset"
+                        icon={<RefreshCw size={14} />}
+                        onClick={resetIframe}
+                        className="px-3 py-2 text-sm"
+                      />
+                    )}
                     <InteractiveHoverButton
                       variant="white"
                       text="Try Embed"
