@@ -35,13 +35,13 @@ const VideoChat: React.FC = () => {
         </div>
       )}
 
-      {/* Maximize button - positioned to avoid embedded app's settings */}
+      {/* Maximize button - positioned away from embedded app's settings */}
       <div className="absolute top-4 left-4 z-10">
         <motion.button
           onClick={openInNewTab}
-          className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-lg shadow-lg backdrop-blur-sm flex items-center justify-center transition-colors"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+          className="w-10 h-10 bg-black/20 hover:bg-black/30 text-white rounded-lg backdrop-blur-sm flex items-center justify-center transition-all duration-200 shadow-lg"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
           title="Open in new window"
         >
           <Maximize2 size={16} />
