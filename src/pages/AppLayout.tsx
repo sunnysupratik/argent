@@ -25,14 +25,9 @@ const AppLayout: React.FC = () => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
-  const [elevenLabsScriptLoaded, setElevenLabsScriptLoaded] = useState(false);
-  const [elevenLabsScriptError, setElevenLabsScriptError] = useState(false);
-  const [elevenLabsWidgetReady, setElevenLabsWidgetReady] = useState(false);
-  
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const elevenLabsContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize smooth scrolling
   useSmoothScroll();
@@ -79,43 +74,18 @@ const AppLayout: React.FC = () => {
     };
   }, [isMobileMenuOpen, showVideoModal, showChatModal, showVoiceAssistant]);
 
-  // Load ElevenLabs script when voice assistant is shown
+  // Load ElevenLabs widget when needed
   useEffect(() => {
-    if (showVoiceAssistant && !elevenLabsScriptLoaded) {
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-      script.async = true;
-      script.onload = () => {
-        console.log('ElevenLabs script loaded successfully');
-        setElevenLabsScriptLoaded(true);
-        
-        // Check if the custom element is defined
-        if (customElements.get('elevenlabs-convai')) {
-          console.log('ElevenLabs custom element is defined');
-          setElevenLabsWidgetReady(true);
-        } else {
-          console.log('Waiting for ElevenLabs custom element to be defined...');
-          // Wait a bit for the custom element to be defined
-          setTimeout(() => {
-            if (customElements.get('elevenlabs-convai')) {
-              console.log('ElevenLabs custom element is now defined');
-              setElevenLabsWidgetReady(true);
-            } else {
-              console.error('ElevenLabs custom element was not defined in time');
-              setElevenLabsScriptError(true);
-            }
-          }, 2000);
-        }
-      };
-      
-      script.onerror = () => {
-        console.error('Failed to load ElevenLabs script');
-        setElevenLabsScriptError(true);
-      };
-      
-      document.body.appendChild(script);
+    if (showVoiceAssistant) {
+      // Check if the script is already loaded
+      if (!document.querySelector('script[src*="elevenlabs/convai-widget-embed"]')) {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+        script.async = true;
+        document.body.appendChild(script);
+      }
     }
-  }, [showVoiceAssistant, elevenLabsScriptLoaded]);
+  }, [showVoiceAssistant]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -253,71 +223,10 @@ const AppLayout: React.FC = () => {
               }}
             />
             
-            {/* Voice Assistant Content */}
-            <motion.div
-              className="relative z-10 w-full max-w-2xl mx-auto"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={(e) => e.stopPropagation()}
-              ref={elevenLabsContainerRef}
-            >
-              {elevenLabsScriptError ? (
-                <div className="bg-white rounded-xl p-8 text-center">
-                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <X size={24} className="text-red-600" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Connection Error</h3>
-                  <p className="text-gray-600 mb-6">Failed to load the voice assistant. Please check your connection and try again.</p>
-                  <button 
-                    onClick={() => {
-                      setElevenLabsScriptError(false);
-                      setElevenLabsScriptLoaded(false);
-                      setElevenLabsWidgetReady(false);
-                    }}
-                    className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue-hover transition-colors"
-                  >
-                    Try Again
-                  </button>
-                </div>
-              ) : !elevenLabsScriptLoaded || !elevenLabsWidgetReady ? (
-                <div className="bg-white rounded-xl p-8 text-center">
-                  <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                  <p className="text-gray-700">Loading voice assistant...</p>
-                </div>
-              ) : (
-                <div className="bg-white rounded-xl overflow-hidden shadow-xl">
-                  <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                        <Headphones size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-white font-bold">AI Voice Assistant</h3>
-                        <p className="text-blue-100 text-sm">Ask me anything about your finances</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        setShowVoiceAssistant(false);
-                        setActiveAssistant(null);
-                      }}
-                      className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                  
-                  <div className="elevenlabs-widget-container">
-                    <elevenlabs-convai 
-                      agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-                      className="elevenlabs-widget"
-                    ></elevenlabs-convai>
-                  </div>
-                </div>
-              )}
-            </motion.div>
+            {/* Simple Voice Assistant Widget */}
+            <div className="fixed bottom-6 right-6 z-50">
+              <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
