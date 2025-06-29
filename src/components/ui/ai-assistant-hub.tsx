@@ -87,7 +87,7 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                     item.active 
                       ? 'bg-accent-blue text-white' 
                       : 'bg-white text-gray-700 hover:bg-gray-100'
-                  }`}
+                  } relative group`}
                   initial={{ x: 80, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   exit={{ x: 80, opacity: 0 }}
@@ -97,7 +97,7 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   whileTap={{ scale: 0.95 }}
                 >
                   {item.icon}
-                  <span className="absolute left-0 transform -translate-x-full mr-2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
+                  <span className="absolute right-full mr-2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
                     {item.label}
                   </span>
                 </motion.button>

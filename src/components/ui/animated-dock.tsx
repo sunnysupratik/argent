@@ -69,9 +69,9 @@ export const AnimatedDock = ({ className, items, vertical = false }: AnimatedDoc
             >
               {item.Icon}
               {item.label && (
-                <div className={`absolute ${vertical ? 'left-full ml-3' : 'top-full mt-3'} px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`}>
+                <div className={`absolute ${vertical ? 'right-full mr-3' : 'top-full mt-3'} px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`}>
                   {item.label}
-                  <div className={`absolute ${vertical ? 'right-full top-1/2 -translate-y-1/2' : 'bottom-full left-1/2 -translate-x-1/2'} border-8 border-transparent ${vertical ? 'border-r-black/80' : 'border-b-black/80'}`}></div>
+                  <div className={`absolute ${vertical ? 'left-full top-1/2 -translate-y-1/2' : 'bottom-full left-1/2 -translate-x-1/2'} border-8 border-transparent ${vertical ? 'border-l-black/80' : 'border-b-black/80'}`}></div>
                 </div>
               )}
             </button>
@@ -83,9 +83,9 @@ export const AnimatedDock = ({ className, items, vertical = false }: AnimatedDoc
             >
               {item.Icon}
               {item.label && (
-                <div className={`absolute ${vertical ? 'left-full ml-3' : 'top-full mt-3'} px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`}>
+                <div className={`absolute ${vertical ? 'right-full mr-3' : 'top-full mt-3'} px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`}>
                   {item.label}
-                  <div className={`absolute ${vertical ? 'right-full top-1/2 -translate-y-1/2' : 'bottom-full left-1/2 -translate-x-1/2'} border-8 border-transparent ${vertical ? 'border-r-black/80' : 'border-b-black/80'}`}></div>
+                  <div className={`absolute ${vertical ? 'left-full top-1/2 -translate-y-1/2' : 'bottom-full left-1/2 -translate-x-1/2'} border-8 border-transparent ${vertical ? 'border-l-black/80' : 'border-b-black/80'}`}></div>
                 </div>
               )}
             </a>
