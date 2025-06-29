@@ -51,7 +51,7 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
   // For mobile: FAB with expanding options
   if (isMobile) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 right-6 z-40">
         <AnimatePresence>
           {isExpanded && (
             <motion.div
@@ -123,7 +123,7 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
 
   // For desktop: Vertical dock that expands on click
   return (
-    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50">
+    <div className="fixed right-6 top-1/2 -translate-y-1/2 z-40">
       <AnimatePresence initial={false}>
         {isExpanded ? (
           <motion.div

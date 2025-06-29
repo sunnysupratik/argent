@@ -82,12 +82,7 @@ const ChatContainer: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white/80 backdrop-blur-xl relative overflow-hidden">
-      {/* Aurora background effect */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/10 to-violet-50/20 animate-aurora opacity-50" />
-      </div>
-
+    <div className="flex flex-col h-full relative overflow-hidden">
       {/* Messages Area */}
       <div ref={chatContainerRef} className="flex-1 overflow-y-auto relative">
         <AnimatePresence mode="wait">
@@ -128,7 +123,7 @@ const ChatContainer: React.FC = () => {
                   className="text-2xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.4 }}
+                  transition={{ duration: 0.8, delay: 0.4 }}
                 >
                   <span className="block">Your AI Financial</span>
                   <span className="block bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">

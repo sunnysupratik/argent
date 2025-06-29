@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, X, MessageCircle } from 'lucide-react';
+import { Video, X, MessageCircle, Phone } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -63,7 +63,7 @@ const AppLayout: React.FC = () => {
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen || showVideoModal || showChatModal) {
+    if (isMobileMenuOpen || showVideoModal || showChatModal || showNeedHelp) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -72,7 +72,7 @@ const AppLayout: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen, showVideoModal, showChatModal]);
+  }, [isMobileMenuOpen, showVideoModal, showChatModal, showNeedHelp]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -138,7 +138,7 @@ const AppLayout: React.FC = () => {
     return null;
   }
 
-  // Common modal styles for both assistants
+  // Common modal styles for all assistants
   const modalVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
@@ -294,16 +294,50 @@ const AppLayout: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ElevenLabs Widget - Positioned when active */}
+      {/* Voice Assistant (ElevenLabs Widget) */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-32 right-6 z-40"
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={modalVariants}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowNeedHelp(false)}
           >
-            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+            <motion.div
+              variants={contentVariants}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header - Same style as other modals */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                    <Phone size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">AI Voice Advisor</h2>
+                    <p className="text-sm text-gray-600">Voice consultation</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={() => setShowNeedHelp(false)}
+                  className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <X size={20} className="text-gray-600" />
+                </button>
+              </div>
+
+              {/* Modal Content - ElevenLabs Widget */}
+              <div className="flex-1 relative flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+                <div className="w-full h-full flex items-center justify-center">
+                  <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
