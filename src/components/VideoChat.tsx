@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 
 const VideoChat: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,16 +35,16 @@ const VideoChat: React.FC = () => {
         </div>
       )}
 
-      {/* External link button */}
-      <div className="absolute top-4 right-4 z-10">
+      {/* Maximize button - positioned to avoid embedded app's settings */}
+      <div className="absolute top-4 left-4 z-10">
         <motion.button
           onClick={openInNewTab}
-          className="bg-white/90 hover:bg-white text-gray-700 px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm flex items-center space-x-2 text-sm"
+          className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-lg shadow-lg backdrop-blur-sm flex items-center justify-center transition-colors"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          title="Open in new window"
         >
-          <ExternalLink size={14} />
-          <span>Open External</span>
+          <Maximize2 size={16} />
         </motion.button>
       </div>
 
