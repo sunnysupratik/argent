@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, MessageCircle, Home, Video } from 'lucide-react';
+import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, MessageCircle, Home, Video, Phone } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
@@ -36,15 +36,6 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
       description: 'Payment History'
     },
     { 
-      id: 'video-chat', 
-      label: 'Video Advisor', 
-      icon: Video, 
-      path: '/app/video-chat',
-      gradientFrom: '#FF6B6B',
-      gradientTo: '#FF8E53',
-      description: 'AI Video Consultation'
-    },
-    { 
       id: 'accounts', 
       label: 'Accounts', 
       icon: Wallet, 
@@ -64,12 +55,21 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
     },
     { 
       id: 'chat', 
-      label: 'AI Advisor', 
-      icon: MessageCircle, 
+      label: 'Call', 
+      icon: Phone, 
       path: '/app/chat',
       gradientFrom: '#ffa9c6',
       gradientTo: '#f434e2',
-      description: 'Financial Assistant'
+      description: 'Voice Assistant'
+    },
+    { 
+      id: 'video', 
+      label: 'Video', 
+      icon: Video, 
+      path: '#',
+      gradientFrom: '#FF6B6B',
+      gradientTo: '#FF8E53',
+      description: 'Video Consultation'
     },
     { 
       id: 'profile', 
@@ -92,6 +92,13 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
   ];
 
   const handleNavigation = (item: typeof menuItems[0]) => {
+    if (item.id === 'video') {
+      // Open video app in new tab
+      window.open('https://effortless-cucurucho-5a3e21.netlify.app/', '_blank', 'noopener,noreferrer');
+      onClose();
+      return;
+    }
+    
     onViewChange(item.id);
     navigate(item.path);
     onClose();
