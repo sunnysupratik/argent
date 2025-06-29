@@ -3,6 +3,7 @@ import { TrendingUp, TrendingDown, Plus, RefreshCw, BarChart3, PieChart, DollarS
 import { motion } from 'framer-motion';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 import AnimatedSection from './AnimatedSection';
+import InvestmentChart from './InvestmentChart';
 import { useInvestments } from '../hooks/useInvestments';
 
 const Investments: React.FC = () => {
@@ -78,9 +79,9 @@ const Investments: React.FC = () => {
 
   const tabs = [
     { id: 'portfolio', label: 'Portfolio', icon: PieChart },
+    { id: 'charts', label: 'Charts & Analytics', icon: BarChart3 },
     { id: 'watchlist', label: 'Watchlist', icon: Star },
-    { id: 'news', label: 'Market News', icon: TrendingUp },
-    { id: 'analysis', label: 'Analysis', icon: Target }
+    { id: 'news', label: 'Market News', icon: TrendingUp }
   ];
 
   if (loading) {
@@ -350,6 +351,56 @@ const Investments: React.FC = () => {
     </div>
   );
 
+  const renderChartsTab = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Portfolio Performance Chart */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+            <BarChart3 size={20} className="text-accent-blue" />
+            <span>Portfolio Performance</span>
+          </h3>
+          <InvestmentChart type="performance" />
+        </div>
+
+        {/* Sector Allocation Chart */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+            <PieChart size={20} className="text-accent-blue" />
+            <span>Sector Allocation</span>
+          </h3>
+          <InvestmentChart type="allocation" />
+        </div>
+      </div>
+
+      {/* Performance Metrics */}
+      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+        <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
+          <Target size={20} className="text-accent-blue" />
+          <span>Performance Metrics</span>
+        </h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
+            <div className="text-2xl font-bold text-green-600 mb-1">+1.24%</div>
+            <div className="text-sm text-green-700">1 Day Return</div>
+          </div>
+          <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+            <div className="text-2xl font-bold text-blue-600 mb-1">+3.45%</div>
+            <div className="text-sm text-blue-700">1 Week Return</div>
+          </div>
+          <div className="text-center p-4 bg-red-50 rounded-xl border border-red-200">
+            <div className="text-2xl font-bold text-red-600 mb-1">-2.18%</div>
+            <div className="text-sm text-red-700">1 Month Return</div>
+          </div>
+          <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
+            <div className="text-2xl font-bold text-purple-600 mb-1">+18.67%</div>
+            <div className="text-sm text-purple-700">YTD Return</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   const renderWatchlistTab = () => (
     <div className="space-y-6">
       <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 overflow-hidden">
@@ -463,95 +514,6 @@ const Investments: React.FC = () => {
     </div>
   );
 
-  const renderAnalysisTab = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
-            <PieChart size={20} className="text-accent-blue" />
-            <span>Sector Allocation</span>
-          </h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Technology</span>
-              <div className="flex items-center space-x-2">
-                <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div className="bg-accent-blue h-2 rounded-full" style={{ width: '75.2%' }}></div>
-                </div>
-                <span className="font-medium text-sm">75.2%</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Automotive</span>
-              <div className="flex items-center space-x-2">
-                <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '15.8%' }}></div>
-                </div>
-                <span className="font-medium text-sm">15.8%</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Consumer Discretionary</span>
-              <div className="flex items-center space-x-2">
-                <div className="w-24 bg-gray-200 rounded-full h-2">
-                  <div className="bg-purple-500 h-2 rounded-full" style={{ width: '9.0%' }}></div>
-                </div>
-                <span className="font-medium text-sm">9.0%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-          <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
-            <BarChart3 size={20} className="text-accent-blue" />
-            <span>Performance Metrics</span>
-          </h3>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">1 Day Return</span>
-              <span className="font-medium text-green-600">+1.24%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">1 Week Return</span>
-              <span className="font-medium text-green-600">+3.45%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">1 Month Return</span>
-              <span className="font-medium text-red-600">-2.18%</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">YTD Return</span>
-              <span className="font-medium text-green-600">+18.67%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Risk Analysis */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-        <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
-          <AlertTriangle size={20} className="text-yellow-500" />
-          <span>Risk Analysis</span>
-        </h3>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
-            <div className="text-2xl font-bold text-green-600 mb-1">Low</div>
-            <div className="text-sm text-green-700">Portfolio Risk</div>
-          </div>
-          <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-            <div className="text-2xl font-bold text-blue-600 mb-1">0.85</div>
-            <div className="text-sm text-blue-700">Beta Coefficient</div>
-          </div>
-          <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
-            <div className="text-2xl font-bold text-purple-600 mb-1">1.42</div>
-            <div className="text-sm text-purple-700">Sharpe Ratio</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
       {/* Enhanced Page Header */}
@@ -631,9 +593,9 @@ const Investments: React.FC = () => {
         transition={{ duration: 0.3 }}
       >
         {activeTab === 'portfolio' && renderPortfolioTab()}
+        {activeTab === 'charts' && renderChartsTab()}
         {activeTab === 'watchlist' && renderWatchlistTab()}
         {activeTab === 'news' && renderNewsTab()}
-        {activeTab === 'analysis' && renderAnalysisTab()}
       </motion.div>
     </div>
   );

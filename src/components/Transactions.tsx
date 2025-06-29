@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Plus, Search, Filter, RefreshCw, Download, Calendar, TrendingUp, ArrowUpDown } from 'lucide-react';
+import { Plus, Search, Filter, RefreshCw, Download, Calendar, TrendingUp, ArrowUpDown, BarChart3, PieChart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import AnimatedSection from './AnimatedSection';
+import TransactionChart from './TransactionChart';
 import { useTransactions } from '../hooks/useTransactions';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
@@ -10,13 +11,14 @@ const Transactions: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [sortBy, setSortBy] = useState('date');
   const [filterType, setFilterType] = useState('all');
+  const [activeTab, setActiveTab] = useState('transactions');
   const { transactions, loading, refetch, error } = useTransactions();
   
   // Memoized filtered and sorted transactions for better performance
   const filteredTransactions = useMemo(() => {
     let filtered = transactions.filter(transaction => {
       const matchesSearch = transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           transaction.category?.name.toLowerCase().includes(searchTerm.toLowerCase());
+                           transaction.category?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFilter = filterType === 'all' || transaction.type === filterType;
       return matchesSearch && matchesFilter;
     });
@@ -27,7 +29,7 @@ const Transactions: React.FC = () => {
         filtered.sort((a, b) => Math.abs(Number(b.amount)) - Math.abs(Number(a.amount)));
         break;
       case 'category':
-        filtered.sort((a, b) => (a.category?.name || 'Uncategorized').localeCompare(b.category?.name || 'Uncategorized'));
+        filtered.sort((a, b) => (a.category || 'Uncategorized').localeCompare(b.category || 'Uncategorized'));
         break;
       case 'date':
       default:
@@ -82,6 +84,11 @@ const Transactions: React.FC = () => {
     },
   };
 
+  const tabs = [
+    { id: 'transactions', label: 'Transactions', icon: ArrowUpDown },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 }
+  ];
+
   // Show loading state
   if (loading && !isRefreshing) {
     return (
@@ -120,59 +127,8 @@ const Transactions: React.FC = () => {
     );
   }
 
-  return (
-    <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
-      {/* Enhanced Page Header */}
-      <AnimatedSection className="mb-8 lg:mb-12">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-6 lg:space-y-0">
-          <div>
-            <h1 className="text-xl lg:text-2xl mb-2 font-bold uppercase tracking-wide">TRANSACTIONS</h1>
-            <motion.div 
-              className="w-12 lg:w-16 h-px bg-accent-blue"
-              initial={{ width: 0 }}
-              animate={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            />
-            <p className="text-gray-600 mt-3">Manage and track all your financial transactions</p>
-          </div>
-          
-          {/* Enhanced Action Buttons */}
-          <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
-            <div className="flex gap-3">
-              <InteractiveHoverButton
-                variant="white"
-                text={isRefreshing ? "Refreshing..." : "Refresh"}
-                icon={<RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />}
-                onClick={handleRefresh}
-                disabled={isRefreshing}
-                className="px-4 py-3 disabled:opacity-50 text-sm"
-              />
-
-              <InteractiveHoverButton
-                variant="white"
-                text="Export"
-                icon={<Download size={16} />}
-                className="px-4 py-3 text-sm"
-              />
-
-              <InteractiveHoverButton
-                variant="white"
-                text="Filter"
-                icon={<Filter size={16} />}
-                className="px-4 py-3 text-sm lg:hidden"
-              />
-            </div>
-
-            <InteractiveHoverButton
-              variant="blue"
-              text="New Transaction"
-              icon={<Plus size={16} />}
-              className="px-6 py-3 text-sm font-medium"
-            />
-          </div>
-        </div>
-      </AnimatedSection>
-
+  const renderTransactionsTab = () => (
+    <>
       {/* Enhanced Search and Filter Section */}
       <AnimatedSection className="mb-6 lg:mb-8" delay={0.2}>
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
@@ -342,11 +298,11 @@ const Transactions: React.FC = () => {
                   </div>
                   <div className="font-normal text-text-primary">
                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
-                      {transaction.category?.name || 'Uncategorized'}
+                      {transaction.category || 'Uncategorized'}
                     </span>
                   </div>
                   <div className="font-normal text-text-primary">
-                    {transaction.account?.account_name || 'Unknown Account'}
+                    {transaction.account_name || 'Unknown Account'}
                   </div>
                   <div className="font-normal text-text-primary">
                     {new Date(transaction.transaction_date).toLocaleDateString()}
@@ -374,7 +330,7 @@ const Transactions: React.FC = () => {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
-                          {transaction.category?.name || 'Uncategorized'}
+                          {transaction.category || 'Uncategorized'}
                         </span>
                       </div>
                     </div>
@@ -391,7 +347,7 @@ const Transactions: React.FC = () => {
                   </div>
                   
                   <div className="text-sm text-gray-600">
-                    {transaction.account?.account_name || 'Unknown Account'}
+                    {transaction.account_name || 'Unknown Account'}
                   </div>
                 </motion.div>
 
@@ -463,6 +419,147 @@ const Transactions: React.FC = () => {
           </div>
         </motion.div>
       </AnimatedSection>
+    </>
+  );
+
+  const renderAnalyticsTab = () => (
+    <div className="space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Spending Trend Chart */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+            <BarChart3 size={20} className="text-accent-blue" />
+            <span>Spending Trend</span>
+          </h3>
+          <TransactionChart type="spending" />
+        </div>
+
+        {/* Category Breakdown Chart */}
+        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+          <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center space-x-2">
+            <PieChart size={20} className="text-accent-blue" />
+            <span>Category Breakdown</span>
+          </h3>
+          <TransactionChart type="category" />
+        </div>
+      </div>
+
+      {/* Transaction Insights */}
+      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+        <h3 className="text-lg font-bold text-gray-900 mb-4">Transaction Insights</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+            <div className="text-2xl font-bold text-blue-600 mb-1">
+              ${transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount), 0).toLocaleString()}
+            </div>
+            <div className="text-sm text-blue-700">Total Income</div>
+          </div>
+          <div className="text-center p-4 bg-red-50 rounded-xl border border-red-200">
+            <div className="text-2xl font-bold text-red-600 mb-1">
+              ${transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount), 0).toLocaleString()}
+            </div>
+            <div className="text-sm text-red-700">Total Expenses</div>
+          </div>
+          <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
+            <div className="text-2xl font-bold text-green-600 mb-1">
+              ${(transactions.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount), 0) - 
+                 transactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount), 0)).toLocaleString()}
+            </div>
+            <div className="text-sm text-green-700">Net Income</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
+      {/* Enhanced Page Header */}
+      <AnimatedSection className="mb-8 lg:mb-12">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-6 lg:space-y-0">
+          <div>
+            <h1 className="text-xl lg:text-2xl mb-2 font-bold uppercase tracking-wide">TRANSACTIONS</h1>
+            <motion.div 
+              className="w-12 lg:w-16 h-px bg-accent-blue"
+              initial={{ width: 0 }}
+              animate={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            />
+            <p className="text-gray-600 mt-3">Manage and track all your financial transactions</p>
+          </div>
+          
+          {/* Enhanced Action Buttons */}
+          <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
+            <div className="flex gap-3">
+              <InteractiveHoverButton
+                variant="white"
+                text={isRefreshing ? "Refreshing..." : "Refresh"}
+                icon={<RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />}
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+                className="px-4 py-3 disabled:opacity-50 text-sm"
+              />
+
+              <InteractiveHoverButton
+                variant="white"
+                text="Export"
+                icon={<Download size={16} />}
+                className="px-4 py-3 text-sm"
+              />
+
+              <InteractiveHoverButton
+                variant="white"
+                text="Filter"
+                icon={<Filter size={16} />}
+                className="px-4 py-3 text-sm lg:hidden"
+              />
+            </div>
+
+            <InteractiveHoverButton
+              variant="blue"
+              text="New Transaction"
+              icon={<Plus size={16} />}
+              className="px-6 py-3 text-sm font-medium"
+            />
+          </div>
+        </div>
+      </AnimatedSection>
+
+      {/* Tab Navigation */}
+      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-2">
+        <nav className="flex space-x-1 overflow-x-auto">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            return (
+              <motion.button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? 'bg-accent-blue text-white shadow-lg'
+                    : 'text-gray-700 hover:bg-gray-100'
+                }`}
+                whileHover={{ y: -1 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Icon size={16} />
+                <span className="font-medium">{tab.label}</span>
+              </motion.button>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Tab Content */}
+      <motion.div
+        key={activeTab}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {activeTab === 'transactions' && renderTransactionsTab()}
+        {activeTab === 'analytics' && renderAnalyticsTab()}
+      </motion.div>
     </div>
   );
 };
