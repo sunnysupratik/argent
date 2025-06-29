@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, X, MessageCircle, Phone } from 'lucide-react';
+import { Video, X, MessageCircle } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -25,6 +25,7 @@ const AppLayout: React.FC = () => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
+  const [elevenLabsLoaded, setElevenLabsLoaded] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -74,6 +75,30 @@ const AppLayout: React.FC = () => {
       document.body.style.overflow = 'unset';
     };
   }, [isMobileMenuOpen, showVideoModal, showChatModal, showVoiceAssistant]);
+
+  // FIX: Load ElevenLabs script dynamically when needed
+  useEffect(() => {
+    if (showVoiceAssistant && !elevenLabsLoaded) {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+      script.async = true;
+      script.onload = () => {
+        console.log('ElevenLabs script loaded successfully');
+        setElevenLabsLoaded(true);
+      };
+      script.onerror = () => {
+        console.error('Failed to load ElevenLabs script');
+      };
+      document.body.appendChild(script);
+      
+      return () => {
+        // Clean up only if component unmounts, not when modal closes
+        if (!showVoiceAssistant) {
+          document.body.removeChild(script);
+        }
+      };
+    }
+  }, [showVoiceAssistant, elevenLabsLoaded]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -208,8 +233,30 @@ const AppLayout: React.FC = () => {
               exit={{ opacity: 0 }}
             />
             
-            {/* ElevenLabs Widget */}
-            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+            {/* FIX: Improved ElevenLabs Widget Integration */}
+            <div className="relative z-10 w-full max-w-2xl mx-auto">
+              {elevenLabsLoaded ? (
+                <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+              ) : (
+                <div className="bg-white rounded-xl p-8 text-center">
+                  <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-700">Loading voice assistant...</p>
+                </div>
+              )}
+              
+              {/* Close button */}
+              <motion.button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowVoiceAssistant(false);
+                }}
+                className="absolute top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+              >
+                <X size={20} />
+              </motion.button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
