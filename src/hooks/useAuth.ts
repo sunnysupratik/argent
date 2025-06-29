@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { customAuth, CustomUser, supabase } from '../lib/supabase';
+import { customAuth, CustomUser } from '../lib/supabase';
 
 export function useAuth() {
   const [user, setUser] = useState<CustomUser | null>(null);
@@ -15,55 +15,10 @@ export function useAuth() {
       console.log('User ID for database queries:', currentUser.id);
       console.log('Username:', currentUser.username);
       console.log('Full user object:', currentUser);
-      
-      // Verify user exists in database
-      const verifyUser = async () => {
-        try {
-          // First try by ID
-          const { data, error } = await supabase
-            .from('custom_users')
-            .select('*')
-            .eq('id', currentUser.id)
-            .single();
-            
-          if (error || !data) {
-            console.log('User not found by ID, trying by username');
-            // Try by username as fallback
-            const { data: usernameData, error: usernameError } = await supabase
-              .from('custom_users')
-              .select('*')
-              .eq('username', currentUser.username)
-              .single();
-              
-            if (usernameError || !usernameData) {
-              console.error('User verification failed:', usernameError?.message || 'User not found in database');
-              // Clear invalid session
-              localStorage.removeItem('customUser');
-              setUser(null);
-            } else {
-              console.log('User verified by username:', usernameData);
-              // Update user with latest data from database
-              localStorage.setItem('customUser', JSON.stringify(usernameData));
-              setUser(usernameData);
-            }
-          } else {
-            console.log('User verified in database:', data);
-            // Update user with latest data from database
-            localStorage.setItem('customUser', JSON.stringify(data));
-            setUser(data);
-          }
-        } catch (err) {
-          console.error('Error verifying user:', err);
-        } finally {
-          setLoading(false);
-        }
-      };
-      
-      verifyUser();
-    } else {
-      setUser(null);
-      setLoading(false);
     }
+    
+    setUser(currentUser);
+    setLoading(false);
   }, []);
 
   const signIn = async (username: string, password: string) => {

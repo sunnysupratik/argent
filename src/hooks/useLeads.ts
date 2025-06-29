@@ -27,7 +27,18 @@ export function useLeads() {
     try {
       console.log('Creating lead:', leadData);
       
-      // Insert the lead into the database
+      // For development/demo purposes
+      if (import.meta.env.DEV || !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('example')) {
+        console.log('useLeads.createLead - Using mock data for development');
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        console.log('Lead created successfully (mock)');
+        setSuccess(true);
+        return true;
+      }
+      
       const { data, error } = await supabase
         .from('leads')
         .insert([{
