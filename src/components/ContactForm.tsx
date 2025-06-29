@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Send, CheckCircle, AlertCircle, User, Mail, Building, Phone, MessageSquare, DollarSign, Calendar, Tag, Info, MapPin, Calendar as CalendarIcon, Heart } from 'lucide-react';
 import { useAirtable } from '../hooks/useAirtable';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
@@ -104,31 +104,35 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
       source: 'Website Contact Form'
     };
 
-    const success = await createLead(leadData);
-    
-    if (success) {
-      setSubmitted(true);
-      onSuccess?.();
+    try {
+      const success = await createLead(leadData);
       
-      // Reset form after 3 seconds
-      setTimeout(() => {
-        setSubmitted(false);
-        setFormData({
-          name: '',
-          email: '',
-          company: '',
-          phone: '',
-          subject: '',
-          message: '',
-          budget: '',
-          timeline: '',
-          address: '',
-          dateOfBirth: '',
-          age: '',
-          customerSentiment: 'Neutral',
-          interests: []
-        });
-      }, 3000);
+      if (success) {
+        setSubmitted(true);
+        onSuccess?.();
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setSubmitted(false);
+          setFormData({
+            name: '',
+            email: '',
+            company: '',
+            phone: '',
+            subject: '',
+            message: '',
+            budget: '',
+            timeline: '',
+            address: '',
+            dateOfBirth: '',
+            age: '',
+            customerSentiment: 'Neutral',
+            interests: []
+          });
+        }, 3000);
+      }
+    } catch (err) {
+      console.error('Error submitting form:', err);
     }
   };
 
