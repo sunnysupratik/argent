@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Clock, MessageCircle, Shield, BarChart3 } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageCircle, Shield, BarChart3, ArrowRight, User, Building, Send, HelpCircle } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import ContactForm from '../components/ContactForm';
 import { useAuth } from '../hooks/useAuth';
@@ -11,76 +11,186 @@ const ContactPage: React.FC = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
   };
 
-  const contactInfo = [
+  const contactCategories = [
     {
-      icon: Mail,
-      title: 'Email Support',
-      content: 'support@argent.com',
-      description: 'Get help with your account',
+      id: 'general',
+      icon: MessageCircle,
+      title: 'General & Support',
+      description: 'For help with your account, billing, or general inquiries',
       gradient: 'from-blue-500 to-blue-600'
     },
     {
-      icon: Phone,
-      title: 'Phone Support',
-      content: '+1 (555) 123-4567',
-      description: '24/7 customer service',
-      gradient: 'from-green-500 to-green-600'
-    },
-    {
-      icon: MapPin,
-      title: 'Office Location',
-      content: 'San Francisco, CA',
-      description: '123 Financial District',
+      id: 'project',
+      icon: Building,
+      title: 'Start a New Project',
+      description: 'Tell us about your next big idea or partnership',
       gradient: 'from-purple-500 to-purple-600'
     },
     {
-      icon: Clock,
-      title: 'Business Hours',
-      content: '24/7 Available',
-      description: 'Always here to help',
-      gradient: 'from-orange-500 to-orange-600'
-    }
-  ];
-
-  const supportChannels = [
-    {
-      icon: MessageCircle,
-      title: 'Live Chat',
-      description: 'Chat with our support team in real-time',
-      action: 'Start Chat',
-      gradient: 'from-blue-500 to-blue-600'
-    },
-    {
+      id: 'security',
       icon: Shield,
-      title: 'Security Center',
-      description: 'Report security issues or concerns',
-      action: 'Report Issue',
+      title: 'Security & Urgent Issues',
+      description: 'To report a security concern or an urgent platform issue',
       gradient: 'from-red-500 to-red-600'
     }
   ];
 
+  const renderContactMethod = () => {
+    if (!activeCategory) return null;
+
+    if (activeCategory === 'general') {
+      return (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8"
+        >
+          <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <MessageCircle size={24} className="text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Live Chat Support</h3>
+            <p className="text-white/70 mb-6">
+              Chat with our support team in real-time for immediate assistance with your account or general questions.
+            </p>
+            <InteractiveHoverButton
+              variant="blue"
+              text="Start Live Chat"
+              icon={<MessageCircle size={16} />}
+              className="mx-auto"
+            />
+          </div>
+
+          <div className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 text-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <Mail size={24} className="text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">Email Support</h3>
+            <p className="text-white/70 mb-6">
+              Send us an email and we'll get back to you within 24 hours. Our support team is ready to help.
+            </p>
+            <InteractiveHoverButton
+              variant="white"
+              text="support@argent.com"
+              icon={<Mail size={16} />}
+              onClick={() => window.location.href = 'mailto:support@argent.com'}
+              className="mx-auto"
+            />
+          </div>
+        </motion.div>
+      );
+    }
+
+    if (activeCategory === 'project') {
+      return (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mt-8"
+        >
+          <ContactForm onSuccess={() => setFormSubmitted(true)} />
+        </motion.div>
+      );
+    }
+
+    if (activeCategory === 'security') {
+      return (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-gradient-to-r from-red-950/30 to-red-900/20 border border-red-500/20 rounded-2xl p-8 mt-8"
+        >
+          <div className="flex items-start space-x-6">
+            <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg flex-shrink-0">
+              <Shield size={24} className="text-white" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-3">Security & Urgent Issues</h3>
+              <p className="text-white/80 mb-4 leading-relaxed">
+                For all security-related matters, please email our dedicated security desk directly. These inquiries are monitored 24/7 and receive priority response.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <InteractiveHoverButton
+                  variant="white"
+                  text="security@argent.com"
+                  icon={<Mail size={16} />}
+                  onClick={() => window.location.href = 'mailto:security@argent.com?subject=Security%20Issue'}
+                />
+                <InteractiveHoverButton
+                  variant="blue"
+                  text="Emergency Hotline"
+                  icon={<Phone size={16} />}
+                  onClick={() => window.location.href = 'tel:+18005551234'}
+                />
+              </div>
+              <div className="mt-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <p className="text-red-300 text-sm">
+                  <strong>Important:</strong> If you believe your account has been compromised, please call our emergency hotline immediately at +1 (800) 555-1234.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      );
+    }
+
+    return null;
+  };
+
   return (
-    <div className="min-h-screen bg-[#030303] transition-colors duration-500 relative overflow-hidden">
-      {/* Aurora background effect */}
+    <div className="min-h-screen bg-black transition-colors duration-500 relative overflow-hidden">
+      {/* Subtle gradient background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/5 via-indigo-50/3 to-violet-50/5 animate-aurora opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/20 via-indigo-950/10 to-violet-950/20 animate-aurora opacity-30" />
       </div>
 
-      {/* Header - Same Black Style as Homepage */}
+      {/* Geometric shapes for visual interest */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          className="absolute top-20 left-[10%] w-64 h-64 rounded-full bg-blue-500/5 blur-3xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.3, 0.2, 0.3]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-20 right-[10%] w-80 h-80 rounded-full bg-indigo-500/5 blur-3xl"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.3, 0.2]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        />
+        <motion.div 
+          className="absolute top-[40%] right-[20%] w-40 h-40 rounded-full bg-purple-500/5 blur-3xl"
+          animate={{ 
+            scale: [1, 1.4, 1],
+            opacity: [0.2, 0.1, 0.2]
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+      </div>
+
+      {/* Header */}
       <motion.header 
-        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl transition-colors duration-500 relative z-50"
+        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-black/95 backdrop-blur-xl transition-colors duration-500 relative z-50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
         <nav className="flex justify-between items-center max-w-7xl mx-auto">
-          {/* FIX: Make ARGENT logo clickable to go home */}
+          {/* ARGENT logo clickable to go home */}
           <motion.button
             onClick={() => navigate('/')}
             className="relative cursor-pointer"
@@ -178,9 +288,9 @@ const ContactPage: React.FC = () => {
         </nav>
       </motion.header>
 
-      <div className="relative mobile-spacing lg:p-8 space-y-8 lg:space-y-12">
-        {/* Enhanced Page Header */}
-        <AnimatedSection className="text-center max-w-4xl mx-auto pt-8 lg:pt-16">
+      <div className="relative mobile-spacing lg:p-8 space-y-8 lg:space-y-12 max-w-7xl mx-auto">
+        {/* Hero Section */}
+        <AnimatedSection className="text-center max-w-4xl mx-auto pt-12 lg:pt-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -196,7 +306,7 @@ const ContactPage: React.FC = () => {
             >
               <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse" />
               <span className="text-sm text-white/70 tracking-wide font-medium">
-                Get in Touch
+                Let's Connect
               </span>
             </motion.div>
 
@@ -213,21 +323,21 @@ const ContactPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="text-white">Contact Our</div>
+              <div className="text-white">How can we</div>
               <div className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
-                Support Team
+                help you today?
               </div>
             </motion.h1>
 
             {/* Enhanced Description */}
             <motion.p 
-              className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center mx-auto"
+              className="text-lg md:text-xl leading-relaxed tracking-tight text-white/60 max-w-2xl text-center mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              We're here to help you with any questions about Argent. Our dedicated support team 
-              is available 24/7 to ensure you get the most out of your financial management experience.
+              Whether you have a question, a project idea, or need support, we're here to help.
+              Select a topic below to get started.
             </motion.p>
 
             {/* Decorative Line */}
@@ -240,112 +350,54 @@ const ContactPage: React.FC = () => {
           </motion.div>
         </AnimatedSection>
 
-        {/* Contact Information Cards */}
+        {/* Contact Categories */}
         <AnimatedSection className="mb-8 lg:mb-16" delay={0.4}>
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.6 }}
-            className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
           >
-            {contactInfo.map((info, index) => {
-              const Icon = info.icon;
+            {contactCategories.map((category, index) => {
+              const Icon = category.icon;
+              const isActive = activeCategory === category.id;
+              
               return (
                 <motion.div
-                  key={index}
-                  className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 text-center"
+                  key={category.id}
+                  className={`bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 text-center cursor-pointer transition-all duration-300 ${
+                    isActive ? 'ring-2 ring-accent-blue' : 'hover:bg-white/[0.04]'
+                  } ${activeCategory && !isActive ? 'opacity-50' : 'opacity-100'}`}
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: activeCategory && !isActive ? 0.5 : 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
                   whileHover={{ scale: 1.02, y: -4 }}
+                  onClick={() => setActiveCategory(category.id)}
                 >
-                  <div className={`w-16 h-16 bg-gradient-to-r ${info.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                  <div className={`w-16 h-16 bg-gradient-to-r ${category.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
                     <Icon size={24} className="text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-white mb-2">{info.title}</h3>
-                  <p className="text-accent-blue font-medium mb-1">{info.content}</p>
-                  <p className="text-white/60 text-sm">{info.description}</p>
+                  <h3 className="text-xl font-bold text-white mb-2">{category.title}</h3>
+                  <p className="text-white/60 text-sm">{category.description}</p>
+                  
+                  {isActive && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="mt-4 inline-flex items-center text-accent-blue text-sm font-medium"
+                    >
+                      <span>Selected</span>
+                      <ArrowRight size={14} className="ml-1" />
+                    </motion.div>
+                  )}
                 </motion.div>
               );
             })}
           </motion.div>
         </AnimatedSection>
 
-        {/* Contact Form and Support Channels */}
-        <AnimatedSection className="mb-8 lg:mb-16" delay={0.8}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Enhanced Contact Form with Airtable Integration */}
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 1.0 }}
-            >
-              <ContactForm onSuccess={() => setFormSubmitted(true)} />
-            </motion.div>
-
-            {/* Support Channels */}
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 1.2 }}
-              className="space-y-6"
-            >
-              <h3 className="text-2xl font-bold text-white mb-6">Other Ways to Reach Us</h3>
-              
-              {supportChannels.map((channel, index) => {
-                const Icon = channel.icon;
-                return (
-                  <motion.div
-                    key={index}
-                    className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4, delay: 1.3 + index * 0.1 }}
-                    whileHover={{ scale: 1.02 }}
-                  >
-                    <div className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 bg-gradient-to-r ${channel.gradient} rounded-xl flex items-center justify-center shadow-lg`}>
-                        <Icon size={20} className="text-white" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="text-lg font-bold text-white mb-2">{channel.title}</h4>
-                        <p className="text-white/60 mb-4">{channel.description}</p>
-                        <InteractiveHoverButton
-                          variant="white"
-                          text={channel.action}
-                          className="px-4 py-2 text-sm"
-                        />
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
-
-              {/* Airtable Integration Status */}
-              <motion.div
-                className="bg-gradient-to-r from-green-50/10 to-emerald-50/10 border border-green-500/20 rounded-2xl p-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 1.5 }}
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <Shield size={20} className="text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-lg font-bold text-white mb-2">Lead Management</h4>
-                    <p className="text-white/60 mb-2">
-                      All form submissions are automatically saved to our Airtable CRM system for efficient lead tracking and follow-up.
-                    </p>
-                    <div className="text-sm text-green-400">
-                      ✓ Secure data storage ✓ Automated lead scoring ✓ 24h response guarantee
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          </div>
-        </AnimatedSection>
+        {/* Dynamic Contact Method */}
+        {renderContactMethod()}
 
         {/* FAQ Section */}
         <AnimatedSection className="text-center max-w-4xl mx-auto pb-16" delay={1.4}>
@@ -355,12 +407,19 @@ const ContactPage: React.FC = () => {
             transition={{ duration: 0.8, delay: 1.6 }}
             className="space-y-6"
           >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] border border-white/[0.15] backdrop-blur-sm">
+              <HelpCircle size={16} className="text-accent-blue" />
+              <span className="text-sm text-white/70 tracking-wide font-medium">
+                Frequently Asked Questions
+              </span>
+            </div>
+            
             <h2 className="text-2xl lg:text-3xl font-bold text-white">
-              Frequently Asked Questions
+              Looking for answers?
             </h2>
+            
             <p className="text-white/60 leading-relaxed">
-              Can't find what you're looking for? Check out our comprehensive help center 
-              or reach out to our support team directly.
+              Check out our comprehensive help center for FAQs and documentation.
             </p>
             
             <div className="flex flex-col lg:flex-row gap-4 justify-center">
@@ -380,6 +439,22 @@ const ContactPage: React.FC = () => {
           </motion.div>
         </AnimatedSection>
       </div>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 py-8">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="mb-4 md:mb-0">
+              <p className="text-white/40 text-sm">© 2025 Argent. All rights reserved.</p>
+            </div>
+            <div className="flex space-x-6">
+              <a href="#" className="text-white/40 hover:text-white/70 transition-colors text-sm">Privacy Policy</a>
+              <a href="#" className="text-white/40 hover:text-white/70 transition-colors text-sm">Terms of Service</a>
+              <a href="#" className="text-white/40 hover:text-white/70 transition-colors text-sm">Cookies</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
