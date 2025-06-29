@@ -138,19 +138,6 @@ const AppLayout: React.FC = () => {
     return null;
   }
 
-  // Common modal styles for all assistants
-  const modalVariants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
-    exit: { opacity: 0 }
-  };
-
-  const contentVariants = {
-    hidden: { scale: 0.9, opacity: 0 },
-    visible: { scale: 1, opacity: 1 },
-    exit: { scale: 0.9, opacity: 0 }
-  };
-
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
       {/* Desktop Horizontal Navigation */}
@@ -202,24 +189,29 @@ const AppLayout: React.FC = () => {
         activeAssistant={activeAssistant}
       />
 
-      {/* Video Modal */}
+      {/* Video Assistant */}
       <AnimatePresence>
         {showVideoModal && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={modalVariants}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={closeVideoModal}
-          >
-            <motion.div
-              variants={contentVariants}
+          <div className="fixed inset-0 z-50">
+            {/* Blurred Background */}
+            <motion.div 
+              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeVideoModal}
+            />
+            
+            {/* Content */}
+            <motion.div 
+              className="absolute inset-4 lg:inset-12 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header */}
+              {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
@@ -239,33 +231,38 @@ const AppLayout: React.FC = () => {
                 </button>
               </div>
 
-              {/* Modal Content */}
+              {/* Content */}
               <div className="flex-1 relative">
                 <VideoChat />
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Chat Modal */}
+      {/* Chat Assistant */}
       <AnimatePresence>
         {showChatModal && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={modalVariants}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={closeChatModal}
-          >
-            <motion.div
-              variants={contentVariants}
+          <div className="fixed inset-0 z-50">
+            {/* Blurred Background */}
+            <motion.div 
+              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeChatModal}
+            />
+            
+            {/* Content */}
+            <motion.div 
+              className="absolute inset-4 lg:inset-12 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header - Same style as Video Modal */}
+              {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
@@ -285,33 +282,38 @@ const AppLayout: React.FC = () => {
                 </button>
               </div>
 
-              {/* Modal Content */}
+              {/* Content */}
               <div className="flex-1 relative">
                 <Chat />
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Voice Assistant (ElevenLabs Widget) */}
+      {/* Voice Assistant */}
       <AnimatePresence>
         {showNeedHelp && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            variants={modalVariants}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={() => setShowNeedHelp(false)}
-          >
-            <motion.div
-              variants={contentVariants}
+          <div className="fixed inset-0 z-50">
+            {/* Blurred Background */}
+            <motion.div 
+              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowNeedHelp(false)}
+            />
+            
+            {/* Content */}
+            <motion.div 
+              className="absolute inset-4 lg:inset-12 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header - Same style as other modals */}
+              {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
@@ -331,14 +333,21 @@ const AppLayout: React.FC = () => {
                 </button>
               </div>
 
-              {/* Modal Content - ElevenLabs Widget */}
+              {/* Content */}
               <div className="flex-1 relative flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full blur-2xl animate-pulse"></div>
+                  <div className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+                </div>
+                
                 <div className="w-full h-full flex items-center justify-center">
                   <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
                 </div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
