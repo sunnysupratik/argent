@@ -140,11 +140,31 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* FIXED BOTTOM LEFT - Video Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      {/* BOTTOM RIGHT - Floating Action Buttons Stack */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
+        {/* ElevenLabs Widget - Top of Stack */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
+          className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+        >
+          <elevenlabs-convai 
+            agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+            style={{
+              width: '320px',
+              height: '400px',
+              border: 'none',
+              borderRadius: '16px',
+              display: 'block'
+            }}
+          ></elevenlabs-convai>
+        </motion.div>
+
+        {/* Video Button - Bottom of Stack */}
         <motion.button
           onClick={handleVideoClick}
-          className="group relative w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
+          className="group relative w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden ml-auto"
           initial={{ opacity: 0, scale: 0.8, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.8 }}
@@ -184,27 +204,6 @@ const AppLayout: React.FC = () => {
             <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
           </motion.div>
         </motion.button>
-      </div>
-
-      {/* FIXED BOTTOM LEFT - ElevenLabs Widget */}
-      <div className="fixed bottom-6 left-6 z-40">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.0 }}
-          className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
-        >
-          <elevenlabs-convai 
-            agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-            style={{
-              width: '320px',
-              height: '400px',
-              border: 'none',
-              borderRadius: '16px',
-              display: 'block'
-            }}
-          ></elevenlabs-convai>
-        </motion.div>
       </div>
     </div>
   );
