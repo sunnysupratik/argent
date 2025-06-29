@@ -1,48 +1,23 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Maximize2 } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 const VideoChat: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isFullscreen, setIsFullscreen] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const videoAppUrl = 'https://effortless-cucurucho-5a3e21.netlify.app/';
+
+  const openInNewTab = () => {
+    window.open(videoAppUrl, '_blank', 'noopener,noreferrer');
+  };
 
   const handleIframeLoad = () => {
     setIsLoading(false);
   };
 
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      containerRef.current?.requestFullscreen().catch(err => {
-        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-      });
-      setIsFullscreen(true);
-    } else {
-      document.exitFullscreen();
-      setIsFullscreen(false);
-    }
-  };
-
-  // Listen for fullscreen change events
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
-    };
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
-    };
-  }, []);
-
   return (
-    <div 
-      ref={containerRef}
-      className="h-full w-full flex flex-col relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl overflow-hidden"
-    >
+    <div className="h-full w-full flex flex-col relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full blur-2xl animate-pulse"></div>
@@ -60,16 +35,16 @@ const VideoChat: React.FC = () => {
         </div>
       )}
 
-      {/* Maximize button - positioned away from the settings area */}
+      {/* External link button */}
       <div className="absolute top-4 right-4 z-10">
         <motion.button
-          onClick={toggleFullscreen}
-          className="bg-white/90 hover:bg-white text-gray-700 p-2 rounded-lg shadow-lg backdrop-blur-sm"
+          onClick={openInNewTab}
+          className="bg-white/90 hover:bg-white text-gray-700 px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm flex items-center space-x-2 text-sm"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
         >
-          <Maximize2 size={18} />
+          <ExternalLink size={14} />
+          <span>Open External</span>
         </motion.button>
       </div>
 
