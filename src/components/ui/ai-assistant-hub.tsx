@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Video, Headphones, MessageCircle, X } from 'lucide-react';
+import { Sparkles, Video, MessageCircle, X } from 'lucide-react';
 import { AnimatedDock } from './animated-dock';
 
 interface AIAssistantHubProps {
   onVideoClick: () => void;
-  onVoiceToggle: () => void;
   onChatClick: () => void;
   onSendMessage: () => void;
-  showVoiceAssistant: boolean;
   activeAssistant: string | null;
 }
 
 const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
   onVideoClick,
-  onVoiceToggle,
   onChatClick,
   onSendMessage,
-  showVoiceAssistant,
   activeAssistant
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -46,12 +42,6 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
     setIsExpanded(!isExpanded);
   };
 
-  // Handle voice assistant click
-  const handleVoiceClick = () => {
-    onVoiceToggle();
-    setIsExpanded(false);
-  };
-
   // For mobile: FAB with expanding options
   if (isMobile) {
     return (
@@ -71,12 +61,6 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   label: "Video Advisor",
                   onClick: () => { onVideoClick(); setIsExpanded(false); },
                   active: activeAssistant === 'video'
-                },
-                { 
-                  icon: <Headphones size={20} />, 
-                  label: "Voice Assistant",
-                  onClick: () => { handleVoiceClick(); },
-                  active: activeAssistant === 'voice'
                 },
                 { 
                   icon: <MessageCircle size={20} />, 
@@ -154,13 +138,6 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   onClick: onVideoClick,
                   active: activeAssistant === 'video',
                   label: "Video Advisor"
-                },
-                {
-                  link: "#",
-                  Icon: <Headphones size={22} className="text-white" />,
-                  onClick: handleVoiceClick,
-                  active: activeAssistant === 'voice',
-                  label: "Voice Assistant"
                 },
                 {
                   link: "#",
