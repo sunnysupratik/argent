@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, MessageCircle, Home } from 'lucide-react';
+import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
@@ -54,15 +54,6 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
       description: 'Portfolio & Stocks'
     },
     { 
-      id: 'chat', 
-      label: 'AI Advisor', 
-      icon: MessageCircle, 
-      path: '/app/chat',
-      gradientFrom: '#ffa9c6',
-      gradientTo: '#f434e2',
-      description: 'Financial Assistant'
-    },
-    { 
       id: 'profile', 
       label: 'Profile', 
       icon: User, 
@@ -108,6 +99,13 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
     }
     const email = user?.email?.split('@')[0] || 'User';
     return email.replace(/\s*(test|user|demo).*$/i, '');
+  };
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
   };
 
   const sidebarVariants = {

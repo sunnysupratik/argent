@@ -49,14 +49,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
       gradientTo: '#7EE8FA'
     },
     { 
-      id: 'chat', 
-      label: 'AI Advisor', 
-      icon: MessageCircle, 
-      path: '/app/chat',
-      gradientFrom: '#ffa9c6',
-      gradientTo: '#f434e2'
-    },
-    { 
       id: 'profile', 
       label: 'Profile', 
       icon: User, 
