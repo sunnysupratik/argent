@@ -250,48 +250,30 @@ const AppLayout: React.FC = () => {
         </motion.button>
       </div>
 
-      {/* ElevenLabs Widget - FORCED positioning to bottom right */}
+      {/* ElevenLabs Widget - Smaller and More Compact */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.8, x: 50 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.8, x: 50 }}
-            transition={{ duration: 0.3 }}
-            className="fixed bottom-6 right-32 z-40"
-            style={{
-              position: 'fixed !important',
-              bottom: '24px !important',
-              right: '128px !important',
-              zIndex: 40,
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="fixed bottom-24 right-6 z-40"
+            style={{ 
+              transform: 'scale(0.85)', 
+              transformOrigin: 'bottom right',
+              maxWidth: '320px',
+              maxHeight: '400px'
             }}
           >
-            {/* Force positioning wrapper with aggressive CSS */}
-            <div 
-              className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
-              style={{
-                position: 'relative',
-                width: '300px',
-                height: '350px',
-                maxWidth: '300px',
-                maxHeight: '350px',
-              }}
-            >
+            {/* Custom wrapper to make it smaller */}
+            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
               <elevenlabs-convai 
                 agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
                 style={{
-                  width: '100% !important',
-                  height: '100% !important',
-                  border: 'none !important',
-                  borderRadius: '16px !important',
-                  position: 'relative !important',
-                  top: '0 !important',
-                  left: '0 !important',
-                  right: 'auto !important',
-                  bottom: 'auto !important',
-                  transform: 'none !important',
-                  margin: '0 !important',
-                  padding: '0 !important',
+                  width: '300px',
+                  height: '350px',
+                  border: 'none',
+                  borderRadius: '16px'
                 }}
               ></elevenlabs-convai>
             </div>
