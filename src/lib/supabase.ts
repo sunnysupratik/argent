@@ -87,81 +87,65 @@ export const customAuth = {
     try {
       console.log('CustomAuth.signIn - Attempting login for:', username);
       
-      // For development/demo purposes, allow direct login with demo accounts
-      if (import.meta.env.DEV || !supabaseUrl.includes('example.supabase.co')) {
-        if ((username === 'demo' && password === 'Password123!') ||
-            (username === 'testuser' && password === 'TestPass123!') ||
-            (username === 'johndoe' && password === 'Demo123!')) {
-          
-          // Create a mock user for demo purposes
-          const mockUser = {
-            id: username === 'demo' ? 'demo-id-123' : 
-                username === 'testuser' ? 'testuser-id-456' : 'johndoe-id-789',
-            username: username,
-            password: password, // In a real app, never store passwords in client-side code
-            full_name: username === 'demo' ? 'Alex Johnson' : 
-                      username === 'testuser' ? 'Sarah Wilson' : 'John Doe',
-            email: `${username}@example.com`,
-            created_at: new Date().toISOString()
-          };
+      // Check if we have a valid Supabase connection
+      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
+      
+      if (isValidSupabase) {
+        console.log('Using real Supabase authentication');
+        
+        // Try to authenticate with the database
+        const { data, error } = await supabase
+          .from('custom_users')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .single();
+
+        if (error || !data) {
+          console.log('CustomAuth.signIn - Database login failed:', error?.message || 'User not found');
+          // Fall through to demo mode
+        } else {
+          console.log('CustomAuth.signIn - Database login successful for user:', data.username, 'ID:', data.id);
           
           // Store user in localStorage for session management
-          localStorage.setItem('customUser', JSON.stringify(mockUser));
+          localStorage.setItem('customUser', JSON.stringify(data));
           
-          console.log('CustomAuth.signIn - Demo login successful for user:', mockUser.username);
-          return { user: mockUser, error: null };
+          return { user: data, error: null };
         }
       }
       
-      // Try to fetch from direct_accounts to verify if we should use direct tables
-      const { data: directAccountsExist } = await supabase
-        .from('direct_accounts')
-        .select('id')
-        .limit(1);
+      // Demo mode - allow hardcoded demo accounts
+      console.log('Using demo authentication mode');
       
-      if (directAccountsExist && directAccountsExist.length > 0) {
-        console.log('Using direct tables for authentication');
-        
-        // For direct tables, we use user_name instead of username
-        const { data, error } = await supabase
-          .from('custom_users')
-          .select('*')
-          .eq('username', username)
-          .eq('password', password)
-          .single();
-
-        if (error || !data) {
-          console.log('CustomAuth.signIn - Login failed:', error?.message || 'User not found');
-          return { user: null, error: { message: 'Invalid username or password' } };
-        }
-
-        console.log('CustomAuth.signIn - Login successful for user:', data.username, 'ID:', data.id);
-        
-        // Store user in localStorage for session management
-        localStorage.setItem('customUser', JSON.stringify(data));
-        
-        return { user: data, error: null };
-      } else {
-        // Fall back to original custom_users table
-        const { data, error } = await supabase
-          .from('custom_users')
-          .select('*')
-          .eq('username', username)
-          .eq('password', password)
-          .single();
-
-        if (error || !data) {
-          console.log('CustomAuth.signIn - Login failed:', error?.message || 'User not found');
-          return { user: null, error: { message: 'Invalid username or password' } };
-        }
-
-        console.log('CustomAuth.signIn - Login successful for user:', data.username, 'ID:', data.id);
+      const demoUsers = [
+        { username: 'demo', password: 'Password123!', full_name: 'Alex Johnson', email: 'demo@example.com' },
+        { username: 'testuser', password: 'TestPass123!', full_name: 'Sarah Wilson', email: 'testuser@example.com' },
+        { username: 'johndoe', password: 'Demo123!', full_name: 'John Doe', email: 'john.doe@example.com' }
+      ];
+      
+      const demoUser = demoUsers.find(u => u.username === username && u.password === password);
+      
+      if (demoUser) {
+        // Create a mock user for demo purposes
+        const mockUser = {
+          id: `${username}-id-${Date.now()}`,
+          username: demoUser.username,
+          password: demoUser.password,
+          full_name: demoUser.full_name,
+          email: demoUser.email,
+          created_at: new Date().toISOString()
+        };
         
         // Store user in localStorage for session management
-        localStorage.setItem('customUser', JSON.stringify(data));
+        localStorage.setItem('customUser', JSON.stringify(mockUser));
         
-        return { user: data, error: null };
+        console.log('CustomAuth.signIn - Demo login successful for user:', mockUser.username);
+        return { user: mockUser, error: null };
       }
+      
+      console.log('CustomAuth.signIn - Login failed: Invalid credentials');
+      return { user: null, error: { message: 'Invalid username or password' } };
+      
     } catch (err) {
       console.error('CustomAuth.signIn - Unexpected error:', err);
       return { user: null, error: { message: 'Authentication failed' } };
@@ -172,47 +156,55 @@ export const customAuth = {
     try {
       console.log('CustomAuth.signUp - Attempting signup for:', username);
       
-      // For development/demo purposes
-      if (import.meta.env.DEV || !supabaseUrl.includes('example.supabase.co')) {
-        // Create a mock user for demo purposes
-        const mockUser = {
-          id: `${username}-id-${Math.floor(Math.random() * 1000)}`,
-          username: username,
-          password: password, // In a real app, never store passwords in client-side code
-          full_name: fullName,
-          email: email,
-          created_at: new Date().toISOString()
-        };
+      // Check if we have a valid Supabase connection
+      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
+      
+      if (isValidSupabase) {
+        console.log('Using real Supabase for signup');
+        
+        const { data, error } = await supabase
+          .from('custom_users')
+          .insert([{
+            username,
+            password,
+            full_name: fullName,
+            email,
+            user_name: username
+          }])
+          .select()
+          .single();
+
+        if (error) {
+          console.log('CustomAuth.signUp - Database signup failed:', error.message);
+          return { user: null, error: { message: error.message } };
+        }
+
+        console.log('CustomAuth.signUp - Database signup successful for user:', data.username, 'ID:', data.id);
         
         // Store user in localStorage for session management
-        localStorage.setItem('customUser', JSON.stringify(mockUser));
+        localStorage.setItem('customUser', JSON.stringify(data));
         
-        console.log('CustomAuth.signUp - Demo signup successful for user:', mockUser.username);
-        return { user: mockUser, error: null };
+        return { user: data, error: null };
       }
       
-      const { data, error } = await supabase
-        .from('custom_users')
-        .insert([{
-          username,
-          password,
-          full_name: fullName,
-          email
-        }])
-        .select()
-        .single();
-
-      if (error) {
-        console.log('CustomAuth.signUp - Signup failed:', error.message);
-        return { user: null, error: { message: error.message } };
-      }
-
-      console.log('CustomAuth.signUp - Signup successful for user:', data.username, 'ID:', data.id);
+      // Demo mode - create a mock user
+      console.log('Using demo mode for signup');
+      
+      const mockUser = {
+        id: `${username}-id-${Date.now()}`,
+        username: username,
+        password: password,
+        full_name: fullName,
+        email: email,
+        created_at: new Date().toISOString()
+      };
       
       // Store user in localStorage for session management
-      localStorage.setItem('customUser', JSON.stringify(data));
+      localStorage.setItem('customUser', JSON.stringify(mockUser));
       
-      return { user: data, error: null };
+      console.log('CustomAuth.signUp - Demo signup successful for user:', mockUser.username);
+      return { user: mockUser, error: null };
+      
     } catch (err) {
       console.error('CustomAuth.signUp - Unexpected error:', err);
       return { user: null, error: { message: 'Sign up failed' } };
