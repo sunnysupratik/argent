@@ -17,7 +17,6 @@ import PageTransition from '../components/PageTransition';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import { useAuth } from '../hooks/useAuth';
 import AIAssistantHub from '../components/ui/ai-assistant-hub';
-import VoiceAssistantModal from '../components/ui/voice-assistant-modal';
 
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
@@ -190,7 +189,7 @@ const AppLayout: React.FC = () => {
         activeAssistant={activeAssistant}
       />
 
-      {/* Voice Assistant Modal */}
+      {/* Voice Assistant Modal with ElevenLabs Widget */}
       <AnimatePresence>
         {showVoiceAssistant && (
           <motion.div 
