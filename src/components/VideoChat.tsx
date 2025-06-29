@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, Maximize2, Minimize2, RefreshCw, ExternalLink, Play, Shield, Zap, Lock, Monitor, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Video, Maximize2, Minimize2, RefreshCw, ExternalLink, Play, Shield, Zap, Lock, Monitor } from 'lucide-react';
 import AnimatedSection from './AnimatedSection';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
@@ -29,7 +29,6 @@ const VideoChat: React.FC = () => {
     const timeout = setTimeout(() => {
       if (iframeStatus === 'loading') {
         setIframeStatus('failed');
-        // Don't automatically hide - let user see the error
       }
     }, 5000);
 
@@ -318,7 +317,7 @@ const VideoChat: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center z-10">
           <div className="text-center max-w-md mx-auto p-8">
             <div className="w-16 h-16 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle size={32} className="text-white" />
+              <Video size={32} className="text-white" />
             </div>
             <h3 className="text-xl font-bold text-red-900 mb-4">Embedding Blocked</h3>
             <p className="text-red-800 mb-6 leading-relaxed">
@@ -340,16 +339,6 @@ const VideoChat: React.FC = () => {
                 className="w-full py-3"
               />
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Success State */}
-      {iframeStatus === 'success' && (
-        <div className="absolute top-4 right-4 z-10">
-          <div className="flex items-center space-x-2 px-3 py-2 bg-green-100 rounded-full shadow-lg">
-            <CheckCircle size={16} className="text-green-600" />
-            <span className="text-sm font-medium text-green-800">Connected</span>
           </div>
         </div>
       )}
@@ -492,21 +481,13 @@ const VideoChat: React.FC = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2">
-                    <div className="hidden lg:flex items-center space-x-2 px-3 py-1 bg-green-100 rounded-full">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-xs font-medium text-green-700">
-                        {iframeStatus === 'success' ? 'Connected' : 'Ready'}
-                      </span>
-                    </div>
-                    <InteractiveHoverButton
-                      variant="white"
-                      text="Maximize"
-                      icon={<Maximize2 size={14} />}
-                      onClick={toggleMaximize}
-                      className="px-3 py-2 text-sm"
-                    />
-                  </div>
+                  <InteractiveHoverButton
+                    variant="white"
+                    text="Maximize"
+                    icon={<Maximize2 size={14} />}
+                    onClick={toggleMaximize}
+                    className="px-3 py-2 text-sm"
+                  />
                 </div>
               </div>
 
