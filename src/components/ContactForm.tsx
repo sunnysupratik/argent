@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle, AlertCircle, User, Mail, Building, Phone, MessageSquare, DollarSign, Calendar, Tag, Info } from 'lucide-react';
+import { Send, CheckCircle, AlertCircle, User, Mail, Building, Phone, MessageSquare, DollarSign, Calendar, Tag, Info, MapPin, Calendar as CalendarIcon, Heart } from 'lucide-react';
 import { useAirtable } from '../hooks/useAirtable';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
@@ -20,6 +20,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
     message: '',
     budget: '',
     timeline: '',
+    address: '',
+    dateOfBirth: '',
+    age: '',
+    customerSentiment: 'Neutral',
     interests: [] as string[]
   });
 
@@ -52,12 +56,30 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
     { value: 'fintech-solutions', label: 'FinTech Solutions' }
   ];
 
+  const sentimentOptions = [
+    { value: 'Positive', label: 'Positive' },
+    { value: 'Neutral', label: 'Neutral' },
+    { value: 'Negative', label: 'Negative' },
+    { value: 'Very Positive', label: 'Very Positive' },
+    { value: 'Very Negative', label: 'Very Negative' }
+  ];
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // If the field is age, convert to number
+    if (name === 'age') {
+      const ageValue = value === '' ? '' : parseInt(value, 10);
+      setFormData(prev => ({
+        ...prev,
+        [name]: ageValue
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleInterestToggle = (interest: string) => {
@@ -72,8 +94,13 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Generate a unique customer ID
+    const customerID = `CUST${Math.floor(1000 + Math.random() * 9000)}`;
+    
     const leadData = {
       ...formData,
+      customerID,
+      accountStatus: 'New Lead',
       source: 'Website Contact Form'
     };
 
@@ -95,6 +122,10 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
           message: '',
           budget: '',
           timeline: '',
+          address: '',
+          dateOfBirth: '',
+          age: '',
+          customerSentiment: 'Neutral',
           interests: []
         });
       }, 3000);
@@ -106,7 +137,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-2xl p-8 text-center"
+        className="bg-gradient-to-r from-green-50/10 to-emerald-50/10 border border-green-200/30 rounded-2xl p-8 text-center"
       >
         <motion.div
           initial={{ scale: 0 }}
@@ -116,18 +147,18 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
         >
           <CheckCircle size={32} className="text-white" />
         </motion.div>
-        <h3 className="text-2xl font-bold text-green-900 mb-2">Thank You!</h3>
-        <p className="text-green-700 mb-4">
+        <h3 className="text-2xl font-bold text-green-300 mb-2">Thank You!</h3>
+        <p className="text-green-200 mb-4">
           Your message has been received and saved. We'll get back to you within 24 hours.
         </p>
-        <div className="text-sm text-green-600">
-          Lead ID: #{Date.now().toString().slice(-6)}
+        <div className="text-sm text-green-300">
+          Customer ID: #{Date.now().toString().slice(-6)}
         </div>
         {error && error.includes('demo purposes') && (
-          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mt-4 p-3 bg-blue-900/30 border border-blue-500/30 rounded-lg">
             <div className="flex items-start space-x-2">
-              <Info size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
-              <p className="text-blue-700 text-sm">
+              <Info size={16} className="text-blue-400 mt-0.5 flex-shrink-0" />
+              <p className="text-blue-300 text-sm">
                 Demo mode: Your message was saved locally. To enable Airtable integration, configure your Pica credentials.
               </p>
             </div>
@@ -251,6 +282,76 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
               className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
               placeholder="+1 (555) 123-4567"
             />
+          </div>
+        </div>
+
+        {/* Additional Personal Information */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-white/70 text-sm font-medium mb-2">
+              <MapPin size={16} className="inline mr-2" />
+              Address
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
+              placeholder="123 Main St, City, Country"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-white/70 text-sm font-medium mb-2">
+              <CalendarIcon size={16} className="inline mr-2" />
+              Date of Birth
+            </label>
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-accent-blue transition-colors"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-white/70 text-sm font-medium mb-2">
+              <User size={16} className="inline mr-2" />
+              Age
+            </label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age}
+              onChange={handleInputChange}
+              min="0"
+              max="120"
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
+              placeholder="30"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-white/70 text-sm font-medium mb-2">
+              <Heart size={16} className="inline mr-2" />
+              Customer Sentiment
+            </label>
+            <select
+              name="customerSentiment"
+              value={formData.customerSentiment}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-accent-blue transition-colors"
+            >
+              {sentimentOptions.map(option => (
+                <option key={option.value} value={option.value} className="bg-gray-800">
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

@@ -27,6 +27,12 @@ interface LeadData {
   budget?: string;
   timeline?: string;
   interests: string[];
+  address?: string;
+  age?: number;
+  dateOfBirth?: string;
+  customerID?: string;
+  accountStatus?: string;
+  customerSentiment?: string;
 }
 
 export function useAirtable() {
@@ -78,6 +84,14 @@ export function useAirtable() {
         return true; // Still return success for demo purposes
       }
 
+      // Generate a unique customer ID if not provided
+      const customerID = leadData.customerID || `CUST${Math.floor(1000 + Math.random() * 9000)}`;
+      
+      // Create the full address field if address is provided
+      const fullAddress = leadData.address ? 
+        `${leadData.address}, ${leadData.email}, ${leadData.phone || 'No phone'}` : 
+        `${leadData.email}, ${leadData.phone || 'No phone'}`;
+
       // Create the record in Airtable
       const response = await fetch(`https://api.picaos.com/v1/passthrough/${DATABASE_ID}/${TABLE_ID}`, {
         method: 'POST',
@@ -91,19 +105,24 @@ export function useAirtable() {
           records: [
             {
               fields: {
-                'Name': leadData.name,
-                'Email': leadData.email,
-                'Company': leadData.company || '',
-                'Phone': leadData.phone || '',
+                'Customer Name': leadData.name,
+                'Email Address': leadData.email,
+                'Phone Number': leadData.phone || '',
+                'Contact Details': leadData.company ? `${leadData.company}, ${leadData.address || ''}` : (leadData.address || ''),
+                'Address': leadData.address || '',
+                'Full Address': fullAddress,
+                'Customer ID': customerID,
+                'Date of Birth': leadData.dateOfBirth || '',
+                'Age': leadData.age || '',
+                'Account Status': leadData.accountStatus || 'New Lead',
+                'Account Status Summary': `New lead from website contact form. Interests: ${leadData.interests.join(', ')}`,
+                'Customer Sentiment': leadData.customerSentiment || 'Neutral',
                 'Subject': leadData.subject,
                 'Message': leadData.message,
                 'Source': leadData.source,
                 'Budget Range': leadData.budget || '',
                 'Timeline': leadData.timeline || '',
-                'Interests': leadData.interests.join(', '),
-                'Status': 'New Lead',
-                'Created Date': new Date().toISOString(),
-                'Priority': 'Medium'
+                'Interests': leadData.interests.join(', ')
               }
             }
           ],
