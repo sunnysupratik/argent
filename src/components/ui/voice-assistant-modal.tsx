@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mic, MicOff } from 'lucide-react';
+import { X, Mic, MicOff, Headphones } from 'lucide-react';
 
 interface VoiceAssistantModalProps {
   isOpen: boolean;
@@ -92,7 +92,7 @@ const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClo
       recognition.stop();
       setIsListening(false);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, transcript]);
 
   // Audio visualizer setup
   useEffect(() => {
@@ -165,7 +165,7 @@ const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClo
         audioContextRef.current.close();
       }
     };
-  }, [isOpen]);
+  }, [isOpen, isListening]);
 
   // Generate idle animation data when not listening
   useEffect(() => {
@@ -188,28 +188,42 @@ const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClo
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 bg-black/50 backdrop-blur-md z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/30 backdrop-blur-md z-50 flex items-center justify-center"
+          onClick={onClose}
         >
-          {/* Close button */}
-          <motion.button
-            className="absolute top-6 right-6 w-12 h-12 bg-black/20 hover:bg-black/40 text-white rounded-full flex items-center justify-center"
-            onClick={onClose}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <X size={24} />
-          </motion.button>
-
           {/* Main content */}
           <motion.div
-            className="w-full max-w-2xl text-center"
+            className="w-full max-w-2xl text-center p-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
+            onClick={(e) => e.stopPropagation()}
           >
+            {/* Header */}
+            <motion.div
+              className="flex items-center justify-between mb-8"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.1 }}
+            >
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                  <Headphones size={24} className="text-white" />
+                </div>
+                <div className="text-left">
+                  <h2 className="text-xl font-bold text-white">AI Voice Assistant</h2>
+                  <p className="text-white/70">Ask me anything about your finances</p>
+                </div>
+              </div>
+              
+              <button
+                onClick={onClose}
+                className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <X size={20} className="text-white" />
+              </button>
+            </motion.div>
+
             {/* Status indicator */}
             <motion.div
               className="mb-4 inline-flex items-center px-4 py-2 rounded-full bg-white/10 text-white text-sm"

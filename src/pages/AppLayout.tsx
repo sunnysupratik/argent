@@ -17,11 +17,12 @@ import PageTransition from '../components/PageTransition';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import { useAuth } from '../hooks/useAuth';
 import AIAssistantHub from '../components/ui/ai-assistant-hub';
+import VoiceAssistantModal from '../components/ui/voice-assistant-modal';
 
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showNeedHelp, setShowNeedHelp] = useState(false);
+  const [showVoiceAssistant, setShowVoiceAssistant] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
@@ -63,7 +64,7 @@ const AppLayout: React.FC = () => {
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen || showVideoModal || showChatModal || showNeedHelp) {
+    if (isMobileMenuOpen || showVideoModal || showChatModal || showVoiceAssistant) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -72,7 +73,7 @@ const AppLayout: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen, showVideoModal, showChatModal, showNeedHelp]);
+  }, [isMobileMenuOpen, showVideoModal, showChatModal, showVoiceAssistant]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -112,8 +113,8 @@ const AppLayout: React.FC = () => {
   };
 
   const toggleVoiceAssistant = () => {
-    setShowNeedHelp(!showNeedHelp);
-    setActiveAssistant(showNeedHelp ? null : 'voice');
+    setShowVoiceAssistant(!showVoiceAssistant);
+    setActiveAssistant(showVoiceAssistant ? null : 'voice');
   };
 
   const handleSendMessage = () => {
@@ -185,8 +186,14 @@ const AppLayout: React.FC = () => {
         onVoiceToggle={toggleVoiceAssistant}
         onChatClick={handleChatClick}
         onSendMessage={handleSendMessage}
-        showVoiceAssistant={showNeedHelp}
+        showVoiceAssistant={showVoiceAssistant}
         activeAssistant={activeAssistant}
+      />
+
+      {/* Voice Assistant Modal */}
+      <VoiceAssistantModal 
+        isOpen={showVoiceAssistant} 
+        onClose={() => setShowVoiceAssistant(false)} 
       />
 
       {/* Video Assistant */}
@@ -285,66 +292,6 @@ const AppLayout: React.FC = () => {
               {/* Content */}
               <div className="flex-1 relative">
                 <Chat />
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* Voice Assistant */}
-      <AnimatePresence>
-        {showNeedHelp && (
-          <div className="fixed inset-0 z-50">
-            {/* Blurred Background */}
-            <motion.div 
-              className="absolute inset-0 bg-black/30 backdrop-blur-md"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowNeedHelp(false)}
-            />
-            
-            {/* Content */}
-            <motion.div 
-              className="absolute inset-4 lg:inset-12 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
-                    <Phone size={20} className="text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-gray-900">AI Voice Advisor</h2>
-                    <p className="text-sm text-gray-600">Voice consultation</p>
-                  </div>
-                </div>
-                
-                <button
-                  onClick={() => setShowNeedHelp(false)}
-                  className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
-                >
-                  <X size={20} className="text-gray-600" />
-                </button>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 relative flex items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-20">
-                  <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full blur-2xl animate-pulse"></div>
-                  <div className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-                  <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-                </div>
-                
-                <div className="w-full h-full flex items-center justify-center">
-                  <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
-                </div>
               </div>
             </motion.div>
           </div>
