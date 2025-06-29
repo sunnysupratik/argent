@@ -27,7 +27,6 @@ const AppLayout: React.FC = () => {
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
   const [elevenLabsScriptLoaded, setElevenLabsScriptLoaded] = useState(false);
   const [elevenLabsScriptError, setElevenLabsScriptError] = useState(false);
-  const [elevenLabsWidgetReady, setElevenLabsWidgetReady] = useState(false);
   
   const location = useLocation();
   const navigate = useNavigate();
@@ -88,24 +87,6 @@ const AppLayout: React.FC = () => {
       script.onload = () => {
         console.log('ElevenLabs script loaded successfully');
         setElevenLabsScriptLoaded(true);
-        
-        // Check if the custom element is defined
-        if (customElements.get('elevenlabs-convai')) {
-          console.log('ElevenLabs custom element is defined');
-          setElevenLabsWidgetReady(true);
-        } else {
-          console.log('Waiting for ElevenLabs custom element to be defined...');
-          // Wait a bit for the custom element to be defined
-          setTimeout(() => {
-            if (customElements.get('elevenlabs-convai')) {
-              console.log('ElevenLabs custom element is now defined');
-              setElevenLabsWidgetReady(true);
-            } else {
-              console.error('ElevenLabs custom element was not defined in time');
-              setElevenLabsScriptError(true);
-            }
-          }, 2000);
-        }
       };
       
       script.onerror = () => {
@@ -255,13 +236,12 @@ const AppLayout: React.FC = () => {
             
             {/* Voice Assistant Content */}
             <motion.div
-              className="relative z-10 w-full max-w-2xl mx-auto"
+              className="relative z-10 w-full max-w-md mx-auto"
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
-              ref={elevenLabsContainerRef}
             >
               {elevenLabsScriptError ? (
                 <div className="bg-white rounded-xl p-8 text-center">
@@ -274,14 +254,13 @@ const AppLayout: React.FC = () => {
                     onClick={() => {
                       setElevenLabsScriptError(false);
                       setElevenLabsScriptLoaded(false);
-                      setElevenLabsWidgetReady(false);
                     }}
                     className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue-hover transition-colors"
                   >
                     Try Again
                   </button>
                 </div>
-              ) : !elevenLabsScriptLoaded || !elevenLabsWidgetReady ? (
+              ) : !elevenLabsScriptLoaded ? (
                 <div className="bg-white rounded-xl p-8 text-center">
                   <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                   <p className="text-gray-700">Loading voice assistant...</p>
