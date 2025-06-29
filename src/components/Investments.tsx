@@ -1,101 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Plus, RefreshCw, BarChart3, PieChart, DollarSign, Target, Filter, Search, Download, Star, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 import AnimatedSection from './AnimatedSection';
+import { useInvestments } from '../hooks/useInvestments';
 
 const Investments: React.FC = () => {
   const [activeTab, setActiveTab] = useState('portfolio');
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('value');
   const [isRefreshing, setIsRefreshing] = useState(false);
-
-  const portfolio = [
-    {
-      symbol: 'AAPL',
-      name: 'Apple Inc.',
-      shares: 25,
-      currentPrice: 185.42,
-      totalValue: 4635.50,
-      dayChange: 2.34,
-      dayChangePercent: 1.28,
-      sector: 'Technology',
-      marketCap: '2.9T',
-      pe: 28.5,
-      dividend: 0.24,
-      rating: 'Buy'
-    },
-    {
-      symbol: 'MSFT',
-      name: 'Microsoft Corporation',
-      shares: 15,
-      currentPrice: 412.73,
-      totalValue: 6190.95,
-      dayChange: -5.67,
-      dayChangePercent: -1.35,
-      sector: 'Technology',
-      marketCap: '3.1T',
-      pe: 32.1,
-      dividend: 0.75,
-      rating: 'Buy'
-    },
-    {
-      symbol: 'GOOGL',
-      name: 'Alphabet Inc.',
-      shares: 8,
-      currentPrice: 142.56,
-      totalValue: 1140.48,
-      dayChange: 0.89,
-      dayChangePercent: 0.63,
-      sector: 'Technology',
-      marketCap: '1.8T',
-      pe: 25.3,
-      dividend: 0.00,
-      rating: 'Hold'
-    },
-    {
-      symbol: 'TSLA',
-      name: 'Tesla Inc.',
-      shares: 12,
-      currentPrice: 248.91,
-      totalValue: 2986.92,
-      dayChange: 12.45,
-      dayChangePercent: 5.26,
-      sector: 'Automotive',
-      marketCap: '790B',
-      pe: 65.2,
-      dividend: 0.00,
-      rating: 'Hold'
-    },
-    {
-      symbol: 'NVDA',
-      name: 'NVIDIA Corporation',
-      shares: 5,
-      currentPrice: 875.28,
-      totalValue: 4376.40,
-      dayChange: 15.67,
-      dayChangePercent: 1.82,
-      sector: 'Technology',
-      marketCap: '2.2T',
-      pe: 71.8,
-      dividend: 0.16,
-      rating: 'Buy'
-    },
-    {
-      symbol: 'AMZN',
-      name: 'Amazon.com Inc.',
-      shares: 10,
-      currentPrice: 155.89,
-      totalValue: 1558.90,
-      dayChange: -2.11,
-      dayChangePercent: -1.33,
-      sector: 'Consumer Discretionary',
-      marketCap: '1.6T',
-      pe: 45.7,
-      dividend: 0.00,
-      rating: 'Buy'
-    }
-  ];
+  
+  const { 
+    investments, 
+    loading, 
+    error, 
+    refetch,
+    getTotalInvestmentValue,
+    getDailyChange,
+    getDailyChangePercent
+  } = useInvestments();
 
   const watchlist = [
     { symbol: 'META', name: 'Meta Platforms Inc.', price: 498.37, change: 3.45, changePercent: 0.70, rating: 'Buy' },
@@ -128,23 +52,23 @@ const Investments: React.FC = () => {
     }
   ];
 
-  const filteredPortfolio = portfolio.filter(stock =>
+  const filteredInvestments = investments.filter(stock =>
     stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
     stock.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPortfolioValue = portfolio.reduce((sum, stock) => sum + stock.totalValue, 0);
-  const totalDayChange = portfolio.reduce((sum, stock) => sum + (stock.dayChange * stock.shares), 0);
-  const totalDayChangePercent = (totalDayChange / (totalPortfolioValue - totalDayChange)) * 100;
+  const totalPortfolioValue = getTotalInvestmentValue();
+  const totalDayChange = getDailyChange();
+  const totalDayChangePercent = getDailyChangePercent();
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await refetch();
     setIsRefreshing(false);
   };
 
   const getRatingColor = (rating: string) => {
-    switch (rating.toLowerCase()) {
+    switch (rating?.toLowerCase()) {
       case 'buy': return 'text-green-600 bg-green-50 border-green-200';
       case 'hold': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
       case 'sell': return 'text-red-600 bg-red-50 border-red-200';
@@ -158,6 +82,42 @@ const Investments: React.FC = () => {
     { id: 'news', label: 'Market News', icon: TrendingUp },
     { id: 'analysis', label: 'Analysis', icon: Target }
   ];
+
+  if (loading) {
+    return (
+      <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-300/50 rounded w-48 mb-4"></div>
+          <div className="space-y-4">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-24 bg-gray-300/50 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
+        <div className="text-center py-12 bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={24} className="text-red-600" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Failed to Load Investments</h3>
+          <p className="text-gray-500 mb-6">{error}</p>
+          <InteractiveHoverButton
+            variant="blue"
+            text="Try Again"
+            icon={<RefreshCw size={16} />}
+            onClick={handleRefresh}
+            className="px-6 py-3"
+          />
+        </div>
+      </div>
+    );
+  }
 
   const renderPortfolioTab = () => (
     <div className="space-y-6">
@@ -177,7 +137,7 @@ const Investments: React.FC = () => {
           <div className="text-3xl font-bold text-blue-900">
             ${totalPortfolioValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-sm text-blue-600 mt-2">6 holdings</div>
+          <div className="text-sm text-blue-600 mt-2">{investments.length} holdings</div>
         </motion.div>
         
         <motion.div 
@@ -192,7 +152,7 @@ const Investments: React.FC = () => {
             <div className={`text-sm font-medium ${totalDayChange >= 0 ? 'text-green-700' : 'text-red-700'} uppercase tracking-wide`}>Today's Change</div>
           </div>
           <div className={`text-3xl font-bold ${totalDayChange >= 0 ? 'text-green-900' : 'text-red-900'}`}>
-            {totalDayChange >= 0 ? '+' : ''}${totalDayChange.toFixed(2)}
+            {totalDayChange >= 0 ? '+' : ''}${Math.abs(totalDayChange).toFixed(2)}
           </div>
           <div className={`text-sm ${totalDayChange >= 0 ? 'text-green-600' : 'text-red-600'} mt-2`}>
             {totalDayChangePercent >= 0 ? '+' : ''}{totalDayChangePercent.toFixed(2)}%
@@ -264,109 +224,127 @@ const Investments: React.FC = () => {
 
         {/* Stock Rows */}
         <div className="divide-y divide-gray-200/50">
-          {filteredPortfolio.map((stock, index) => (
-            <motion.div 
-              key={stock.symbol}
-              className="p-6 hover:bg-gray-50/50 transition-colors cursor-pointer"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              whileHover={{ scale: 1.005 }}
-            >
-              {/* Desktop Layout */}
-              <div className="hidden lg:grid grid-cols-8 gap-4 items-center">
-                <div className="font-bold text-accent-blue text-lg">{stock.symbol}</div>
-                <div>
-                  <div className="font-medium text-gray-900">{stock.name}</div>
-                  <div className="text-sm text-gray-500">{stock.sector}</div>
-                </div>
-                <div className="text-center text-gray-900">{stock.shares}</div>
-                <div className="text-right text-gray-900">${stock.currentPrice.toFixed(2)}</div>
-                <div className={`text-right font-bold flex items-center justify-end space-x-2 ${
-                  stock.dayChange >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                  <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center">
-                    {stock.dayChange >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                  </div>
-                  <span>{stock.dayChange >= 0 ? '+' : ''}{stock.dayChangePercent.toFixed(2)}%</span>
-                </div>
-                <div className="text-right font-bold text-gray-900">${stock.totalValue.toFixed(2)}</div>
-                <div className="text-center">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs border ${getRatingColor(stock.rating)}`}>
-                    {stock.rating}
-                  </span>
-                </div>
-                <div className="text-center">
-                  <div className="flex space-x-2 justify-center">
-                    <InteractiveHoverButton
-                      variant="white"
-                      text="Buy"
-                      className="px-3 py-1 text-xs"
-                    />
-                    <InteractiveHoverButton
-                      variant="white"
-                      text="Sell"
-                      className="px-3 py-1 text-xs"
-                    />
-                  </div>
-                </div>
+          {filteredInvestments.length === 0 ? (
+            <div className="p-8 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Search size={24} className="text-gray-400" />
               </div>
-
-              {/* Mobile Layout */}
-              <div className="lg:hidden space-y-4">
-                <div className="flex justify-between items-start">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No investments found</h3>
+              <p className="text-gray-500 mb-6">
+                {searchTerm ? 'Try adjusting your search terms' : 'Add your first investment to get started'}
+              </p>
+              <InteractiveHoverButton
+                variant="blue"
+                text="Add Investment"
+                icon={<Plus size={16} />}
+                className="mx-auto"
+              />
+            </div>
+          ) : (
+            filteredInvestments.map((stock, index) => (
+              <motion.div 
+                key={stock.symbol}
+                className="p-6 hover:bg-gray-50/50 transition-colors cursor-pointer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                whileHover={{ scale: 1.005 }}
+              >
+                {/* Desktop Layout */}
+                <div className="hidden lg:grid grid-cols-8 gap-4 items-center">
+                  <div className="font-bold text-accent-blue text-lg">{stock.symbol}</div>
                   <div>
-                    <div className="font-bold text-accent-blue text-lg">{stock.symbol}</div>
                     <div className="font-medium text-gray-900">{stock.name}</div>
                     <div className="text-sm text-gray-500">{stock.sector}</div>
-                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs border mt-2 ${getRatingColor(stock.rating)}`}>
-                      {stock.rating}
+                  </div>
+                  <div className="text-center text-gray-900">{stock.shares}</div>
+                  <div className="text-right text-gray-900">${stock.current_price.toFixed(2)}</div>
+                  <div className={`text-right font-bold flex items-center justify-end space-x-2 ${
+                    stock.day_change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center">
+                      {stock.day_change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                    </div>
+                    <span>{stock.day_change >= 0 ? '+' : ''}{stock.day_change_percent.toFixed(2)}%</span>
+                  </div>
+                  <div className="text-right font-bold text-gray-900">${stock.total_value.toFixed(2)}</div>
+                  <div className="text-center">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs border ${getRatingColor(stock.rating || '')}`}>
+                      {stock.rating || 'N/A'}
                     </span>
                   </div>
-                  <div className="text-right">
-                    <div className="font-bold text-gray-900">${stock.totalValue.toFixed(2)}</div>
-                    <div className={`text-sm font-medium ${
-                      stock.dayChange >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}>
-                      {stock.dayChange >= 0 ? '+' : ''}{stock.dayChangePercent.toFixed(2)}%
+                  <div className="text-center">
+                    <div className="flex space-x-2 justify-center">
+                      <InteractiveHoverButton
+                        variant="white"
+                        text="Buy"
+                        className="px-3 py-1 text-xs"
+                      />
+                      <InteractiveHoverButton
+                        variant="white"
+                        text="Sell"
+                        className="px-3 py-1 text-xs"
+                      />
                     </div>
                   </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-gray-500">Shares: </span>
-                    <span className="text-gray-900">{stock.shares}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Price: </span>
-                    <span className="text-gray-900">${stock.currentPrice.toFixed(2)}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">P/E: </span>
-                    <span className="text-gray-900">{stock.pe}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Dividend: </span>
-                    <span className="text-gray-900">${stock.dividend}</span>
-                  </div>
-                </div>
 
-                <div className="flex space-x-3">
-                  <InteractiveHoverButton
-                    variant="white"
-                    text="Buy More"
-                    className="flex-1 text-center text-sm px-4 py-2"
-                  />
-                  <InteractiveHoverButton
-                    variant="blue"
-                    text="Sell"
-                    className="flex-1 text-center text-sm px-4 py-2"
-                  />
+                {/* Mobile Layout */}
+                <div className="lg:hidden space-y-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <div className="font-bold text-accent-blue text-lg">{stock.symbol}</div>
+                      <div className="font-medium text-gray-900">{stock.name}</div>
+                      <div className="text-sm text-gray-500">{stock.sector}</div>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs border mt-2 ${getRatingColor(stock.rating || '')}`}>
+                        {stock.rating || 'N/A'}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-bold text-gray-900">${stock.total_value.toFixed(2)}</div>
+                      <div className={`text-sm font-medium ${
+                        stock.day_change >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        {stock.day_change >= 0 ? '+' : ''}{stock.day_change_percent.toFixed(2)}%
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <span className="text-gray-500">Shares: </span>
+                      <span className="text-gray-900">{stock.shares}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Price: </span>
+                      <span className="text-gray-900">${stock.current_price.toFixed(2)}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">P/E: </span>
+                      <span className="text-gray-900">{stock.pe || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Dividend: </span>
+                      <span className="text-gray-900">${stock.dividend || '0.00'}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex space-x-3">
+                    <InteractiveHoverButton
+                      variant="white"
+                      text="Buy More"
+                      className="flex-1 text-center text-sm px-4 py-2"
+                    />
+                    <InteractiveHoverButton
+                      variant="blue"
+                      text="Sell"
+                      className="flex-1 text-center text-sm px-4 py-2"
+                    />
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))
+          )}
         </div>
       </div>
     </div>

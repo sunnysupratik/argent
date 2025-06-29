@@ -12,8 +12,7 @@ export function useAuth() {
     
     // Debug: Log the user ID that will be used for queries
     if (currentUser) {
-      console.log('User ID for database queries:', currentUser.id);
-      console.log('Username:', currentUser.username);
+      console.log('Username for database queries:', currentUser.username);
       console.log('Full user object:', currentUser);
     }
     
@@ -34,7 +33,7 @@ export function useAuth() {
       }
 
       console.log('Sign in successful for user:', user?.username);
-      console.log('User ID that will be used for queries:', user?.id);
+      console.log('Username that will be used for queries:', user?.username);
       setUser(user);
       return { data: { user }, error: null };
     } catch (error) {
@@ -61,7 +60,7 @@ export function useAuth() {
       }
 
       console.log('Sign up successful for user:', user?.username);
-      console.log('User ID that will be used for queries:', user?.id);
+      console.log('Username that will be used for queries:', user?.username);
       setUser(user);
       return { data: { user }, error: null };
     } catch (error) {

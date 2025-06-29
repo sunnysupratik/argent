@@ -30,12 +30,12 @@ export interface Profile {
   location?: string | null;
   occupation?: string | null;
   bio?: string | null;
+  user_name?: string | null;
 }
 
 export interface Account {
   id: string;
-  user_id: string;
-  custom_user_id: string | null;
+  user_name: string;
   account_name: string;
   account_type: string;
   current_balance: number;
@@ -44,8 +44,7 @@ export interface Account {
 
 export interface Category {
   id: string;
-  user_id: string | null;
-  custom_user_id: string | null;
+  user_name: string | null;
   name: string;
   icon_name: string | null;
   created_at: string;
@@ -53,16 +52,33 @@ export interface Category {
 
 export interface Transaction {
   id: string;
-  user_id: string;
-  custom_user_id: string | null;
-  account_id: string;
-  category_id: string | null;
+  user_name: string;
   description: string;
   amount: number;
   type: string;
   transaction_date: string;
-  category?: Category;
-  account?: Account;
+  category: string;
+  account_name: string;
+  created_at?: string;
+}
+
+export interface Investment {
+  id: string;
+  user_name: string;
+  symbol: string;
+  name: string;
+  shares: number;
+  current_price: number;
+  total_value: number;
+  day_change: number;
+  day_change_percent: number;
+  sector?: string;
+  market_cap?: string;
+  pe?: number;
+  dividend?: number;
+  rating?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 // Custom authentication functions
@@ -97,24 +113,55 @@ export const customAuth = {
         }
       }
       
-      const { data, error } = await supabase
-        .from('custom_users')
-        .select('*')
-        .eq('username', username)
-        .eq('password', password)
-        .single();
+      // Try to fetch from direct_accounts to verify if we should use direct tables
+      const { data: directAccountsExist } = await supabase
+        .from('direct_accounts')
+        .select('id')
+        .limit(1);
+      
+      if (directAccountsExist && directAccountsExist.length > 0) {
+        console.log('Using direct tables for authentication');
+        
+        // For direct tables, we use user_name instead of username
+        const { data, error } = await supabase
+          .from('custom_users')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .single();
 
-      if (error || !data) {
-        console.log('CustomAuth.signIn - Login failed:', error?.message || 'User not found');
-        return { user: null, error: { message: 'Invalid username or password' } };
+        if (error || !data) {
+          console.log('CustomAuth.signIn - Login failed:', error?.message || 'User not found');
+          return { user: null, error: { message: 'Invalid username or password' } };
+        }
+
+        console.log('CustomAuth.signIn - Login successful for user:', data.username, 'ID:', data.id);
+        
+        // Store user in localStorage for session management
+        localStorage.setItem('customUser', JSON.stringify(data));
+        
+        return { user: data, error: null };
+      } else {
+        // Fall back to original custom_users table
+        const { data, error } = await supabase
+          .from('custom_users')
+          .select('*')
+          .eq('username', username)
+          .eq('password', password)
+          .single();
+
+        if (error || !data) {
+          console.log('CustomAuth.signIn - Login failed:', error?.message || 'User not found');
+          return { user: null, error: { message: 'Invalid username or password' } };
+        }
+
+        console.log('CustomAuth.signIn - Login successful for user:', data.username, 'ID:', data.id);
+        
+        // Store user in localStorage for session management
+        localStorage.setItem('customUser', JSON.stringify(data));
+        
+        return { user: data, error: null };
       }
-
-      console.log('CustomAuth.signIn - Login successful for user:', data.username, 'ID:', data.id);
-      
-      // Store user in localStorage for session management
-      localStorage.setItem('customUser', JSON.stringify(data));
-      
-      return { user: data, error: null };
     } catch (err) {
       console.error('CustomAuth.signIn - Unexpected error:', err);
       return { user: null, error: { message: 'Authentication failed' } };
