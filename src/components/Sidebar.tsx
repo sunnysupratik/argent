@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, LogOut, MessageCircle, Home, Video, Phone } from 'lucide-react';
+import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, LogOut, MessageCircle, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
@@ -50,19 +50,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
     },
     { 
       id: 'chat', 
-      label: 'Call', 
-      icon: Phone, 
+      label: 'AI Advisor', 
+      icon: MessageCircle, 
       path: '/app/chat',
       gradientFrom: '#ffa9c6',
       gradientTo: '#f434e2'
-    },
-    { 
-      id: 'video', 
-      label: 'Video', 
-      icon: Video, 
-      path: '#',
-      gradientFrom: '#FF6B6B',
-      gradientTo: '#FF8E53'
     },
     { 
       id: 'profile', 
@@ -83,12 +75,6 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
   ];
 
   const handleNavigation = (item: typeof menuItems[0]) => {
-    if (item.id === 'video') {
-      // Open video app in new tab
-      window.open('https://effortless-cucurucho-5a3e21.netlify.app/', '_blank', 'noopener,noreferrer');
-      return;
-    }
-    
     onViewChange(item.id);
     navigate(item.path);
   };

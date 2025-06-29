@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, Video, Phone } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -79,6 +79,10 @@ const AppLayout: React.FC = () => {
     return titles[view] || 'Dashboard';
   };
 
+  const handleVideoClick = () => {
+    window.open('https://effortless-cucurucho-5a3e21.netlify.app/', '_blank', 'noopener,noreferrer');
+  };
+
   // Show loading state while checking authentication
   if (loading) {
     return (
@@ -137,32 +141,148 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Persistent ElevenLabs Widget - Available throughout entire dashboard */}
+      {/* Enhanced Floating Action Buttons - Bottom Right */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-4">
+        {/* Video Button */}
+        <motion.button
+          onClick={handleVideoClick}
+          className="group relative w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.8 }}
+          whileHover={{ 
+            scale: 1.1,
+            boxShadow: "0 20px 40px rgba(239, 68, 68, 0.4)"
+          }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {/* Animated background pulse */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-red-400 to-red-500 rounded-full"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.7, 0.3, 0.7],
+            }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+          
+          {/* Ripple effect on hover */}
+          <motion.div
+            className="absolute inset-0 bg-white rounded-full opacity-0 group-hover:opacity-20"
+            initial={{ scale: 0 }}
+            whileHover={{ 
+              scale: 1,
+              transition: { duration: 0.3 }
+            }}
+          />
+          
+          {/* Icon */}
+          <motion.div
+            className="relative z-10"
+            whileHover={{ rotate: 15 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Video size={24} />
+          </motion.div>
+          
+          {/* Tooltip */}
+          <motion.div
+            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            initial={{ x: 10, opacity: 0 }}
+            whileHover={{ x: 0, opacity: 1 }}
+          >
+            Video Advisor
+            <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
+          </motion.div>
+        </motion.button>
+
+        {/* Call Button (ElevenLabs) */}
+        <motion.button
+          onClick={() => setShowNeedHelp(!showNeedHelp)}
+          className="group relative w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-300 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
+          whileHover={{ 
+            scale: 1.1,
+            boxShadow: "0 20px 40px rgba(59, 130, 246, 0.4)"
+          }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {/* Animated background pulse */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full"
+            animate={{
+              scale: [1, 1.2, 1],
+              opacity: [0.7, 0.3, 0.7],
+            }}
+            transition={{
+              duration: 2.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: 0.5,
+            }}
+          />
+          
+          {/* Ripple effect on hover */}
+          <motion.div
+            className="absolute inset-0 bg-white rounded-full opacity-0 group-hover:opacity-20"
+            initial={{ scale: 0 }}
+            whileHover={{ 
+              scale: 1,
+              transition: { duration: 0.3 }
+            }}
+          />
+          
+          {/* Icon with enhanced animation */}
+          <motion.div
+            className="relative z-10"
+            animate={{
+              rotate: [0, 5, -5, 0],
+            }}
+            transition={{
+              duration: 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            whileHover={{ 
+              scale: 1.1,
+              rotate: 0,
+              transition: { duration: 0.2 }
+            }}
+          >
+            <Phone size={24} />
+          </motion.div>
+          
+          {/* Tooltip */}
+          <motion.div
+            className="absolute right-full mr-3 px-3 py-2 bg-gray-900 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
+            initial={{ x: 10, opacity: 0 }}
+            whileHover={{ x: 0, opacity: 1 }}
+          >
+            Voice Assistant
+            <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
+          </motion.div>
+        </motion.button>
+      </div>
+
+      {/* ElevenLabs Widget - Positioned above the buttons when active */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-20 right-6 z-50"
+            className="fixed bottom-32 right-6 z-40"
           >
             <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Persistent Toggle Button - Always visible in dashboard */}
-      <motion.button
-        onClick={() => setShowNeedHelp(!showNeedHelp)}
-        className="fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-colors"
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, delay: 2.0 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        <MessageCircle size={24} />
-      </motion.button>
     </div>
   );
 };
