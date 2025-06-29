@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Video, Phone, X, Headphones, Zap, Send, Sparkles, PlusCircle } from 'lucide-react';
+import { MessageCircle, Video, Phone, X, Headphones, Send, Sparkles } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -16,13 +16,13 @@ import VideoChat from '../components/VideoChat';
 import PageTransition from '../components/PageTransition';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import { useAuth } from '../hooks/useAuth';
+import { AnimatedDock } from '../components/ui/animated-dock';
 
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showNeedHelp, setShowNeedHelp] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
-  const [fabExpanded, setFabExpanded] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -70,21 +70,6 @@ const AppLayout: React.FC = () => {
     };
   }, [isMobileMenuOpen, showVideoModal]);
 
-  // Close FAB menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (fabExpanded && !target.closest('.fab-container')) {
-        setFabExpanded(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [fabExpanded]);
-
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
       dashboard: 'Dashboard',
@@ -100,7 +85,6 @@ const AppLayout: React.FC = () => {
 
   const handleVideoClick = () => {
     setShowVideoModal(true);
-    setFabExpanded(false);
     setActiveAssistant('video');
   };
 
@@ -109,29 +93,19 @@ const AppLayout: React.FC = () => {
     setActiveAssistant(null);
   };
 
-  const toggleFab = () => {
-    setFabExpanded(!fabExpanded);
-    if (fabExpanded) {
-      setActiveAssistant(null);
-    }
-  };
-
   const toggleVoiceAssistant = () => {
     setShowNeedHelp(!showNeedHelp);
-    setFabExpanded(false);
     setActiveAssistant(showNeedHelp ? null : 'voice');
   };
 
   const handleChatClick = () => {
     navigate('/app/chat');
-    setFabExpanded(false);
     setActiveAssistant('chat');
   };
 
   const handleSendMessage = () => {
     // This would open a direct message or feedback form
     console.log('Send message clicked');
-    setFabExpanded(false);
   };
 
   // Show loading state while checking authentication
@@ -150,6 +124,44 @@ const AppLayout: React.FC = () => {
   if (!user) {
     return null;
   }
+
+  // Define dock items
+  const dockItems = [
+    {
+      link: "#",
+      Icon: <Sparkles size={22} className="text-white" />,
+      onClick: () => setActiveAssistant(null),
+      active: activeAssistant === null,
+      label: "AI Assistants"
+    },
+    {
+      link: "#",
+      Icon: <Video size={22} className="text-white" />,
+      onClick: handleVideoClick,
+      active: activeAssistant === 'video',
+      label: "Video Advisor"
+    },
+    {
+      link: "#",
+      Icon: <Headphones size={22} className="text-white" />,
+      onClick: toggleVoiceAssistant,
+      active: activeAssistant === 'voice',
+      label: "Voice Assistant"
+    },
+    {
+      link: "#",
+      Icon: <MessageCircle size={22} className="text-white" />,
+      onClick: handleChatClick,
+      active: activeAssistant === 'chat',
+      label: "AI Chat"
+    },
+    {
+      link: "#",
+      Icon: <Send size={22} className="text-white" />,
+      onClick: handleSendMessage,
+      label: "Send Message"
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
@@ -192,255 +204,13 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Enhanced Floating Action Button System */}
-      <div className="fixed bottom-8 right-8 z-50 fab-container">
-        {/* Floating Action Button Menu */}
-        <div className="relative">
-          {/* Main FAB Button */}
-          <motion.button
-            onClick={toggleFab}
-            className={`relative z-50 w-16 h-16 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 ${
-              fabExpanded 
-                ? 'bg-gray-800 text-white' 
-                : 'bg-gradient-to-r from-accent-blue to-blue-600 text-white'
-            }`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 20px 40px rgba(0, 122, 255, 0.4)"
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.div
-              animate={{ rotate: fabExpanded ? 45 : 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {fabExpanded ? <X size={24} /> : <Sparkles size={24} />}
-            </motion.div>
-            
-            {/* Pulsing effect when not expanded */}
-            {!fabExpanded && (
-              <motion.div
-                className="absolute inset-0 rounded-full bg-accent-blue"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [1, 0, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  repeatType: "loop",
-                }}
-                style={{ zIndex: -1 }}
-              />
-            )}
-          </motion.button>
-          
-          {/* Floating Label */}
-          <AnimatePresence>
-            {!fabExpanded && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.3 }}
-                className="absolute right-full mr-3 top-1/2 transform -translate-y-1/2 bg-black/80 text-white text-sm px-3 py-1.5 rounded-lg whitespace-nowrap"
-              >
-                <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
-                AI Assistants
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* FAB Menu Items */}
-        <AnimatePresence>
-          {fabExpanded && (
-            <>
-              {/* Semi-transparent overlay */}
-              <motion.div
-                className="fixed inset-0 bg-black/5 backdrop-blur-sm z-40"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setFabExpanded(false)}
-              />
-              
-              {/* Video Button */}
-              <motion.div
-                className="absolute z-45"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1, 
-                  x: -80, 
-                  y: -40,
-                  transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.05 }
-                }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0.5, 
-                  x: 0, 
-                  y: 0,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <motion.button
-                  onClick={handleVideoClick}
-                  className={`group relative w-14 h-14 text-white rounded-full shadow-xl flex items-center justify-center ${
-                    activeAssistant === 'video'
-                      ? 'bg-red-700'
-                      : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
-                  }`}
-                  whileHover={{ 
-                    scale: 1.1,
-                    boxShadow: "0 15px 30px rgba(239, 68, 68, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Video size={22} />
-                  
-                  {/* Tooltip */}
-                  <motion.div
-                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  >
-                    Video Advisor
-                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
-                  </motion.div>
-                </motion.button>
-              </motion.div>
-
-              {/* Voice Assistant Button */}
-              <motion.div
-                className="absolute z-45"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1, 
-                  x: -90, 
-                  y: 0,
-                  transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.1 }
-                }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0.5, 
-                  x: 0, 
-                  y: 0,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <motion.button
-                  onClick={toggleVoiceAssistant}
-                  className={`group relative w-14 h-14 text-white rounded-full shadow-xl flex items-center justify-center ${
-                    activeAssistant === 'voice'
-                      ? 'bg-purple-700'
-                      : 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700'
-                  }`}
-                  whileHover={{ 
-                    scale: 1.1,
-                    boxShadow: "0 15px 30px rgba(139, 92, 246, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Headphones size={22} />
-                  
-                  {/* Tooltip */}
-                  <motion.div
-                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  >
-                    Voice Assistant
-                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
-                  </motion.div>
-                </motion.button>
-              </motion.div>
-
-              {/* Chat Button */}
-              <motion.div
-                className="absolute z-45"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1, 
-                  x: -80, 
-                  y: 40,
-                  transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.15 }
-                }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0.5, 
-                  x: 0, 
-                  y: 0,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <motion.button
-                  onClick={handleChatClick}
-                  className={`group relative w-14 h-14 text-white rounded-full shadow-xl flex items-center justify-center ${
-                    activeAssistant === 'chat'
-                      ? 'bg-green-700'
-                      : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
-                  }`}
-                  whileHover={{ 
-                    scale: 1.1,
-                    boxShadow: "0 15px 30px rgba(16, 185, 129, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <MessageCircle size={22} />
-                  
-                  {/* Tooltip */}
-                  <motion.div
-                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  >
-                    AI Chat
-                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
-                  </motion.div>
-                </motion.button>
-              </motion.div>
-
-              {/* Send Message Button */}
-              <motion.div
-                className="absolute z-45"
-                initial={{ opacity: 0, scale: 0.5 }}
-                animate={{ 
-                  opacity: 1, 
-                  scale: 1, 
-                  x: -40, 
-                  y: 70,
-                  transition: { type: "spring", stiffness: 300, damping: 20, delay: 0.2 }
-                }}
-                exit={{ 
-                  opacity: 0, 
-                  scale: 0.5, 
-                  x: 0, 
-                  y: 0,
-                  transition: { duration: 0.2 }
-                }}
-              >
-                <motion.button
-                  onClick={handleSendMessage}
-                  className="group relative w-14 h-14 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white rounded-full shadow-xl flex items-center justify-center"
-                  whileHover={{ 
-                    scale: 1.1,
-                    boxShadow: "0 15px 30px rgba(245, 158, 11, 0.4)"
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Send size={22} />
-                  
-                  {/* Tooltip */}
-                  <motion.div
-                    className="absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none"
-                  >
-                    Send Message
-                    <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-8 border-transparent border-l-black/80"></div>
-                  </motion.div>
-                </motion.button>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+      {/* Vertical Animated Dock */}
+      <div className="fixed bottom-8 right-8 z-50">
+        <AnimatedDock 
+          items={dockItems}
+          vertical={true}
+          className="bg-black/10 backdrop-blur-md border-white/20"
+        />
       </div>
 
       {/* Video Modal */}

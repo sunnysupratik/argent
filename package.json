@@ -32,7 +32,8 @@
     "react-markdown": "^9.0.1",
     "remark-gfm": "^4.0.0",
     "rehype-highlight": "^7.0.0",
-    "rehype-raw": "^7.0.0"
+    "rehype-raw": "^7.0.0",
+    "motion": "^10.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
