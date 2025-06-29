@@ -207,7 +207,7 @@ const AppLayout: React.FC = () => {
         activeAssistant={activeAssistant}
       />
 
-      {/* Voice Assistant Modal */}
+      {/* Voice Assistant */}
       <AnimatePresence>
         {showVoiceAssistant && (
           <motion.div 
@@ -228,7 +228,7 @@ const AppLayout: React.FC = () => {
               }}
             />
             
-            {/* Just the ElevenLabs widget without any container */}
+            {/* ElevenLabs Widget - No container, just the raw element */}
             <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
           </motion.div>
         )}
