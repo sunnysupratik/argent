@@ -140,20 +140,20 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Bottom Right Widget Area - HORIZONTAL LAYOUT */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-end space-x-4">
-        {/* ElevenLabs Call Interface - LEFT SIDE */}
+      {/* Bottom Right Widget Area - VERTICAL STACK */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
+        {/* ElevenLabs Call Interface - ABOVE VIDEO BUTTON */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8, x: 20 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.8 }}
           className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
         >
           <elevenlabs-convai 
             agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
             style={{
-              width: '280px',
-              height: '320px',
+              width: '260px',
+              height: '280px',
               border: 'none',
               borderRadius: '16px',
               display: 'block'
@@ -161,12 +161,12 @@ const AppLayout: React.FC = () => {
           ></elevenlabs-convai>
         </motion.div>
 
-        {/* Video Button - RIGHT SIDE */}
+        {/* Video Button - BOTTOM */}
         <motion.button
           onClick={handleVideoClick}
-          className="group w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden self-end"
-          initial={{ opacity: 0, scale: 0.8, x: 20 }}
-          animate={{ opacity: 1, scale: 1, x: 0 }}
+          className="group w-14 h-14 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 2.0 }}
           whileHover={{ 
             scale: 1.1,
