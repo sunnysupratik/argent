@@ -293,20 +293,6 @@ const AppLayout: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* ElevenLabs Widget - Positioned above the buttons when active */}
-      <AnimatePresence>
-        {showNeedHelp && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-32 right-6 z-40"
-          >
-            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
