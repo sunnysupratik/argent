@@ -3,7 +3,7 @@ import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage';
 import LoadingDots from './LoadingDots';
-import { Bot, Send, Sparkles, TrendingUp, DollarSign, PieChart, BarChart3, Zap, Target } from 'lucide-react';
+import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3 } from 'lucide-react';
 
 const ChatContainer: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);

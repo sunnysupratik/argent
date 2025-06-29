@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, X } from 'lucide-react';
+import { Video, X, MessageCircle } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -23,6 +23,7 @@ const AppLayout: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showNeedHelp, setShowNeedHelp] = useState(false);
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
   const location = useLocation();
   const navigate = useNavigate();
@@ -62,7 +63,7 @@ const AppLayout: React.FC = () => {
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isMobileMenuOpen || showVideoModal) {
+    if (isMobileMenuOpen || showVideoModal || showChatModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -71,7 +72,7 @@ const AppLayout: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen, showVideoModal]);
+  }, [isMobileMenuOpen, showVideoModal, showChatModal]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -98,14 +99,21 @@ const AppLayout: React.FC = () => {
     }
   };
 
+  const handleChatClick = () => {
+    setShowChatModal(true);
+    setActiveAssistant('chat');
+  };
+
+  const closeChatModal = () => {
+    setShowChatModal(false);
+    if (activeAssistant === 'chat') {
+      setActiveAssistant(null);
+    }
+  };
+
   const toggleVoiceAssistant = () => {
     setShowNeedHelp(!showNeedHelp);
     setActiveAssistant(showNeedHelp ? null : 'voice');
-  };
-
-  const handleChatClick = () => {
-    navigate('/app/chat');
-    setActiveAssistant('chat');
   };
 
   const handleSendMessage = () => {
@@ -212,7 +220,7 @@ const AppLayout: React.FC = () => {
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
                     <Video size={20} className="text-white" />
@@ -234,6 +242,52 @@ const AppLayout: React.FC = () => {
               {/* Modal Content */}
               <div className="flex-1 relative">
                 <VideoChat />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Chat Modal */}
+      <AnimatePresence>
+        {showChatModal && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={modalVariants}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={closeChatModal}
+          >
+            <motion.div
+              variants={contentVariants}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header - Same style as Video Modal */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                    <MessageCircle size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">AI Chat Advisor</h2>
+                    <p className="text-sm text-gray-600">Text consultation</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={closeChatModal}
+                  className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <X size={20} className="text-gray-600" />
+                </button>
+              </div>
+
+              {/* Modal Content */}
+              <div className="flex-1 relative">
+                <Chat />
               </div>
             </motion.div>
           </motion.div>
