@@ -25,14 +25,13 @@ const AppLayout: React.FC = () => {
   const [showVideoModal, setShowVideoModal] = useState(false);
   const [showChatModal, setShowChatModal] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
-  const [elevenLabsScriptLoaded, setElevenLabsScriptLoaded] = useState(false);
-  const [elevenLabsScriptError, setElevenLabsScriptError] = useState(false);
-  const [elevenLabsWidgetReady, setElevenLabsWidgetReady] = useState(false);
+  const [voiceAssistantLoading, setVoiceAssistantLoading] = useState(false);
+  const [voiceAssistantError, setVoiceAssistantError] = useState<string | null>(null);
   
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
-  const elevenLabsContainerRef = useRef<HTMLDivElement>(null);
+  const voiceAssistantContainerRef = useRef<HTMLDivElement>(null);
 
   // Initialize smooth scrolling
   useSmoothScroll();
@@ -79,43 +78,60 @@ const AppLayout: React.FC = () => {
     };
   }, [isMobileMenuOpen, showVideoModal, showChatModal, showVoiceAssistant]);
 
-  // Load ElevenLabs script when voice assistant is shown
+  // Handle voice assistant initialization
   useEffect(() => {
-    if (showVoiceAssistant && !elevenLabsScriptLoaded) {
+    if (showVoiceAssistant) {
+      setVoiceAssistantLoading(true);
+      setVoiceAssistantError(null);
+      
+      // Load the ElevenLabs script dynamically
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
       script.async = true;
+      
       script.onload = () => {
         console.log('ElevenLabs script loaded successfully');
-        setElevenLabsScriptLoaded(true);
+        setVoiceAssistantLoading(false);
         
-        // Check if the custom element is defined
-        if (customElements.get('elevenlabs-convai')) {
-          console.log('ElevenLabs custom element is defined');
-          setElevenLabsWidgetReady(true);
-        } else {
-          console.log('Waiting for ElevenLabs custom element to be defined...');
-          // Wait a bit for the custom element to be defined
-          setTimeout(() => {
-            if (customElements.get('elevenlabs-convai')) {
-              console.log('ElevenLabs custom element is now defined');
-              setElevenLabsWidgetReady(true);
-            } else {
-              console.error('ElevenLabs custom element was not defined in time');
-              setElevenLabsScriptError(true);
-            }
-          }, 2000);
+        // Create and append the custom element
+        if (voiceAssistantContainerRef.current) {
+          // Clear any existing content
+          voiceAssistantContainerRef.current.innerHTML = '';
+          
+          // Create the custom element
+          const widget = document.createElement('elevenlabs-convai');
+          widget.setAttribute('agent-id', 'agent_01jyj0t1jderb9e505xd2vcjp9');
+          widget.classList.add('elevenlabs-widget');
+          
+          // Append to container
+          voiceAssistantContainerRef.current.appendChild(widget);
         }
       };
       
       script.onerror = () => {
         console.error('Failed to load ElevenLabs script');
-        setElevenLabsScriptError(true);
+        setVoiceAssistantLoading(false);
+        setVoiceAssistantError('Failed to load voice assistant. Please try again later.');
       };
       
+      // Add script to document
       document.body.appendChild(script);
+      
+      // Cleanup function
+      return () => {
+        // Remove the script when component unmounts or voice assistant is closed
+        const existingScript = document.querySelector('script[src="https://unpkg.com/@elevenlabs/convai-widget-embed"]');
+        if (existingScript && existingScript.parentNode) {
+          existingScript.parentNode.removeChild(existingScript);
+        }
+        
+        // Clear the container
+        if (voiceAssistantContainerRef.current) {
+          voiceAssistantContainerRef.current.innerHTML = '';
+        }
+      };
     }
-  }, [showVoiceAssistant, elevenLabsScriptLoaded]);
+  }, [showVoiceAssistant]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -261,27 +277,25 @@ const AppLayout: React.FC = () => {
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
-              ref={elevenLabsContainerRef}
             >
-              {elevenLabsScriptError ? (
+              {voiceAssistantError ? (
                 <div className="bg-white rounded-xl p-8 text-center">
                   <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <X size={24} className="text-red-600" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Connection Error</h3>
-                  <p className="text-gray-600 mb-6">Failed to load the voice assistant. Please check your connection and try again.</p>
+                  <p className="text-gray-600 mb-6">{voiceAssistantError}</p>
                   <button 
                     onClick={() => {
-                      setElevenLabsScriptError(false);
-                      setElevenLabsScriptLoaded(false);
-                      setElevenLabsWidgetReady(false);
+                      setVoiceAssistantError(null);
+                      setVoiceAssistantLoading(true);
                     }}
                     className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue-hover transition-colors"
                   >
                     Try Again
                   </button>
                 </div>
-              ) : !elevenLabsScriptLoaded || !elevenLabsWidgetReady ? (
+              ) : voiceAssistantLoading ? (
                 <div className="bg-white rounded-xl p-8 text-center">
                   <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                   <p className="text-gray-700">Loading voice assistant...</p>
@@ -309,11 +323,8 @@ const AppLayout: React.FC = () => {
                     </button>
                   </div>
                   
-                  <div className="elevenlabs-widget-container">
-                    <elevenlabs-convai 
-                      agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-                      className="elevenlabs-widget"
-                    ></elevenlabs-convai>
+                  <div className="elevenlabs-widget-container" ref={voiceAssistantContainerRef}>
+                    {/* ElevenLabs widget will be dynamically inserted here */}
                   </div>
                 </div>
               )}
