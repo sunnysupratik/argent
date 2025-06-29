@@ -113,10 +113,10 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
 
         {/* Main FAB Button */}
         <motion.button
+          onClick={toggleExpanded}
           className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg ${
             isExpanded ? 'bg-gray-700 rotate-45' : 'bg-accent-blue'
           } text-white`}
-          onClick={toggleExpanded}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
