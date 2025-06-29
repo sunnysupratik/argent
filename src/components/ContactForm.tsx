@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, CheckCircle, AlertCircle, User, Mail, Building, Phone, MessageSquare, DollarSign, Calendar, Tag } from 'lucide-react';
+import { Send, CheckCircle, AlertCircle, User, Mail, Building, Phone, MessageSquare, DollarSign, Calendar, Tag, Info } from 'lucide-react';
 import { useAirtable } from '../hooks/useAirtable';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
@@ -118,11 +118,21 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
         </motion.div>
         <h3 className="text-2xl font-bold text-green-900 mb-2">Thank You!</h3>
         <p className="text-green-700 mb-4">
-          Your message has been received and saved to our system. We'll get back to you within 24 hours.
+          Your message has been received and saved. We'll get back to you within 24 hours.
         </p>
         <div className="text-sm text-green-600">
           Lead ID: #{Date.now().toString().slice(-6)}
         </div>
+        {error && error.includes('demo purposes') && (
+          <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-start space-x-2">
+              <Info size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
+              <p className="text-blue-700 text-sm">
+                Demo mode: Your message was saved locally. To enable Airtable integration, configure your Pica credentials.
+              </p>
+            </div>
+          </div>
+        )}
       </motion.div>
     );
   }
@@ -144,12 +154,34 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6 p-4 bg-red-50/10 border border-red-500/20 rounded-xl flex items-start space-x-3"
+          className={`mb-6 p-4 border rounded-xl flex items-start space-x-3 ${
+            error.includes('demo purposes') 
+              ? 'bg-blue-50/10 border-blue-500/20' 
+              : 'bg-red-50/10 border-red-500/20'
+          }`}
         >
-          <AlertCircle size={20} className="text-red-400 mt-0.5 flex-shrink-0" />
+          {error.includes('demo purposes') ? (
+            <Info size={20} className="text-blue-400 mt-0.5 flex-shrink-0" />
+          ) : (
+            <AlertCircle size={20} className="text-red-400 mt-0.5 flex-shrink-0" />
+          )}
           <div>
-            <p className="text-red-300 font-medium">Error submitting form</p>
-            <p className="text-red-400 text-sm mt-1">{error}</p>
+            <p className={`font-medium ${error.includes('demo purposes') ? 'text-blue-300' : 'text-red-300'}`}>
+              {error.includes('demo purposes') ? 'Demo Mode Active' : 'Configuration Required'}
+            </p>
+            <p className={`text-sm mt-1 ${error.includes('demo purposes') ? 'text-blue-400' : 'text-red-400'}`}>
+              {error}
+            </p>
+            {error.includes('Authentication failed') && (
+              <div className="mt-2 text-xs text-red-300">
+                <p>To fix this:</p>
+                <ol className="list-decimal list-inside mt-1 space-y-1">
+                  <li>Copy .env.example to .env</li>
+                  <li>Replace placeholder values with your actual Pica credentials</li>
+                  <li>Restart the development server</li>
+                </ol>
+              </div>
+            )}
           </div>
         </motion.div>
       )}
