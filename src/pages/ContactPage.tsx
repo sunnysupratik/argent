@@ -1,63 +1,20 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Shield, BarChart3 } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, MessageCircle, Shield, BarChart3 } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
+import ContactForm from '../components/ContactForm';
 import { useAuth } from '../hooks/useAuth';
 import { InteractiveHoverButton } from '../components/ui/interactive-hover-button';
 
 const ContactPage: React.FC = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
-  };
-
-  const getUserName = () => {
-    if (user?.full_name) {
-      const firstName = user.full_name.split(' ')[0];
-      return firstName.replace(/\s*(test|user|demo).*$/i, '');
-    }
-    const email = user?.email?.split('@')[0] || 'User';
-    return email.replace(/\s*(test|user|demo).*$/i, '');
-  };
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsSubmitting(false);
-    // Reset form
-    setFormData({ name: '', email: '', subject: '', message: '' });
-    
-    // Show success message (you could implement a toast notification here)
-    alert('Thank you for your message! We\'ll get back to you soon.');
   };
 
   const contactInfo = [
@@ -188,7 +145,6 @@ const ContactPage: React.FC = () => {
 
             {user ? (
               <div className="flex items-center space-x-4">
-                {/* NO WELCOME MESSAGE HERE - HIDDEN ON CONTACT PAGE */}
                 <InteractiveHoverButton 
                   variant="white" 
                   text="Sign Out" 
@@ -242,7 +198,7 @@ const ContactPage: React.FC = () => {
               </span>
             </motion.div>
 
-            {/* Main Title - Same Typography as Homepage */}
+            {/* Main Title */}
             <motion.h1 
               className="text-5xl md:text-7xl max-w-2xl tracking-tighter text-center font-regular mx-auto"
               style={{ 
@@ -261,7 +217,7 @@ const ContactPage: React.FC = () => {
               </div>
             </motion.h1>
 
-            {/* Enhanced Description - Same Typography as Homepage */}
+            {/* Enhanced Description */}
             <motion.p 
               className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center mx-auto"
               initial={{ opacity: 0, y: 20 }}
@@ -316,77 +272,13 @@ const ContactPage: React.FC = () => {
         {/* Contact Form and Support Channels */}
         <AnimatedSection className="mb-8 lg:mb-16" delay={0.8}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Contact Form */}
+            {/* Enhanced Contact Form with Airtable Integration */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 1.0 }}
-              className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-8"
             >
-              <h3 className="text-2xl font-bold text-white mb-6">Send us a Message</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-white/70 text-sm font-medium mb-2">Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-white/70 text-sm font-medium mb-2">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-white/70 text-sm font-medium mb-2">Subject</label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
-                    placeholder="How can we help you?"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-white/70 text-sm font-medium mb-2">Message</label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={5}
-                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors resize-none"
-                    placeholder="Tell us more about your inquiry..."
-                  />
-                </div>
-                
-                <InteractiveHoverButton
-                  type="submit"
-                  disabled={isSubmitting}
-                  variant="blue"
-                  text={isSubmitting ? "Sending..." : "Send Message"}
-                  icon={<Send size={16} />}
-                  className="w-full py-3 disabled:opacity-50"
-                />
-              </form>
+              <ContactForm onSuccess={() => setFormSubmitted(true)} />
             </motion.div>
 
             {/* Support Channels */}
@@ -426,6 +318,29 @@ const ContactPage: React.FC = () => {
                   </motion.div>
                 );
               })}
+
+              {/* Airtable Integration Status */}
+              <motion.div
+                className="bg-gradient-to-r from-green-50/10 to-emerald-50/10 border border-green-500/20 rounded-2xl p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 1.5 }}
+              >
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <Shield size={20} className="text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-lg font-bold text-white mb-2">Lead Management</h4>
+                    <p className="text-white/60 mb-2">
+                      All form submissions are automatically saved to our Airtable CRM system for efficient lead tracking and follow-up.
+                    </p>
+                    <div className="text-sm text-green-400">
+                      ✓ Secure data storage ✓ Automated lead scoring ✓ 24h response guarantee
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
           </div>
         </AnimatedSection>
