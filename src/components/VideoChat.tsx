@@ -1,125 +1,214 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, Maximize2, Minimize2, RefreshCw, ExternalLink, AlertCircle, Play, Shield } from 'lucide-react';
+import { Video, Maximize2, Minimize2, RefreshCw, ExternalLink, Play, Shield, Zap, Lock, Monitor } from 'lucide-react';
 import AnimatedSection from './AnimatedSection';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
 const VideoChat: React.FC = () => {
   const [isMaximized, setIsMaximized] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [showFallback, setShowFallback] = useState(false);
-  const [iframeKey, setIframeKey] = useState(0);
+  const [showAttemptIframe, setShowAttemptIframe] = useState(false);
 
   const videoAppUrl = 'https://effortless-cucurucho-5a3e21.netlify.app/';
 
-  useEffect(() => {
-    // Set a timeout to show fallback if iframe doesn't load
-    const timer = setTimeout(() => {
-      if (isLoading) {
-        setIsLoading(false);
-        setShowFallback(true);
-      }
-    }, 5000); // 5 second timeout
-
-    return () => clearTimeout(timer);
-  }, [isLoading, iframeKey]);
-
-  const handleIframeLoad = () => {
-    setIsLoading(false);
-    setHasError(false);
-    setShowFallback(false);
-  };
-
-  const handleIframeError = () => {
-    setIsLoading(false);
-    setHasError(true);
-    setShowFallback(true);
-  };
-
-  const refreshIframe = () => {
-    setIsLoading(true);
-    setHasError(false);
-    setShowFallback(false);
-    setIframeKey(prev => prev + 1);
-  };
-
   const openInNewTab = () => {
-    window.open(videoAppUrl, '_blank', 'noopener,noreferrer');
+    window.open(videoAppUrl, '_blank', 'noopener,noreferrer,width=1200,height=800');
   };
 
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
   };
 
-  const FallbackContent = () => (
-    <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 to-indigo-100 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-10 left-10 w-20 h-20 bg-blue-500 rounded-full blur-xl"></div>
-        <div className="absolute bottom-10 right-10 w-32 h-32 bg-indigo-500 rounded-full blur-xl"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-40 h-40 bg-purple-500 rounded-full blur-2xl"></div>
+  const attemptIframeLoad = () => {
+    setShowAttemptIframe(true);
+    // Set a timeout to revert back to fallback if it doesn't work
+    setTimeout(() => {
+      setShowAttemptIframe(false);
+    }, 3000);
+  };
+
+  const MainContent = () => (
+    <div className="flex items-center justify-center h-full bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 relative overflow-hidden">
+      {/* Enhanced Background Pattern */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full blur-2xl animate-pulse"></div>
+        <div className="absolute bottom-10 right-10 w-40 h-40 bg-gradient-to-r from-indigo-400 to-purple-600 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full blur-xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute bottom-1/4 left-1/2 w-28 h-28 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }}></div>
       </div>
 
-      <div className="text-center max-w-lg mx-auto p-8 relative z-10">
+      <div className="text-center max-w-2xl mx-auto p-8 relative z-10">
+        {/* Hero Section */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="mb-8"
+          transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+          className="mb-12"
         >
-          <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-            <Video size={40} className="text-white" />
+          <div className="relative mb-8">
+            <motion.div 
+              className="w-32 h-32 bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl"
+              animate={{ 
+                boxShadow: [
+                  "0 25px 50px -12px rgba(59, 130, 246, 0.25)",
+                  "0 25px 50px -12px rgba(99, 102, 241, 0.4)",
+                  "0 25px 50px -12px rgba(139, 92, 246, 0.25)"
+                ]
+              }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Video size={48} className="text-white" />
+            </motion.div>
+            
+            {/* Floating particles */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full"
+                style={{
+                  top: `${20 + (i % 3) * 30}%`,
+                  left: `${15 + (i % 4) * 25}%`,
+                }}
+                animate={{
+                  y: [-15, 15, -15],
+                  opacity: [0.3, 1, 0.3],
+                  scale: [0.8, 1.2, 0.8],
+                }}
+                transition={{
+                  duration: 3 + i * 0.5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.4,
+                }}
+              />
+            ))}
           </div>
           
-          <h3 className="text-2xl font-bold text-gray-900 mb-4">AI Video Advisor</h3>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            Due to security restrictions, the video advisor needs to open in a new window for the best experience. 
-            Click below to start your AI-powered financial consultation.
-          </p>
+          <motion.h2 
+            className="text-4xl lg:text-5xl font-bold text-gray-900 mb-6 tracking-tight"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <span className="block">AI Video</span>
+            <span className="block bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              Financial Advisor
+            </span>
+          </motion.h2>
+          
+          <motion.p 
+            className="text-xl text-gray-600 mb-8 leading-relaxed max-w-xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            Experience personalized financial guidance through secure, AI-powered video consultations. 
+            Get expert advice tailored to your unique financial situation.
+          </motion.p>
         </motion.div>
 
+        {/* Action Buttons */}
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="space-y-4"
+          transition={{ duration: 0.8, delay: 0.7 }}
+          className="space-y-6 mb-12"
         >
-          <InteractiveHoverButton
-            variant="blue"
-            text="Launch Video Advisor"
-            icon={<Play size={18} />}
-            onClick={openInNewTab}
-            className="w-full lg:w-auto px-8 py-4 text-lg font-medium"
-          />
+          <div className="flex flex-col lg:flex-row gap-4 justify-center">
+            <InteractiveHoverButton
+              variant="blue"
+              text="Launch Video Advisor"
+              icon={<Play size={20} />}
+              onClick={openInNewTab}
+              className="px-10 py-4 text-lg font-semibold shadow-xl"
+            />
+            
+            <InteractiveHoverButton
+              variant="white"
+              text="Try Embedded Mode"
+              icon={<Monitor size={18} />}
+              onClick={attemptIframeLoad}
+              className="px-8 py-4 text-lg border-2 border-gray-200 hover:border-gray-300"
+            />
+          </div>
           
-          <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
-            <Shield size={14} />
-            <span>Secure • Private • AI-Powered</span>
+          <div className="flex items-center justify-center space-x-3 text-sm text-gray-500">
+            <Shield size={16} />
+            <span>Secure</span>
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <Lock size={16} />
+            <span>Private</span>
+            <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+            <Zap size={16} />
+            <span>AI-Powered</span>
           </div>
         </motion.div>
 
-        {/* Feature highlights */}
+        {/* Feature Grid */}
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
+          initial={{ y: 30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-4 text-center"
+          transition={{ duration: 0.8, delay: 0.9 }}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
         >
           {[
-            { icon: Video, title: "HD Video", desc: "Crystal clear video quality" },
-            { icon: Shield, title: "Secure", desc: "End-to-end encryption" },
-            { icon: Play, title: "Instant", desc: "No downloads required" }
+            { 
+              icon: Video, 
+              title: "HD Video Quality", 
+              desc: "Crystal clear 1080p video with real-time interaction",
+              gradient: "from-blue-500 to-blue-600"
+            },
+            { 
+              icon: Shield, 
+              title: "Bank-Level Security", 
+              desc: "End-to-end encryption protects your financial data",
+              gradient: "from-green-500 to-green-600"
+            },
+            { 
+              icon: Zap, 
+              title: "Instant Access", 
+              desc: "No downloads or installations required",
+              gradient: "from-purple-500 to-purple-600"
+            }
           ].map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <div key={index} className="p-4 bg-white/60 backdrop-blur-sm rounded-xl border border-white/50">
-                <Icon size={20} className="text-blue-600 mx-auto mb-2" />
-                <div className="text-sm font-medium text-gray-900">{feature.title}</div>
-                <div className="text-xs text-gray-600">{feature.desc}</div>
-              </div>
+              <motion.div 
+                key={index} 
+                className="p-6 bg-white/70 backdrop-blur-sm rounded-2xl border border-white/50 shadow-lg hover:shadow-xl transition-all duration-300"
+                whileHover={{ y: -4, scale: 1.02 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 1.1 + index * 0.1 }}
+              >
+                <div className={`w-12 h-12 bg-gradient-to-r ${feature.gradient} rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                  <Icon size={24} className="text-white" />
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h4>
+                <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
+              </motion.div>
             );
           })}
+        </motion.div>
+
+        {/* Info Banner */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, delay: 1.4 }}
+          className="mt-12 p-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/50 rounded-2xl"
+        >
+          <div className="flex items-start space-x-4">
+            <div className="w-8 h-8 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
+              <ExternalLink size={16} className="text-white" />
+            </div>
+            <div className="text-left">
+              <h5 className="font-semibold text-amber-900 mb-2">Why External Launch?</h5>
+              <p className="text-sm text-amber-800 leading-relaxed">
+                For security and optimal performance, the video advisor opens in a dedicated window. 
+                This ensures the best video quality, full feature access, and maintains your privacy during consultations.
+              </p>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>
@@ -148,7 +237,7 @@ const VideoChat: React.FC = () => {
                 variant="white"
                 text="Refresh"
                 icon={<RefreshCw size={16} />}
-                onClick={refreshIframe}
+                onClick={() => window.location.reload()}
                 className="px-4 py-3 text-sm"
               />
 
@@ -161,22 +250,20 @@ const VideoChat: React.FC = () => {
               />
             </div>
 
-            {!showFallback && (
-              <InteractiveHoverButton
-                variant="white"
-                text={isMaximized ? "Minimize" : "Maximize"}
-                icon={isMaximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-                onClick={toggleMaximize}
-                className="px-6 py-3 text-sm"
-              />
-            )}
+            <InteractiveHoverButton
+              variant="white"
+              text={isMaximized ? "Minimize" : "Maximize"}
+              icon={isMaximized ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+              onClick={toggleMaximize}
+              className="px-6 py-3 text-sm"
+            />
           </div>
         </div>
       </AnimatedSection>
 
       {/* Video Chat Container */}
       <AnimatePresence mode="wait">
-        {isMaximized && !showFallback ? (
+        {isMaximized ? (
           // Full-screen mode
           <motion.div
             key="maximized"
@@ -200,14 +287,14 @@ const VideoChat: React.FC = () => {
               
               <div className="flex items-center space-x-3">
                 <InteractiveHoverButton
-                  variant="white"
-                  text="Refresh"
-                  icon={<RefreshCw size={14} />}
-                  onClick={refreshIframe}
-                  className="px-3 py-2 text-sm"
+                  variant="blue"
+                  text="Launch External"
+                  icon={<ExternalLink size={14} />}
+                  onClick={openInNewTab}
+                  className="px-4 py-2 text-sm"
                 />
                 <InteractiveHoverButton
-                  variant="blue"
+                  variant="white"
                   text="Minimize"
                   icon={<Minimize2 size={14} />}
                   onClick={toggleMaximize}
@@ -216,35 +303,23 @@ const VideoChat: React.FC = () => {
               </div>
             </div>
 
-            {/* Full-Height Iframe Container */}
+            {/* Full-Height Content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex-1 relative overflow-hidden"
             >
-              {isLoading && (
-                <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
-                  <div className="text-center">
-                    <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading video advisor...</p>
-                  </div>
-                </div>
-              )}
-
-              {showFallback ? (
-                <FallbackContent />
-              ) : (
+              {showAttemptIframe ? (
                 <iframe
-                  key={`maximized-${iframeKey}`}
                   src={videoAppUrl}
                   className="w-full h-full border-0"
-                  onLoad={handleIframeLoad}
-                  onError={handleIframeError}
                   allow="camera; microphone; fullscreen; display-capture"
                   sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
                   title="AI Video Advisor - Full Screen"
                 />
+              ) : (
+                <MainContent />
               )}
             </motion.div>
           </motion.div>
@@ -274,50 +349,33 @@ const VideoChat: React.FC = () => {
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    {!showFallback && (
-                      <>
-                        <div className="hidden lg:flex items-center space-x-2 px-3 py-1 bg-green-100 rounded-full">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                          <span className="text-xs font-medium text-green-700">Ready</span>
-                        </div>
-                        <InteractiveHoverButton
-                          variant="white"
-                          text="Maximize"
-                          icon={<Maximize2 size={14} />}
-                          onClick={toggleMaximize}
-                          className="px-3 py-2 text-sm"
-                        />
-                      </>
-                    )}
+                    <div className="hidden lg:flex items-center space-x-2 px-3 py-1 bg-green-100 rounded-full">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-xs font-medium text-green-700">Ready</span>
+                    </div>
+                    <InteractiveHoverButton
+                      variant="white"
+                      text="Maximize"
+                      icon={<Maximize2 size={14} />}
+                      onClick={toggleMaximize}
+                      className="px-3 py-2 text-sm"
+                    />
                   </div>
                 </div>
               </div>
 
-              {/* Iframe Container */}
+              {/* Main Content Area */}
               <div className="flex-1 relative bg-gray-50">
-                {isLoading && !showFallback && (
-                  <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
-                    <div className="text-center">
-                      <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                      <p className="text-gray-600">Connecting to video advisor...</p>
-                      <p className="text-sm text-gray-500 mt-2">This may take a few moments</p>
-                    </div>
-                  </div>
-                )}
-
-                {showFallback ? (
-                  <FallbackContent />
-                ) : (
+                {showAttemptIframe ? (
                   <iframe
-                    key={`embedded-${iframeKey}`}
                     src={videoAppUrl}
                     className="w-full h-full border-0 rounded-b-2xl lg:rounded-b-3xl"
-                    onLoad={handleIframeLoad}
-                    onError={handleIframeError}
                     allow="camera; microphone; fullscreen; display-capture"
                     sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
                     title="AI Video Advisor"
                   />
+                ) : (
+                  <MainContent />
                 )}
               </div>
 
@@ -327,20 +385,18 @@ const VideoChat: React.FC = () => {
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2 text-sm text-gray-600">
                       <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                      <span>{showFallback ? 'Ready to Connect' : 'AI Advisor Available'}</span>
+                      <span>AI Advisor Ready</span>
                     </div>
                   </div>
                   
                   <div className="flex items-center space-x-2">
-                    {!showFallback && (
-                      <InteractiveHoverButton
-                        variant="white"
-                        text="Refresh"
-                        icon={<RefreshCw size={14} />}
-                        onClick={refreshIframe}
-                        className="px-3 py-2 text-sm"
-                      />
-                    )}
+                    <InteractiveHoverButton
+                      variant="white"
+                      text="Try Embed"
+                      icon={<Monitor size={14} />}
+                      onClick={attemptIframeLoad}
+                      className="px-3 py-2 text-sm"
+                    />
                     <InteractiveHoverButton
                       variant="blue"
                       text="Launch"
