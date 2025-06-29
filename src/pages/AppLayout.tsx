@@ -193,28 +193,24 @@ const AppLayout: React.FC = () => {
       {/* Voice Assistant Modal */}
       <AnimatePresence>
         {showVoiceAssistant && (
-          <div className="fixed inset-0 z-50">
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowVoiceAssistant(false)}
+          >
             {/* Blurred Background */}
             <motion.div 
               className="absolute inset-0 bg-black/30 backdrop-blur-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowVoiceAssistant(false)}
             />
             
             {/* ElevenLabs Widget */}
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
-            </motion.div>
-          </div>
+            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+          </motion.div>
         )}
       </AnimatePresence>
 
