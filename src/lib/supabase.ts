@@ -20,6 +20,7 @@ export interface CustomUser {
   full_name: string | null;
   email: string;
   created_at: string;
+  user_name?: string | null;
 }
 
 export interface Profile {
@@ -30,6 +31,7 @@ export interface Profile {
   location?: string | null;
   occupation?: string | null;
   bio?: string | null;
+  user_name?: string | null;
 }
 
 export interface Account {
@@ -40,6 +42,7 @@ export interface Account {
   account_type: string;
   current_balance: number;
   created_at: string;
+  user_name?: string | null;
 }
 
 export interface Category {
@@ -49,6 +52,7 @@ export interface Category {
   name: string;
   icon_name: string | null;
   created_at: string;
+  user_name?: string | null;
 }
 
 export interface Transaction {
@@ -63,6 +67,7 @@ export interface Transaction {
   transaction_date: string;
   category?: Category;
   account?: Account;
+  user_name?: string | null;
 }
 
 // Custom authentication functions
