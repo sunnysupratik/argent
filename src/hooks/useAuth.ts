@@ -19,6 +19,7 @@ export function useAuth() {
       // Verify user exists in database
       const verifyUser = async () => {
         try {
+          // First try by ID
           const { data, error } = await supabase
             .from('custom_users')
             .select('*')
@@ -26,10 +27,25 @@ export function useAuth() {
             .single();
             
           if (error || !data) {
-            console.error('User verification failed:', error?.message || 'User not found in database');
-            // Clear invalid session
-            localStorage.removeItem('customUser');
-            setUser(null);
+            console.log('User not found by ID, trying by username');
+            // Try by username as fallback
+            const { data: usernameData, error: usernameError } = await supabase
+              .from('custom_users')
+              .select('*')
+              .eq('username', currentUser.username)
+              .single();
+              
+            if (usernameError || !usernameData) {
+              console.error('User verification failed:', usernameError?.message || 'User not found in database');
+              // Clear invalid session
+              localStorage.removeItem('customUser');
+              setUser(null);
+            } else {
+              console.log('User verified by username:', usernameData);
+              // Update user with latest data from database
+              localStorage.setItem('customUser', JSON.stringify(usernameData));
+              setUser(usernameData);
+            }
           } else {
             console.log('User verified in database:', data);
             // Update user with latest data from database
