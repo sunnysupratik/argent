@@ -491,7 +491,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center: center;
     border: none;
     outline: none;
   }
@@ -1091,4 +1091,24 @@ textarea:focus-visible {
   .mobile-sidebar {
     display: none !important;
   }
+}
+
+/* FIX: ElevenLabs Widget Styling */
+elevenlabs-convai {
+  display: block;
+  width: 100%;
+  min-height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+/* FIX: Ensure ElevenLabs widget is visible and properly sized */
+.elevenlabs-widget {
+  width: 100%;
+  min-height: 500px;
+  max-height: 80vh;
+  display: block;
+  border-radius: 12px;
+  overflow: hidden;
 }

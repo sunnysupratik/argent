@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Mic, MicOff, Headphones } from 'lucide-react';
+import { X, Headphones, AlertTriangle } from 'lucide-react';
 
 interface VoiceAssistantModalProps {
   isOpen: boolean;
@@ -9,32 +9,68 @@ interface VoiceAssistantModalProps {
 
 const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const widgetInitialized = useRef(false);
   
-  // FIX: Add proper loading and error handling for ElevenLabs widget
+  // Check if ElevenLabs widget is loaded
   useEffect(() => {
-    if (isOpen) {
-      // Check if ElevenLabs widget is loaded
+    if (!isOpen) return;
+    
+    const checkWidgetLoaded = () => {
       if (window.customElements && window.customElements.get('elevenlabs-convai')) {
-        console.log('ElevenLabs widget is already defined');
+        console.log('ElevenLabs widget is defined');
         setIsLoading(false);
-      } else {
-        console.log('ElevenLabs widget is not defined, waiting for script to load');
-        
-        // Set up a listener for when the custom element is defined
-        const checkInterval = setInterval(() => {
-          if (window.customElements && window.customElements.get('elevenlabs-convai')) {
-            console.log('ElevenLabs widget is now defined');
-            setIsLoading(false);
-            clearInterval(checkInterval);
-          }
-        }, 500);
-        
-        // Clean up interval
-        return () => clearInterval(checkInterval);
+        return true;
+      }
+      return false;
+    };
+    
+    // Check immediately
+    if (checkWidgetLoaded()) return;
+    
+    // Set up a polling mechanism to check for the widget
+    const checkInterval = setInterval(() => {
+      if (checkWidgetLoaded()) {
+        clearInterval(checkInterval);
+      }
+    }, 500);
+    
+    // Set a timeout to show an error if the widget doesn't load
+    const timeoutId = setTimeout(() => {
+      if (isLoading) {
+        setError('Voice assistant failed to load. Please try again later.');
+        setIsLoading(false);
+        clearInterval(checkInterval);
+      }
+    }, 10000);
+    
+    return () => {
+      clearInterval(checkInterval);
+      clearTimeout(timeoutId);
+    };
+  }, [isOpen, isLoading]);
+  
+  // Handle widget initialization
+  useEffect(() => {
+    if (isOpen && !isLoading && !error && containerRef.current && !widgetInitialized.current) {
+      try {
+        console.log('Initializing ElevenLabs widget');
+        // The widget should automatically initialize when the custom element is added to the DOM
+        widgetInitialized.current = true;
+      } catch (err) {
+        console.error('Error initializing ElevenLabs widget:', err);
+        setError('Failed to initialize voice assistant. Please try again.');
       }
     }
-  }, [isOpen]);
+    
+    return () => {
+      if (!isOpen && widgetInitialized.current) {
+        console.log('Cleaning up ElevenLabs widget');
+        widgetInitialized.current = false;
+      }
+    };
+  }, [isOpen, isLoading, error]);
 
   if (!isOpen) return null;
 
@@ -56,7 +92,6 @@ const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClo
       
       {/* Content */}
       <motion.div 
-        ref={containerRef}
         className="relative z-10 w-full max-w-2xl mx-auto"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -67,9 +102,30 @@ const VoiceAssistantModal: React.FC<VoiceAssistantModalProps> = ({ isOpen, onClo
             <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-gray-700">Loading voice assistant...</p>
           </div>
+        ) : error ? (
+          <div className="bg-white rounded-xl p-8 text-center">
+            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle size={24} className="text-red-600" />
+            </div>
+            <p className="text-red-600 font-medium mb-4">{error}</p>
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                setError(null);
+                setIsLoading(true);
+                widgetInitialized.current = false;
+              }}
+              className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue-hover transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
         ) : (
-          <div className="relative">
-            <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
+          <div className="relative" ref={containerRef}>
+            <elevenlabs-convai 
+              agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+              className="elevenlabs-widget"
+            ></elevenlabs-convai>
             
             {/* Close button */}
             <motion.button

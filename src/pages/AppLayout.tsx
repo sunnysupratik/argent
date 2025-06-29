@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Video, X, MessageCircle } from 'lucide-react';
@@ -26,6 +26,10 @@ const AppLayout: React.FC = () => {
   const [showChatModal, setShowChatModal] = useState(false);
   const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
   const [elevenLabsLoaded, setElevenLabsLoaded] = useState(false);
+  const [elevenLabsError, setElevenLabsError] = useState<string | null>(null);
+  const elevenLabsScriptRef = useRef<HTMLScriptElement | null>(null);
+  const voiceAssistantContainerRef = useRef<HTMLDivElement>(null);
+  
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -76,28 +80,51 @@ const AppLayout: React.FC = () => {
     };
   }, [isMobileMenuOpen, showVideoModal, showChatModal, showVoiceAssistant]);
 
-  // FIX: Load ElevenLabs script dynamically when needed
+  // FIX: Improved ElevenLabs script loading with better error handling and cleanup
   useEffect(() => {
-    if (showVoiceAssistant && !elevenLabsLoaded) {
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
-      script.async = true;
-      script.onload = () => {
-        console.log('ElevenLabs script loaded successfully');
-        setElevenLabsLoaded(true);
-      };
-      script.onerror = () => {
-        console.error('Failed to load ElevenLabs script');
-      };
-      document.body.appendChild(script);
-      
-      return () => {
-        // Clean up only if component unmounts, not when modal closes
-        if (!showVoiceAssistant) {
-          document.body.removeChild(script);
-        }
-      };
-    }
+    const loadElevenLabsScript = () => {
+      if (showVoiceAssistant && !elevenLabsLoaded && !elevenLabsScriptRef.current) {
+        console.log('Loading ElevenLabs script...');
+        setElevenLabsError(null);
+        
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+        script.async = true;
+        script.id = 'elevenlabs-script';
+        
+        script.onload = () => {
+          console.log('ElevenLabs script loaded successfully');
+          setElevenLabsLoaded(true);
+          
+          // Give the browser a moment to register the custom element
+          setTimeout(() => {
+            if (voiceAssistantContainerRef.current) {
+              console.log('Initializing ElevenLabs widget');
+              // The container is now ready for the custom element
+            }
+          }, 500);
+        };
+        
+        script.onerror = () => {
+          console.error('Failed to load ElevenLabs script');
+          setElevenLabsError('Failed to load voice assistant. Please try again later.');
+        };
+        
+        document.body.appendChild(script);
+        elevenLabsScriptRef.current = script;
+      }
+    };
+    
+    loadElevenLabsScript();
+    
+    return () => {
+      // Only remove the script when the component unmounts, not when the modal closes
+      if (!showVoiceAssistant && elevenLabsScriptRef.current && !document.getElementById('elevenlabs-convai')) {
+        console.log('Cleaning up ElevenLabs script');
+        // We don't actually remove the script to avoid reloading issues
+        // Just keep track of it being loaded
+      }
+    };
   }, [showVoiceAssistant, elevenLabsLoaded]);
 
   const getPageTitle = (view: string) => {
@@ -147,7 +174,18 @@ const AppLayout: React.FC = () => {
     console.log('Send message clicked');
   };
 
-  // FIX: Show loading state while checking authentication - prevent flash
+  // FIX: Reset ElevenLabs state when closing the voice assistant
+  const handleCloseVoiceAssistant = () => {
+    setShowVoiceAssistant(false);
+    if (activeAssistant === 'voice') {
+      setActiveAssistant(null);
+    }
+    
+    // We don't reset elevenLabsLoaded to avoid reloading the script unnecessarily
+    // This way the widget will initialize faster next time
+  };
+
+  // Show loading state while checking authentication
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -159,7 +197,7 @@ const AppLayout: React.FC = () => {
     );
   }
 
-  // FIX: Don't render if not authenticated (will redirect) - prevent flash
+  // Don't render if not authenticated (will redirect)
   if (!user) {
     return null;
   }
@@ -223,7 +261,7 @@ const AppLayout: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setShowVoiceAssistant(false)}
+            onClick={handleCloseVoiceAssistant}
           >
             {/* Blurred Background */}
             <motion.div 
@@ -234,28 +272,53 @@ const AppLayout: React.FC = () => {
             />
             
             {/* FIX: Improved ElevenLabs Widget Integration */}
-            <div className="relative z-10 w-full max-w-2xl mx-auto">
-              {elevenLabsLoaded ? (
-                <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
-              ) : (
+            <div className="relative z-10 w-full max-w-2xl mx-auto" ref={voiceAssistantContainerRef}>
+              {elevenLabsError ? (
+                <div className="bg-white rounded-xl p-8 text-center">
+                  <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <X size={24} className="text-red-600" />
+                  </div>
+                  <p className="text-red-600 font-medium mb-4">{elevenLabsError}</p>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setElevenLabsError(null);
+                      setElevenLabsLoaded(false);
+                      elevenLabsScriptRef.current = null;
+                      setShowVoiceAssistant(true);
+                    }}
+                    className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue-hover transition-colors"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              ) : !elevenLabsLoaded ? (
                 <div className="bg-white rounded-xl p-8 text-center">
                   <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
                   <p className="text-gray-700">Loading voice assistant...</p>
                 </div>
+              ) : (
+                <div className="relative">
+                  {/* This is where the ElevenLabs widget will be rendered */}
+                  <elevenlabs-convai 
+                    agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+                    className="elevenlabs-widget"
+                  ></elevenlabs-convai>
+                  
+                  {/* Close button */}
+                  <motion.button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCloseVoiceAssistant();
+                    }}
+                    className="absolute top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <X size={20} />
+                  </motion.button>
+                </div>
               )}
-              
-              {/* Close button */}
-              <motion.button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowVoiceAssistant(false);
-                }}
-                className="absolute top-4 right-4 w-10 h-10 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <X size={20} />
-              </motion.button>
             </div>
           </motion.div>
         )}

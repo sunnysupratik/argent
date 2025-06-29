@@ -22,6 +22,7 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Check if mobile on mount and when window resizes
   useEffect(() => {
@@ -31,6 +32,9 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
     
     checkIfMobile();
     window.addEventListener('resize', checkIfMobile);
+    
+    // Mark as initialized after first render
+    setIsInitialized(true);
     
     return () => {
       window.removeEventListener('resize', checkIfMobile);
@@ -97,9 +101,10 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   whileTap={{ scale: 0.95 }}
                 >
                   {item.icon}
-                  <span className="absolute right-full mr-2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
+                  <div className={`absolute right-full mr-3 px-3 py-2 bg-black/80 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none`}>
                     {item.label}
-                  </span>
+                    <div className={`absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-black/80`}></div>
+                  </div>
                 </motion.button>
               ))}
             </motion.div>

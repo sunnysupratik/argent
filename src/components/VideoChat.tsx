@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Maximize2 } from 'lucide-react';
+import { Maximize2, AlertTriangle } from 'lucide-react';
 
 const VideoChat: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const loadTimeoutRef = useRef<number | null>(null);
 
   const videoAppUrl = 'https://effortless-cucurucho-5a3e21.netlify.app/';
 
@@ -14,7 +16,37 @@ const VideoChat: React.FC = () => {
 
   const handleIframeLoad = () => {
     setIsLoading(false);
+    if (loadTimeoutRef.current) {
+      window.clearTimeout(loadTimeoutRef.current);
+      loadTimeoutRef.current = null;
+    }
   };
+
+  const handleRetry = () => {
+    setError(null);
+    setIsLoading(true);
+    
+    // Reset iframe src to force reload
+    if (iframeRef.current) {
+      iframeRef.current.src = videoAppUrl;
+    }
+  };
+
+  // Set a timeout to detect if iframe fails to load
+  useEffect(() => {
+    if (isLoading) {
+      loadTimeoutRef.current = window.setTimeout(() => {
+        setIsLoading(false);
+        setError('Video advisor failed to load. Please check your connection and try again.');
+      }, 15000); // 15 seconds timeout
+    }
+
+    return () => {
+      if (loadTimeoutRef.current) {
+        window.clearTimeout(loadTimeoutRef.current);
+      }
+    };
+  }, [isLoading]);
 
   return (
     <div className="h-full w-full flex flex-col relative bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl overflow-hidden">
@@ -31,6 +63,33 @@ const VideoChat: React.FC = () => {
           <div className="flex flex-col items-center">
             <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-gray-700 font-medium">Loading video advisor...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error overlay */}
+      {error && (
+        <div className="absolute inset-0 bg-white/90 backdrop-blur-sm flex items-center justify-center z-10">
+          <div className="flex flex-col items-center max-w-md text-center p-6">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+              <AlertTriangle size={32} className="text-red-600" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Connection Error</h3>
+            <p className="text-gray-600 mb-6">{error}</p>
+            <div className="flex space-x-4">
+              <button
+                onClick={handleRetry}
+                className="px-4 py-2 bg-accent-blue text-white rounded-lg hover:bg-accent-blue-hover transition-colors"
+              >
+                Try Again
+              </button>
+              <button
+                onClick={openInNewTab}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Open in New Tab
+              </button>
+            </div>
           </div>
         </div>
       )}
