@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, MessageCircle, Home } from 'lucide-react';
+import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, MessageCircle, Home, Video } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
@@ -34,6 +34,15 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
       gradientFrom: '#56CCF2',
       gradientTo: '#2F80ED',
       description: 'Payment History'
+    },
+    { 
+      id: 'video-chat', 
+      label: 'Video Advisor', 
+      icon: Video, 
+      path: '/app/video-chat',
+      gradientFrom: '#FF6B6B',
+      gradientTo: '#FF8E53',
+      description: 'AI Video Consultation'
     },
     { 
       id: 'accounts', 
@@ -104,7 +113,6 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
   const getUserName = () => {
     if (user?.full_name) {
       const firstName = user.full_name.split(' ')[0];
-      // Clean up the name - remove "test user" and similar suffixes
       return firstName.replace(/\s*(test|user|demo).*$/i, '');
     }
     const email = user?.email?.split('@')[0] || 'User';

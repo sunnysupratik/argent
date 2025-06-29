@@ -10,6 +10,7 @@ import Transactions from '../components/Transactions';
 import Accounts from '../components/Accounts';
 import Investments from '../components/Investments';
 import Chat from '../components/Chat';
+import VideoChat from '../components/VideoChat';
 import Profile from '../components/Profile';
 import Settings from '../components/Settings';
 import PageTransition from '../components/PageTransition';
@@ -41,6 +42,7 @@ const AppLayout: React.FC = () => {
     const path = location.pathname;
     if (path.includes('dashboard')) setActiveView('dashboard');
     else if (path.includes('transactions')) setActiveView('transactions');
+    else if (path.includes('video-chat')) setActiveView('video-chat');
     else if (path.includes('accounts')) setActiveView('accounts');
     else if (path.includes('investments')) setActiveView('investments');
     else if (path.includes('chat')) setActiveView('chat');
@@ -70,6 +72,7 @@ const AppLayout: React.FC = () => {
     const titles: { [key: string]: string } = {
       dashboard: 'Dashboard',
       transactions: 'Transactions',
+      'video-chat': 'Video Advisor',
       accounts: 'Accounts',
       investments: 'Investments',
       chat: 'AI Advisor',
@@ -127,6 +130,7 @@ const AppLayout: React.FC = () => {
             <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/video-chat" element={<VideoChat />} />
             <Route path="/accounts" element={<Accounts />} />
             <Route path="/investments" element={<Investments />} />
             <Route path="/chat" element={<Chat />} />
