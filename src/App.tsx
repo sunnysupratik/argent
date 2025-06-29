@@ -5,7 +5,6 @@ import LoginPage from './pages/LoginPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AppLayout from './pages/AppLayout';
-import VideoEmbedPage from './pages/VideoEmbedPage';
 
 function App() {
   return (
@@ -15,7 +14,6 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
-        <Route path="/video" element={<VideoEmbedPage />} />
         <Route path="/app/*" element={<AppLayout />} />
       </Routes>
     </Router>
