@@ -187,12 +187,12 @@ const AppLayout: React.FC = () => {
         </motion.div>
       </motion.button>
 
-      {/* ElevenLabs Call Interface - Bottom Left */}
+      {/* ElevenLabs Call Interface - Bottom Right, positioned to the left of video button */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.8, x: -20 }}
+        initial={{ opacity: 0, scale: 0.8, x: 20 }}
         animate={{ opacity: 1, scale: 1, x: 0 }}
         transition={{ duration: 0.8, delay: 2.0 }}
-        className="fixed bottom-6 left-6 z-40 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+        className="fixed bottom-6 right-24 z-40 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
       >
         <elevenlabs-convai 
           agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
