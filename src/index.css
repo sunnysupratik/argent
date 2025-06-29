@@ -437,7 +437,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center: center;
     border: none;
     outline: none;
   }
@@ -464,7 +464,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center: center;
     border: none;
     outline: none;
   }
@@ -491,7 +491,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center: center;
     border: none;
     outline: none;
   }
@@ -516,7 +516,7 @@
     height: clamp(48px, 8vw, 56px);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center: center;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -1095,30 +1095,23 @@ textarea:focus-visible {
 
 /* ElevenLabs Widget Styling */
 elevenlabs-convai {
-  /* Reset all styles to ensure proper display */
-  all: initial !important;
-  
-  /* Ensure the widget is visible and properly sized */
-  display: block !important;
-  position: relative !important;
-  z-index: 9999 !important;
-  
-  /* Remove any container constraints */
-  width: auto !important;
-  height: auto !important;
-  max-width: none !important;
-  max-height: none !important;
-  
-  /* Remove any borders or backgrounds */
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  
-  /* Remove any padding or margin */
-  padding: 0 !important;
-  margin: 0 !important;
-  
-  /* Ensure proper positioning */
-  transform: none !important;
-  transition: none !important;
+  display: block;
+  width: 100%;
+  height: 500px;
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+/* Container for ElevenLabs widget */
+.elevenlabs-widget-container {
+  width: 100%;
+  height: 500px;
+  overflow: hidden;
+}
+
+/* Ensure ElevenLabs widget is visible and properly sized */
+.elevenlabs-widget {
+  width: 100%;
+  height: 500px;
+  display: block;
 }
