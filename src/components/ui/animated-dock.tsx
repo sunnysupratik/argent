@@ -11,7 +11,6 @@ import {
 } from "framer-motion";
  
 import { cn } from "../../lib/utils";
-import { Link } from "react-router-dom";
  
 export interface AnimatedDockProps {
   className?: string;
@@ -77,8 +76,8 @@ export const AnimatedDock = ({ className, items, vertical = false }: AnimatedDoc
               )}
             </button>
           ) : (
-            <Link
-              to={item.link}
+            <a
+              href={item.link}
               target={item.target}
               className="grow flex items-center justify-center w-full h-full text-primary-foreground relative group"
             >
@@ -89,7 +88,7 @@ export const AnimatedDock = ({ className, items, vertical = false }: AnimatedDoc
                   <div className={`absolute ${vertical ? 'right-full top-1/2 -translate-y-1/2' : 'bottom-full left-1/2 -translate-x-1/2'} border-8 border-transparent ${vertical ? 'border-r-black/80' : 'border-b-black/80'}`}></div>
                 </div>
               )}
-            </Link>
+            </a>
           )}
         </DockItem>
       ))}
@@ -135,7 +134,7 @@ export const DockItem = ({ mouseX, mouseY, children, vertical = false, active = 
     <motion.div
       ref={ref}
       style={{ width, height: vertical ? width : undefined }}
-      className={`aspect-square w-10 rounded-full ${active ? 'bg-primary/90 ring-2 ring-white/30' : 'bg-primary'} text-secondary-foreground flex items-center justify-center`}
+      className={`aspect-square w-10 rounded-full ${active ? 'bg-accent-blue ring-2 ring-white/30' : 'bg-gray-700/90 hover:bg-gray-600/90'} text-white flex items-center justify-center transition-colors`}
     >
       <motion.div
         style={{ scale: iconSpring }}
