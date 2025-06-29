@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Video, Headphones, MessageCircle, X } from 'lucide-react';
+import { Sparkles, Video, Headphones, MessageCircle, Send, X } from 'lucide-react';
 import { AnimatedDock } from './animated-dock';
+import { useNavigate } from 'react-router-dom';
 
 interface AIAssistantHubProps {
   onVideoClick: () => void;
   onVoiceToggle: () => void;
   onChatClick: () => void;
+  onSendMessage: () => void;
   showVoiceAssistant: boolean;
   activeAssistant: string | null;
 }
@@ -15,6 +17,7 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
   onVideoClick,
   onVoiceToggle,
   onChatClick,
+  onSendMessage,
   showVoiceAssistant,
   activeAssistant
 }) => {
@@ -71,6 +74,11 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   label: "AI Chat",
                   onClick: () => { onChatClick(); setIsExpanded(false); },
                   active: activeAssistant === 'chat'
+                },
+                { 
+                  icon: <Send size={20} />, 
+                  label: "Send Message",
+                  onClick: () => { onSendMessage(); setIsExpanded(false); }
                 }
               ].map((item, index) => (
                 <motion.button
@@ -89,6 +97,9 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   whileTap={{ scale: 0.95 }}
                 >
                   {item.icon}
+                  <span className="absolute left-0 transform -translate-x-full mr-2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
+                    {item.label}
+                  </span>
                 </motion.button>
               ))}
             </motion.div>
@@ -122,58 +133,45 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
             exit={{ opacity: 0, x: 20, width: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="bg-black/10 backdrop-blur-md border border-white/20 rounded-2xl py-4 px-3 flex flex-col gap-4">
-              {/* Close Button */}
-              <motion.button
-                className="w-12 h-12 rounded-full flex items-center justify-center bg-gray-700/90 hover:bg-gray-600/90 text-white"
-                onClick={toggleExpanded}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <X size={22} />
-                <span className="absolute left-0 transform -translate-x-full -ml-2 bg-black text-white text-xs px-2 py-1 rounded whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none">
-                  Close Menu
-                </span>
-              </motion.button>
-              
-              {/* Assistant Buttons with Left-Aligned Labels */}
-              {[
+            <AnimatedDock
+              vertical={true}
+              className="bg-black/10 backdrop-blur-md border-white/20"
+              items={[
                 {
-                  icon: <Video size={22} />,
-                  label: "Video Advisor",
+                  link: "#",
+                  Icon: <X size={22} className="text-white" />,
+                  onClick: toggleExpanded,
+                  label: "Close Menu"
+                },
+                {
+                  link: "#",
+                  Icon: <Video size={22} className="text-white" />,
                   onClick: onVideoClick,
-                  active: activeAssistant === 'video'
+                  active: activeAssistant === 'video',
+                  label: "Video Advisor"
                 },
                 {
-                  icon: <Headphones size={22} />,
-                  label: "Voice Assistant",
+                  link: "#",
+                  Icon: <Headphones size={22} className="text-white" />,
                   onClick: onVoiceToggle,
-                  active: activeAssistant === 'voice'
+                  active: activeAssistant === 'voice',
+                  label: "Voice Assistant"
                 },
                 {
-                  icon: <MessageCircle size={22} />,
-                  label: "AI Chat",
+                  link: "#",
+                  Icon: <MessageCircle size={22} className="text-white" />,
                   onClick: onChatClick,
-                  active: activeAssistant === 'chat'
+                  active: activeAssistant === 'chat',
+                  label: "AI Chat"
+                },
+                {
+                  link: "#",
+                  Icon: <Send size={22} className="text-white" />,
+                  onClick: onSendMessage,
+                  label: "Send Message"
                 }
-              ].map((item, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="text-white text-sm whitespace-nowrap">{item.label}</div>
-                  <motion.button
-                    className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      item.active 
-                        ? 'bg-accent-blue ring-2 ring-white/30' 
-                        : 'bg-gray-700/90 hover:bg-gray-600/90'
-                    } text-white`}
-                    onClick={item.onClick}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {item.icon}
-                  </motion.button>
-                </div>
-              ))}
-            </div>
+              ]}
+            />
           </motion.div>
         ) : (
           <motion.div
