@@ -1,10 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, RefreshCw, Maximize2, Minimize2 } from 'lucide-react';
-import { InteractiveHoverButton } from './ui/interactive-hover-button';
+import { ExternalLink } from 'lucide-react';
 
 const VideoChat: React.FC = () => {
-  const [isMaximized, setIsMaximized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -14,37 +12,15 @@ const VideoChat: React.FC = () => {
     window.open(videoAppUrl, '_blank', 'noopener,noreferrer');
   };
 
-  const toggleMaximize = () => {
-    setIsMaximized(!isMaximized);
-  };
-
   const handleIframeLoad = () => {
     setIsLoading(false);
   };
 
   return (
-    <div className="h-full flex flex-col relative">
-      {/* Action buttons - Positioned absolutely */}
-      <div className="absolute top-4 right-4 z-10 flex space-x-2">
-        <InteractiveHoverButton
-          variant="white"
-          text={isMaximized ? "Minimize" : "Maximize"}
-          icon={isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
-          onClick={toggleMaximize}
-          className="px-3 py-2 text-sm shadow-lg bg-white/90 backdrop-blur-sm"
-        />
-        <InteractiveHoverButton
-          variant="blue"
-          text="External"
-          icon={<ExternalLink size={14} />}
-          onClick={openInNewTab}
-          className="px-3 py-2 text-sm shadow-lg"
-        />
-      </div>
-
+    <div className="h-full w-full flex flex-col relative bg-gray-50 rounded-xl overflow-hidden">
       {/* Loading overlay */}
       {isLoading && (
-        <div className="absolute inset-0 bg-white flex items-center justify-center z-5">
+        <div className="absolute inset-0 bg-white flex items-center justify-center z-10">
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mb-4"></div>
             <p className="text-gray-600">Loading video advisor...</p>
@@ -52,8 +28,21 @@ const VideoChat: React.FC = () => {
         </div>
       )}
 
+      {/* External link button */}
+      <div className="absolute top-4 right-4 z-10">
+        <motion.button
+          onClick={openInNewTab}
+          className="bg-white/90 hover:bg-white text-gray-700 px-3 py-2 rounded-lg shadow-lg backdrop-blur-sm flex items-center space-x-2 text-sm"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <ExternalLink size={14} />
+          <span>Open External</span>
+        </motion.button>
+      </div>
+
       {/* Direct iframe container */}
-      <div className={`flex-1 ${isMaximized ? 'fixed inset-0 z-50 bg-white' : 'relative'}`}>
+      <div className="flex-1 relative">
         <iframe
           ref={iframeRef}
           src={videoAppUrl}

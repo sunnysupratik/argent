@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Video, Headphones, MessageCircle, X } from 'lucide-react';
 import { AnimatedDock } from './animated-dock';
-import { useNavigate } from 'react-router-dom';
 
 interface AIAssistantHubProps {
   onVideoClick: () => void;

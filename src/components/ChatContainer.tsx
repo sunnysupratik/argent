@@ -122,28 +122,6 @@ const ChatContainer: React.FC = () => {
                     <Sparkles size={32} className="text-white lg:hidden" />
                     <Sparkles size={40} className="text-white hidden lg:block" />
                   </motion.div>
-                  
-                  {/* Floating particles */}
-                  {[...Array(3)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-2 h-2 bg-accent-blue rounded-full"
-                      style={{
-                        top: `${20 + i * 20}%`,
-                        left: `${20 + i * 30}%`,
-                      }}
-                      animate={{
-                        y: [-10, 10, -10],
-                        opacity: [0.3, 1, 0.3],
-                      }}
-                      transition={{
-                        duration: 2 + i * 0.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: i * 0.3,
-                      }}
-                    />
-                  ))}
                 </div>
                 
                 <motion.h2 
@@ -164,7 +142,7 @@ const ChatContainer: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.6 }}
                 >
-                  Get personalized financial insights powered by OpenAI's GPT-4 and enhanced with Pica's financial intelligence. 
+                  Get personalized financial insights powered by AI and enhanced with financial intelligence. 
                   Ask me anything about budgeting, investments, or financial planning.
                 </motion.p>
               </motion.div>
