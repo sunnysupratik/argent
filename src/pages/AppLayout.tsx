@@ -19,7 +19,6 @@ import { useAuth } from '../hooks/useAuth';
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [showCallInterface, setShowCallInterface] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -141,9 +140,27 @@ const AppLayout: React.FC = () => {
         </PageTransition>
       </main>
 
-      {/* Enhanced Floating Action Buttons - Bottom Right */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
-        {/* Video Button */}
+      {/* Bottom Right Corner - Video Button and Call Interface */}
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end space-y-3">
+        {/* ElevenLabs Call Interface - Full Size, Below Video Button */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 2.0 }}
+          className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden"
+        >
+          <elevenlabs-convai 
+            agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+            style={{
+              width: '320px',
+              height: '400px',
+              border: 'none',
+              borderRadius: '16px'
+            }}
+          ></elevenlabs-convai>
+        </motion.div>
+
+        {/* Video Button - Above the Call Interface */}
         <motion.button
           onClick={handleVideoClick}
           className="group relative w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 overflow-hidden"
@@ -189,52 +206,6 @@ const AppLayout: React.FC = () => {
             <div className="absolute left-full top-1/2 transform -translate-y-1/2 border-4 border-transparent border-l-gray-900"></div>
           </motion.div>
         </motion.button>
-      </div>
-
-      {/* ElevenLabs Call Interface - Direct Integration */}
-      <AnimatePresence>
-        {showCallInterface && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            className="fixed bottom-24 right-6 z-40"
-          >
-            <elevenlabs-convai 
-              agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-              style={{
-                width: '320px',
-                height: '400px',
-                border: 'none',
-                borderRadius: '16px',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)'
-              }}
-            ></elevenlabs-convai>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Call Interface Toggle - Always Visible */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 2.0 }}
-          className="flex flex-col items-end space-y-2"
-        >
-          {/* ElevenLabs Interface - Always Visible */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
-            <elevenlabs-convai 
-              agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
-              style={{
-                width: '280px',
-                height: '120px',
-                border: 'none',
-                borderRadius: '16px'
-              }}
-            ></elevenlabs-convai>
-          </div>
-        </motion.div>
       </div>
     </div>
   );
