@@ -2,6 +2,135 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, Transaction } from '../lib/supabase';
 import { useAuth } from './useAuth';
 
+// Mock data for development/demo
+const MOCK_TRANSACTIONS: Transaction[] = [
+  {
+    id: 'txn-1',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_id: 'acc-1',
+    category_id: 'cat-1',
+    description: 'Salary Deposit - Tech Corp',
+    amount: 4200.00,
+    type: 'income',
+    transaction_date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    category: { id: 'cat-1', name: 'Income', icon_name: 'dollar-sign', user_id: null, custom_user_id: null, created_at: '' },
+    account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+  },
+  {
+    id: 'txn-2',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_id: 'acc-1',
+    category_id: 'cat-2',
+    description: 'Whole Foods Market',
+    amount: 127.45,
+    type: 'expense',
+    transaction_date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    category: { id: 'cat-2', name: 'Food & Dining', icon_name: 'utensils', user_id: null, custom_user_id: null, created_at: '' },
+    account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+  },
+  {
+    id: 'txn-3',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_id: 'acc-3',
+    category_id: 'cat-3',
+    description: 'Netflix Subscription',
+    amount: 15.99,
+    type: 'expense',
+    transaction_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    category: { id: 'cat-3', name: 'Entertainment', icon_name: 'film', user_id: null, custom_user_id: null, created_at: '' },
+    account: { id: 'acc-3', account_name: 'Chase Freedom Credit Card', account_type: 'credit_card', current_balance: -1240.80, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+  },
+  {
+    id: 'txn-4',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_id: 'acc-1',
+    category_id: 'cat-4',
+    description: 'Shell Gas Station',
+    amount: 45.20,
+    type: 'expense',
+    transaction_date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    category: { id: 'cat-4', name: 'Transportation', icon_name: 'car', user_id: null, custom_user_id: null, created_at: '' },
+    account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+  },
+  {
+    id: 'txn-5',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_id: 'acc-1',
+    category_id: 'cat-1',
+    description: 'Freelance Payment',
+    amount: 800.00,
+    type: 'income',
+    transaction_date: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    category: { id: 'cat-1', name: 'Income', icon_name: 'dollar-sign', user_id: null, custom_user_id: null, created_at: '' },
+    account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+  },
+  // Generate more transactions for previous months (for chart data)
+  ...Array.from({ length: 5 }).flatMap((_, monthIndex) => {
+    const month = new Date();
+    month.setMonth(month.getMonth() - monthIndex - 1);
+    
+    return [
+      {
+        id: `txn-income-${monthIndex}`,
+        user_id: 'demo-id-123',
+        custom_user_id: 'demo-id-123',
+        account_id: 'acc-1',
+        category_id: 'cat-1',
+        description: 'Monthly Salary',
+        amount: 4200.00,
+        type: 'income',
+        transaction_date: new Date(month.getFullYear(), month.getMonth(), 5).toISOString(),
+        category: { id: 'cat-1', name: 'Income', icon_name: 'dollar-sign', user_id: null, custom_user_id: null, created_at: '' },
+        account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+      },
+      {
+        id: `txn-rent-${monthIndex}`,
+        user_id: 'demo-id-123',
+        custom_user_id: 'demo-id-123',
+        account_id: 'acc-1',
+        category_id: 'cat-5',
+        description: 'Rent Payment',
+        amount: 1800.00,
+        type: 'expense',
+        transaction_date: new Date(month.getFullYear(), month.getMonth(), 1).toISOString(),
+        category: { id: 'cat-5', name: 'Bills & Utilities', icon_name: 'home', user_id: null, custom_user_id: null, created_at: '' },
+        account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+      },
+      {
+        id: `txn-groceries-${monthIndex}`,
+        user_id: 'demo-id-123',
+        custom_user_id: 'demo-id-123',
+        account_id: 'acc-1',
+        category_id: 'cat-2',
+        description: 'Grocery Shopping',
+        amount: 350.00 + Math.random() * 100,
+        type: 'expense',
+        transaction_date: new Date(month.getFullYear(), month.getMonth(), 15).toISOString(),
+        category: { id: 'cat-2', name: 'Food & Dining', icon_name: 'utensils', user_id: null, custom_user_id: null, created_at: '' },
+        account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+      },
+      {
+        id: `txn-utilities-${monthIndex}`,
+        user_id: 'demo-id-123',
+        custom_user_id: 'demo-id-123',
+        account_id: 'acc-1',
+        category_id: 'cat-5',
+        description: 'Utilities',
+        amount: 200.00 + Math.random() * 50,
+        type: 'expense',
+        transaction_date: new Date(month.getFullYear(), month.getMonth(), 20).toISOString(),
+        category: { id: 'cat-5', name: 'Bills & Utilities', icon_name: 'zap', user_id: null, custom_user_id: null, created_at: '' },
+        account: { id: 'acc-1', account_name: 'Chase Primary Checking', account_type: 'checking', current_balance: 4582.50, user_id: 'demo-id-123', custom_user_id: 'demo-id-123', created_at: '' }
+      }
+    ];
+  })
+];
+
 export function useTransactions() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,15 +149,22 @@ export function useTransactions() {
       }
 
       console.log('useTransactions.fetchTransactions - Fetching transactions for user ID:', user.id);
-      console.log('useTransactions.fetchTransactions - User object:', user);
-
-      // Debug: Check what's in the transactions table
-      const { data: allTransactions, error: debugError } = await supabase
-        .from('transactions')
-        .select('id, custom_user_id, description, amount, type')
-        .limit(10);
       
-      console.log('useTransactions.fetchTransactions - Sample transactions in database:', allTransactions);
+      // For development/demo purposes
+      if (import.meta.env.DEV || !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('example')) {
+        console.log('useTransactions.fetchTransactions - Using mock data for development');
+        
+        // Filter mock transactions based on user ID
+        const filteredTransactions = MOCK_TRANSACTIONS.filter(txn => 
+          txn.custom_user_id === user.id || 
+          txn.user_id === user.id || 
+          user.username === 'demo' // Always show demo transactions for demo user
+        );
+        
+        setTransactions(filteredTransactions);
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('transactions')
@@ -46,19 +182,7 @@ export function useTransactions() {
         throw error;
       }
       
-      console.log('useTransactions.fetchTransactions - Query result for user', user.id, ':', data);
       console.log('useTransactions.fetchTransactions - Found', data?.length || 0, 'transactions');
-      
-      if (data && data.length > 0) {
-        console.log('useTransactions.fetchTransactions - Transaction details:', data.slice(0, 5).map(txn => ({
-          id: txn.id,
-          description: txn.description,
-          amount: txn.amount,
-          type: txn.type,
-          custom_user_id: txn.custom_user_id,
-          date: txn.transaction_date
-        })));
-      }
       
       setTransactions(data || []);
     } catch (err) {
@@ -69,7 +193,7 @@ export function useTransactions() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, user?.username]);
 
   useEffect(() => {
     if (user?.id) {

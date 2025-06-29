@@ -2,6 +2,46 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, Account } from '../lib/supabase';
 import { useAuth } from './useAuth';
 
+// Mock data for development/demo
+const MOCK_ACCOUNTS: Account[] = [
+  {
+    id: 'acc-1',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_name: 'Chase Primary Checking',
+    account_type: 'checking',
+    current_balance: 4582.50,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'acc-2',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_name: 'Marcus High-Yield Savings',
+    account_type: 'savings',
+    current_balance: 15104.40,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'acc-3',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_name: 'Chase Freedom Credit Card',
+    account_type: 'credit_card',
+    current_balance: -1240.80,
+    created_at: new Date().toISOString()
+  },
+  {
+    id: 'acc-4',
+    user_id: 'demo-id-123',
+    custom_user_id: 'demo-id-123',
+    account_name: 'Vanguard Investment',
+    account_type: 'investment',
+    current_balance: 127500.75,
+    created_at: new Date().toISOString()
+  }
+];
+
 export function useAccounts() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,15 +60,22 @@ export function useAccounts() {
       }
 
       console.log('useAccounts.fetchAccounts - Fetching accounts for user ID:', user.id);
-      console.log('useAccounts.fetchAccounts - User object:', user);
-
-      // Debug: Check what's in the accounts table
-      const { data: allAccounts, error: debugError } = await supabase
-        .from('accounts')
-        .select('id, custom_user_id, account_name, account_type')
-        .limit(10);
       
-      console.log('useAccounts.fetchAccounts - Sample accounts in database:', allAccounts);
+      // For development/demo purposes
+      if (import.meta.env.DEV || !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes('example')) {
+        console.log('useAccounts.fetchAccounts - Using mock data for development');
+        
+        // Filter mock accounts based on user ID
+        const filteredAccounts = MOCK_ACCOUNTS.filter(acc => 
+          acc.custom_user_id === user.id || 
+          acc.user_id === user.id || 
+          user.username === 'demo' // Always show demo accounts for demo user
+        );
+        
+        setAccounts(filteredAccounts);
+        setLoading(false);
+        return;
+      }
 
       const { data, error } = await supabase
         .from('accounts')
@@ -41,18 +88,7 @@ export function useAccounts() {
         throw error;
       }
       
-      console.log('useAccounts.fetchAccounts - Query result for user', user.id, ':', data);
       console.log('useAccounts.fetchAccounts - Found', data?.length || 0, 'accounts');
-      
-      if (data && data.length > 0) {
-        console.log('useAccounts.fetchAccounts - Account details:', data.map(acc => ({
-          id: acc.id,
-          name: acc.account_name,
-          type: acc.account_type,
-          balance: acc.current_balance,
-          custom_user_id: acc.custom_user_id
-        })));
-      }
       
       setAccounts(data || []);
     } catch (err) {
@@ -63,7 +99,7 @@ export function useAccounts() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, user?.username]);
 
   useEffect(() => {
     if (user?.id) {
