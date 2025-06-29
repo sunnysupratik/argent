@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Video, Headphones, MessageCircle, Send, X } from 'lucide-react';
+import { Sparkles, Video, Headphones, MessageCircle, X } from 'lucide-react';
 import { AnimatedDock } from './animated-dock';
 import { useNavigate } from 'react-router-dom';
 
@@ -74,11 +74,6 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   label: "AI Chat",
                   onClick: () => { onChatClick(); setIsExpanded(false); },
                   active: activeAssistant === 'chat'
-                },
-                { 
-                  icon: <Send size={20} />, 
-                  label: "Send Message",
-                  onClick: () => { onSendMessage(); setIsExpanded(false); }
                 }
               ].map((item, index) => (
                 <motion.button
@@ -163,12 +158,6 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   onClick: onChatClick,
                   active: activeAssistant === 'chat',
                   label: "AI Chat"
-                },
-                {
-                  link: "#",
-                  Icon: <Send size={22} className="text-white" />,
-                  onClick: onSendMessage,
-                  label: "Send Message"
                 }
               ]}
             />
