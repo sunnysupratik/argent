@@ -76,32 +76,7 @@ export const customAuth = {
     try {
       console.log('CustomAuth.signIn - Attempting login for:', username);
       
-      // For development/demo purposes, allow direct login with demo accounts
-      if (import.meta.env.DEV || !supabaseUrl.includes('example.supabase.co')) {
-        if ((username === 'demo' && password === 'Password123!') ||
-            (username === 'testuser' && password === 'TestPass123!') ||
-            (username === 'johndoe' && password === 'Demo123!')) {
-          
-          // Create a mock user for demo purposes
-          const mockUser = {
-            id: username === 'demo' ? 'demo-id-123' : 
-                username === 'testuser' ? 'testuser-id-456' : 'johndoe-id-789',
-            username: username,
-            password: password, // In a real app, never store passwords in client-side code
-            full_name: username === 'demo' ? 'Alex Johnson' : 
-                      username === 'testuser' ? 'Sarah Wilson' : 'John Doe',
-            email: `${username}@example.com`,
-            created_at: new Date().toISOString()
-          };
-          
-          // Store user in localStorage for session management
-          localStorage.setItem('customUser', JSON.stringify(mockUser));
-          
-          console.log('CustomAuth.signIn - Demo login successful for user:', mockUser.username);
-          return { user: mockUser, error: null };
-        }
-      }
-      
+      // Try to authenticate with Supabase
       const { data, error } = await supabase
         .from('custom_users')
         .select('*')
@@ -130,32 +105,33 @@ export const customAuth = {
     try {
       console.log('CustomAuth.signUp - Attempting signup for:', username);
       
-      // For development/demo purposes
-      if (import.meta.env.DEV || !supabaseUrl.includes('example.supabase.co')) {
-        // Create a mock user for demo purposes
-        const mockUser = {
-          id: `${username}-id-${Math.floor(Math.random() * 1000)}`,
-          username: username,
-          password: password, // In a real app, never store passwords in client-side code
-          full_name: fullName,
-          email: email,
-          created_at: new Date().toISOString()
+      // Check if username or email already exists
+      const { data: existingUser, error: checkError } = await supabase
+        .from('custom_users')
+        .select('*')
+        .or(`username.eq.${username},email.eq.${email}`)
+        .maybeSingle();
+        
+      if (existingUser) {
+        return { 
+          user: null, 
+          error: { 
+            message: existingUser.username === username 
+              ? 'Username already exists' 
+              : 'Email already exists' 
+          } 
         };
-        
-        // Store user in localStorage for session management
-        localStorage.setItem('customUser', JSON.stringify(mockUser));
-        
-        console.log('CustomAuth.signUp - Demo signup successful for user:', mockUser.username);
-        return { user: mockUser, error: null };
       }
       
+      // Create new user
       const { data, error } = await supabase
         .from('custom_users')
         .insert([{
           username,
           password,
           full_name: fullName,
-          email
+          email,
+          user_name: username
         }])
         .select()
         .single();

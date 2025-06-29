@@ -2,50 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase, Account } from '../lib/supabase';
 import { useAuth } from './useAuth';
 
-// Mock data for development/demo
-const MOCK_ACCOUNTS: Account[] = [
-  {
-    id: 'acc-1',
-    user_id: 'demo-id-123',
-    custom_user_id: 'demo-id-123',
-    account_name: 'Chase Primary Checking',
-    account_type: 'checking',
-    current_balance: 4582.50,
-    created_at: new Date().toISOString(),
-    user_name: null
-  },
-  {
-    id: 'acc-2',
-    user_id: 'demo-id-123',
-    custom_user_id: 'demo-id-123',
-    account_name: 'Marcus High-Yield Savings',
-    account_type: 'savings',
-    current_balance: 15104.40,
-    created_at: new Date().toISOString(),
-    user_name: null
-  },
-  {
-    id: 'acc-3',
-    user_id: 'demo-id-123',
-    custom_user_id: 'demo-id-123',
-    account_name: 'Chase Freedom Credit Card',
-    account_type: 'credit_card',
-    current_balance: -1240.80,
-    created_at: new Date().toISOString(),
-    user_name: null
-  },
-  {
-    id: 'acc-4',
-    user_id: 'demo-id-123',
-    custom_user_id: 'demo-id-123',
-    account_name: 'Vanguard Investment',
-    account_type: 'investment',
-    current_balance: 127500.75,
-    created_at: new Date().toISOString(),
-    user_name: null
-  }
-];
-
 export function useAccounts() {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
@@ -65,19 +21,38 @@ export function useAccounts() {
 
       console.log('useAccounts.fetchAccounts - Fetching accounts for user ID:', user.id);
       
-      // Always use mock data for now to ensure accounts display properly
-      console.log('useAccounts.fetchAccounts - Using mock data');
+      // Try to fetch real data from Supabase
+      const { data, error } = await supabase
+        .from('accounts')
+        .select('*')
+        .eq('custom_user_id', user.id);
+
+      if (error) {
+        console.error('useAccounts.fetchAccounts - Database error:', error);
+        throw error;
+      }
       
-      // Filter mock accounts based on user ID
-      const filteredAccounts = MOCK_ACCOUNTS.filter(acc => 
-        acc.custom_user_id === user.id || 
-        acc.user_id === user.id || 
-        user.username === 'demo' // Always show demo accounts for demo user
-      );
+      console.log('useAccounts.fetchAccounts - Found', data?.length || 0, 'accounts');
       
-      setAccounts(filteredAccounts);
-      setLoading(false);
-      return;
+      if (data && data.length > 0) {
+        setAccounts(data);
+      } else {
+        console.log('useAccounts.fetchAccounts - No accounts found, trying with username');
+        
+        // Try with username if no accounts found with custom_user_id
+        const { data: usernameData, error: usernameError } = await supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_name', user.username);
+          
+        if (usernameError) {
+          console.error('useAccounts.fetchAccounts - Username query error:', usernameError);
+          throw usernameError;
+        }
+        
+        console.log('useAccounts.fetchAccounts - Found', usernameData?.length || 0, 'accounts by username');
+        setAccounts(usernameData || []);
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load accounts';
       console.error('useAccounts.fetchAccounts - Error:', errorMessage);
