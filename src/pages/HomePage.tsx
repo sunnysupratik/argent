@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, TrendingUp, PieChart, Menu, X, BarChart3 } from 'lucide-react';
+import { ArrowRight, Shield, TrendingUp, PieChart, Menu, X, BarChart3, Video } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import AnimatedSection from '../components/AnimatedSection';
@@ -144,6 +144,13 @@ const HomePage: React.FC = () => {
                 onClick={() => navigate('/contact')}
                 className="text-sm px-4 py-2"
               />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="Video Chat" 
+                icon={<Video size={16} />}
+                onClick={() => navigate('/video')}
+                className="text-sm px-4 py-2"
+              />
               
               {/* My Dashboard - Only show when logged in */}
               {user && (
@@ -237,6 +244,16 @@ const HomePage: React.FC = () => {
                       text="Contact" 
                       onClick={() => {
                         navigate('/contact');
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full text-center"
+                    />
+                    <InteractiveHoverButton 
+                      variant="white" 
+                      text="Video Chat" 
+                      icon={<Video size={16} />}
+                      onClick={() => {
+                        navigate('/video');
                         setIsMobileMenuOpen(false);
                       }}
                       className="w-full text-center"
@@ -346,6 +363,44 @@ const HomePage: React.FC = () => {
                 </motion.div>
               );
             })}
+          </AnimatedSection>
+        </div>
+      </section>
+
+      {/* Video Chat Section */}
+      <section className="px-4 lg:px-8 py-12 lg:py-24 border-t border-white/10 bg-[#030303] transition-colors duration-500">
+        <div className="max-w-7xl mx-auto">
+          <AnimatedSection className="text-center mb-12 lg:mb-16">
+            <h2 className="text-2xl lg:text-3xl mb-4 text-white font-bold uppercase tracking-wide">AI Video Advisor</h2>
+            <motion.div 
+              className="w-12 lg:w-16 h-px bg-accent-blue mx-auto"
+              initial={{ width: 0 }}
+              whileInView={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            />
+            <p className="text-white/70 mt-6 max-w-2xl mx-auto">
+              Connect with our AI-powered video financial advisor for personalized guidance and insights.
+            </p>
+          </AnimatedSection>
+          
+          <AnimatedSection delay={0.2}>
+            <div className="flex flex-col items-center">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="mb-8"
+              >
+                <InteractiveHoverButton
+                  variant="blue"
+                  text="Try Video Advisor"
+                  icon={<Video size={18} />}
+                  onClick={() => navigate('/video')}
+                  className="px-8 py-4 text-lg"
+                />
+              </motion.div>
+            </div>
           </AnimatedSection>
         </div>
       </section>
