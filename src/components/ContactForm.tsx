@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, CheckCircle, AlertCircle, User, Mail, Building, Phone, MessageSquare, DollarSign, Calendar, Tag } from 'lucide-react';
-import { useLeads } from '../hooks/useLeads';
+import { useAirtable } from '../hooks/useAirtable';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 
 interface ContactFormProps {
@@ -9,7 +9,7 @@ interface ContactFormProps {
 }
 
 const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
-  const { createLead, loading, error } = useLeads();
+  const { createLead, loading, error } = useAirtable();
   const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -118,7 +118,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ onSuccess }) => {
         </motion.div>
         <h3 className="text-2xl font-bold text-green-900 mb-2">Thank You!</h3>
         <p className="text-green-700 mb-4">
-          Your message has been received. We'll get back to you within 24 hours.
+          Your message has been received and saved to our system. We'll get back to you within 24 hours.
         </p>
         <div className="text-sm text-green-600">
           Lead ID: #{Date.now().toString().slice(-6)}
