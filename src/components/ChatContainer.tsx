@@ -130,7 +130,7 @@ const ChatContainer: React.FC = () => {
       <div 
         ref={chatContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto chat-scrollbar"
+        className="flex-1 overflow-y-auto chat-scrollbar relative"
         style={{ 
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(160, 160, 160, 0.7) rgba(0, 0, 0, 0.05)'
@@ -303,44 +303,46 @@ const ChatContainer: React.FC = () => {
 
           <div ref={messagesEndRef} className="h-4" />
         </div>
+
+        {/* Scroll Navigation Buttons - Positioned within the scrollable area */}
+        <AnimatePresence>
+          {showScrollToTop && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8, y: -20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: -20 }}
+              onClick={scrollToTop}
+              className="fixed top-20 right-4 lg:right-8 w-10 h-10 lg:w-12 lg:h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-50 border border-white/20"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Scroll to top"
+              title="Scroll to top"
+            >
+              <ChevronUp size={18} className="lg:hidden" />
+              <ChevronUp size={20} className="hidden lg:block" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showScrollToBottom && (
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              onClick={scrollToBottom}
+              className="fixed bottom-32 right-4 lg:right-8 w-10 h-10 lg:w-12 lg:h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-50 border border-white/20"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              aria-label="Scroll to latest messages"
+              title="Scroll to latest messages"
+            >
+              <ChevronDown size={18} className="lg:hidden" />
+              <ChevronDown size={20} className="hidden lg:block" />
+            </motion.button>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Scroll Navigation Buttons */}
-      <AnimatePresence>
-        {showScrollToTop && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8, y: -20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: -20 }}
-            onClick={scrollToTop}
-            className="absolute top-6 right-6 w-12 h-12 bg-white/90 hover:bg-white border border-gray-200/50 text-gray-600 hover:text-gray-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-10 backdrop-blur-sm"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Scroll to top"
-            title="Scroll to top"
-          >
-            <ChevronUp size={20} />
-          </motion.button>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {showScrollToBottom && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.8, y: 20 }}
-            onClick={scrollToBottom}
-            className="absolute bottom-24 right-6 w-12 h-12 bg-white/90 hover:bg-white border border-gray-200/50 text-gray-600 hover:text-gray-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-10 backdrop-blur-sm"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            aria-label="Scroll to latest messages"
-            title="Scroll to latest messages"
-          >
-            <ChevronDown size={20} />
-          </motion.button>
-        )}
-      </AnimatePresence>
 
       {/* Enhanced Input Area */}
       <motion.div 
