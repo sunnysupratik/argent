@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Video, X, MessageCircle, Headphones } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -10,13 +12,21 @@ import Investments from '../components/Investments';
 import Chat from '../components/Chat';
 import Profile from '../components/Profile';
 import Settings from '../components/Settings';
+import VideoChat from '../components/VideoChat';
 import PageTransition from '../components/PageTransition';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import { useAuth } from '../hooks/useAuth';
+import AIAssistantHub from '../components/ui/ai-assistant-hub';
 
 const AppLayout: React.FC = () => {
   const [activeView, setActiveView] = useState('dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showVoiceAssistant, setShowVoiceAssistant] = useState(false);
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
+  const [activeAssistant, setActiveAssistant] = useState<string | null>(null);
+  const [elevenLabsScriptLoaded, setElevenLabsScriptLoaded] = useState(false);
+  
   const location = useLocation();
   const navigate = useNavigate();
   const { user, loading } = useAuth();
@@ -26,8 +36,10 @@ const AppLayout: React.FC = () => {
 
   // Redirect to login if not authenticated
   useEffect(() => {
+    console.log('AppLayout - Auth state:', { user: user?.username, loading });
     if (!loading && !user) {
-      navigate('/login');
+      console.log('No user found, redirecting to login');
+      navigate('/login', { replace: true });
     }
   }, [user, loading, navigate]);
 
@@ -38,7 +50,10 @@ const AppLayout: React.FC = () => {
     else if (path.includes('transactions')) setActiveView('transactions');
     else if (path.includes('accounts')) setActiveView('accounts');
     else if (path.includes('investments')) setActiveView('investments');
-    else if (path.includes('chat')) setActiveView('chat');
+    else if (path.includes('chat')) {
+      setActiveView('chat');
+      setActiveAssistant('chat');
+    }
     else if (path.includes('profile')) setActiveView('profile');
     else if (path.includes('settings')) setActiveView('settings');
   }, [location]);
@@ -48,9 +63,9 @@ const AppLayout: React.FC = () => {
     setIsMobileMenuOpen(false);
   }, [location]);
 
-  // Prevent body scroll when mobile menu is open
+  // Prevent body scroll when modal is open
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    if (isMobileMenuOpen || showVideoModal || showChatModal || showVoiceAssistant) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -59,7 +74,22 @@ const AppLayout: React.FC = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, showVideoModal, showChatModal, showVoiceAssistant]);
+
+  // Load ElevenLabs script when voice assistant is shown
+  useEffect(() => {
+    if (showVoiceAssistant && !elevenLabsScriptLoaded) {
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
+      script.async = true;
+      script.onload = () => {
+        console.log('ElevenLabs script loaded successfully');
+        setElevenLabsScriptLoaded(true);
+      };
+      
+      document.body.appendChild(script);
+    }
+  }, [showVoiceAssistant, elevenLabsScriptLoaded]);
 
   const getPageTitle = (view: string) => {
     const titles: { [key: string]: string } = {
@@ -72,6 +102,40 @@ const AppLayout: React.FC = () => {
       settings: 'Settings'
     };
     return titles[view] || 'Dashboard';
+  };
+
+  const handleVideoClick = () => {
+    setShowVideoModal(true);
+    setActiveAssistant('video');
+  };
+
+  const closeVideoModal = () => {
+    setShowVideoModal(false);
+    if (activeAssistant === 'video') {
+      setActiveAssistant(null);
+    }
+  };
+
+  const handleChatClick = () => {
+    setShowChatModal(true);
+    setActiveAssistant('chat');
+  };
+
+  const closeChatModal = () => {
+    setShowChatModal(false);
+    if (activeAssistant === 'chat') {
+      setActiveAssistant(null);
+    }
+  };
+
+  const toggleVoiceAssistant = () => {
+    setShowVoiceAssistant(!showVoiceAssistant);
+    setActiveAssistant(showVoiceAssistant ? null : 'voice');
+  };
+
+  const handleSendMessage = () => {
+    // This would open a direct message or feedback form
+    console.log('Send message clicked');
   };
 
   // Show loading state while checking authentication
@@ -92,7 +156,7 @@ const AppLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative">
       {/* Desktop Horizontal Navigation */}
       <div className="desktop-only">
         <Sidebar activeView={activeView} onViewChange={setActiveView} />
@@ -131,6 +195,187 @@ const AppLayout: React.FC = () => {
           </Routes>
         </PageTransition>
       </main>
+
+      {/* AI Assistant Hub */}
+      <AIAssistantHub 
+        onVideoClick={handleVideoClick}
+        onVoiceToggle={toggleVoiceAssistant}
+        onChatClick={handleChatClick}
+        onSendMessage={handleSendMessage}
+        showVoiceAssistant={showVoiceAssistant}
+        activeAssistant={activeAssistant}
+      />
+
+      {/* Voice Assistant Modal */}
+      <AnimatePresence>
+        {showVoiceAssistant && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            {/* Blurred Background */}
+            <motion.div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => {
+                setShowVoiceAssistant(false);
+                setActiveAssistant(null);
+              }}
+            />
+            
+            {/* Voice Assistant Content */}
+            <motion.div
+              className="relative z-10 w-full max-w-md mx-auto"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {!elevenLabsScriptLoaded ? (
+                <div className="bg-white rounded-xl p-8 text-center">
+                  <div className="w-12 h-12 border-4 border-accent-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-gray-700">Loading voice assistant...</p>
+                </div>
+              ) : (
+                <div className="bg-white rounded-xl overflow-hidden shadow-xl">
+                  <div className="p-4 bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                        <Headphones size={20} className="text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-white font-bold">AI Voice Assistant</h3>
+                        <p className="text-blue-100 text-sm">Ask me anything about your finances</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setShowVoiceAssistant(false);
+                        setActiveAssistant(null);
+                      }}
+                      className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                  
+                  <elevenlabs-convai 
+                    agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"
+                    className="w-full h-[400px]"
+                  ></elevenlabs-convai>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Video Assistant */}
+      <AnimatePresence>
+        {showVideoModal && (
+          <div className="fixed inset-0 z-50">
+            {/* Blurred Background */}
+            <motion.div 
+              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeVideoModal}
+            />
+            
+            {/* Content */}
+            <motion.div 
+              className="absolute inset-4 lg:inset-12 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                    <Video size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">AI Video Advisor</h2>
+                    <p className="text-sm text-gray-600">Video consultation</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={closeVideoModal}
+                  className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <X size={20} className="text-gray-600" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 relative">
+                <VideoChat />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Chat Assistant */}
+      <AnimatePresence>
+        {showChatModal && (
+          <div className="fixed inset-0 z-50">
+            {/* Blurred Background */}
+            <motion.div 
+              className="absolute inset-0 bg-black/30 backdrop-blur-md"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeChatModal}
+            />
+            
+            {/* Content */}
+            <motion.div 
+              className="absolute inset-4 lg:inset-12 bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                    <MessageCircle size={20} className="text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-gray-900">AI Chat Advisor</h2>
+                    <p className="text-sm text-gray-600">Text consultation</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={closeChatModal}
+                  className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center justify-center transition-colors"
+                >
+                  <X size={20} className="text-gray-600" />
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 relative">
+                <Chat />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
