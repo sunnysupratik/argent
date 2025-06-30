@@ -3,7 +3,7 @@ import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage';
 import LoadingDots from './LoadingDots';
-import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3 } from 'lucide-react';
+import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3, ChevronDown } from 'lucide-react';
 
 const ChatContainer: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -29,7 +29,7 @@ const ChatContainer: React.FC = () => {
     },
   });
 
-  // Auto-scroll to bottom when new messages arrive (only if user isn't scrolling)
+  // Auto-scroll to bottom when new messages arrive (only if user isn't manually scrolling)
   useEffect(() => {
     if (!isUserScrolling && messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -40,18 +40,20 @@ const ChatContainer: React.FC = () => {
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-      const isAtBottom = scrollHeight - scrollTop <= clientHeight + 50; // 50px threshold
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 100; // 100px threshold
       
-      setIsUserScrolling(!isAtBottom);
-      setShowScrollToBottom(!isAtBottom && messages.length > 0);
+      setIsUserScrolling(!isNearBottom);
+      setShowScrollToBottom(!isNearBottom && messages.length > 0);
     }
   };
 
   // Scroll to bottom function
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    setIsUserScrolling(false);
-    setShowScrollToBottom(false);
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      setIsUserScrolling(false);
+      setShowScrollToBottom(false);
+    }
   };
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -117,37 +119,8 @@ const ChatContainer: React.FC = () => {
       <div 
         ref={chatContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto relative custom-scrollbar"
-        style={{
-          scrollbarWidth: 'thin',
-          scrollbarColor: '#CBD5E1 transparent'
-        }}
+        className="flex-1 overflow-y-auto relative chat-scrollbar"
       >
-        <style jsx>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-          }
-          
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-            border-radius: 3px;
-          }
-          
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
-            border-radius: 3px;
-            transition: background 0.2s ease;
-          }
-          
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94A3B8;
-          }
-          
-          .custom-scrollbar::-webkit-scrollbar-thumb:active {
-            background: #64748B;
-          }
-        `}</style>
-
         <AnimatePresence mode="wait">
           {messages.length === 0 ? (
             <motion.div
@@ -260,7 +233,7 @@ const ChatContainer: React.FC = () => {
               key="messages"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="p-4 lg:p-6 space-y-6 relative min-h-full"
+              className="p-4 lg:p-6 space-y-6 relative"
             >
               {messages.map((message, index) => (
                 <ChatMessage 
@@ -323,22 +296,11 @@ const ChatContainer: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             onClick={scrollToBottom}
-            className="absolute bottom-24 right-6 w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-10"
+            className="absolute bottom-24 right-6 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-10"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
           >
-            <svg 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <path d="m6 9 6 6 6-6"/>
-            </svg>
+            <ChevronDown size={20} />
           </motion.button>
         )}
       </AnimatePresence>
