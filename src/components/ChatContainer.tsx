@@ -343,12 +343,7 @@ const ChatContainer: React.FC = () => {
       </div>
 
       {/* Enhanced Input Area */}
-      <motion.div 
-        className="p-4 lg:p-6 border-t border-gray-100/50 bg-white/80 backdrop-blur-xl relative"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-      >
+      <div className="p-4 lg:p-6 border-t border-gray-100/50 bg-white/80 backdrop-blur-xl relative">
         <form onSubmit={onSubmit} className="relative">
           <div className="relative flex items-center">
             <input
@@ -374,14 +369,9 @@ const ChatContainer: React.FC = () => {
           </div>
         </form>
         
-        <motion.p 
-          className="text-xs text-gray-400 mt-3 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
+        <p className="text-xs text-gray-400 mt-3 text-center">
           AI can make mistakes. Please verify important financial decisions.
-        </motion.p>
+        </p>
       </div>
     </div>
   );
