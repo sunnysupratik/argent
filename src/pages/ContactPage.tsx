@@ -181,6 +181,19 @@ const ContactPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/80 border border-white/10 backdrop-blur-sm shadow-md mb-6"
+          >
+            <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse" />
+            <span className="text-sm text-white/70 tracking-wide font-medium">
+              Get In Touch
+            </span>
+          </motion.div>
+          
           <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-white">How can we help?</h1>
           <p className="text-lg text-white/90 max-w-2xl mx-auto">
             Whether you need help with a feature or have a suggestion, we're here to listen.

@@ -144,7 +144,7 @@ const AboutPage: React.FC = () => {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.05] border border-white/[0.15] backdrop-blur-sm"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-black/80 border border-white/10 backdrop-blur-sm shadow-md"
             >
               <div className="w-2 h-2 bg-accent-blue rounded-full animate-pulse" />
               <span className="text-sm text-white/70 tracking-wide font-medium">
