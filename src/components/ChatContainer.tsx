@@ -119,7 +119,11 @@ const ChatContainer: React.FC = () => {
       <div 
         ref={chatContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-scroll chat-scrollbar"
+        className="flex-1 overflow-y-auto chat-scrollbar"
+        style={{ 
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(160, 160, 160, 0.7) rgba(0, 0, 0, 0.05)'
+        }}
       >
         <div className="p-4 lg:p-6 space-y-6 relative min-h-full">
           <AnimatePresence mode="wait">
