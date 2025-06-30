@@ -45,11 +45,16 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 // Test connection function
 export const testSupabaseConnection = async () => {
   try {
+    console.log('Testing Supabase connection with URL:', 
+      supabaseUrl.includes('example') ? 'Using placeholder URL' : 'Using configured URL');
+    
     const { data, error } = await supabase.from('custom_users').select('count').limit(1);
+    
     if (error) {
       console.error('Supabase connection test failed:', error);
       return false;
     }
+    
     console.log('✅ Supabase connection successful');
     return true;
   } catch (err) {
