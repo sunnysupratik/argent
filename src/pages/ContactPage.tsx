@@ -379,7 +379,7 @@ const ContactPage: React.FC = () => {
             )}
           </motion.div>
 
-          {/* Contact Information */}
+          {/* Contact Information - FIXED READABILITY ISSUES */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -387,7 +387,7 @@ const ContactPage: React.FC = () => {
             className="space-y-6"
           >
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold mb-6">Contact Information</h2>
+              <h2 className="text-2xl font-bold mb-6 text-white">Contact Information</h2>
               <div className="space-y-6">
                 {contactInfo.map((info, index) => {
                   const Icon = info.icon;
@@ -399,7 +399,7 @@ const ContactPage: React.FC = () => {
                       <div>
                         <h3 className="text-lg font-bold text-white mb-1">{info.title}</h3>
                         <p className="text-accent-blue font-medium mb-1">{info.content}</p>
-                        <p className="text-gray-400 text-sm">{info.description}</p>
+                        <p className="text-gray-300 text-sm">{info.description}</p>
                       </div>
                     </div>
                   );
@@ -408,7 +408,7 @@ const ContactPage: React.FC = () => {
             </div>
 
             <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold mb-6">Security & Urgent Issues</h2>
+              <h2 className="text-2xl font-bold mb-6 text-white">Security & Urgent Issues</h2>
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
                   <Shield size={20} className="text-white" />
@@ -440,7 +440,7 @@ const ContactPage: React.FC = () => {
           <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6">
             Looking for answers?
           </h2>
-          <p className="text-gray-400 leading-relaxed mb-8">
+          <p className="text-gray-300 leading-relaxed mb-8">
             Check our comprehensive help center for FAQs and documentation.
             Our knowledge base contains answers to most common questions.
           </p>
@@ -464,7 +464,7 @@ const ContactPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-gray-500 text-sm">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-gray-400 text-sm">
           © 2024 Argent. All rights reserved. | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Privacy Policy</a> | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Terms of Service</a>
