@@ -68,9 +68,6 @@ const ContactPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white relative overflow-hidden">
-      {/* Subtle gradient background with reduced opacity for better contrast */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-black to-purple-900/10 pointer-events-none"></div>
-      
       {/* Header */}
       <motion.header 
         className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl relative z-50"
