@@ -68,12 +68,12 @@ const ContactPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Subtle gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-black to-purple-900/10 pointer-events-none"></div>
+      {/* Subtle gradient background with reduced opacity for better contrast */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/5 via-black to-purple-900/5 pointer-events-none"></div>
       
       {/* Header */}
       <motion.header 
-        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-black/95 backdrop-blur-xl relative z-50"
+        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/20 bg-black/90 backdrop-blur-xl relative z-50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -180,24 +180,24 @@ const ContactPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-4xl lg:text-5xl font-bold mb-4">How can we help?</h1>
-          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4 text-white">How can we help?</h1>
+          <p className="text-lg text-gray-300 max-w-2xl mx-auto">
             Whether you need help with a feature or have a suggestion, we're here to listen.
           </p>
         </motion.div>
 
-        {/* Contact Form Section */}
+        {/* Contact Form Section - Improved contrast */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-gray-900/50 border border-gray-800/50 rounded-2xl p-8 backdrop-blur-sm"
+          className="bg-gray-900/90 border border-gray-700 rounded-2xl p-8 backdrop-blur-sm"
         >
           {formSubmitted ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="bg-green-900/30 border border-green-800/50 rounded-xl p-6 text-center"
+              className="bg-green-900/50 border border-green-700 rounded-xl p-6 text-center"
             >
               <motion.div
                 initial={{ scale: 0 }}
@@ -220,18 +220,18 @@ const ContactPage: React.FC = () => {
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
               </motion.div>
-              <h3 className="text-2xl font-bold text-green-400 mb-2">Message Sent!</h3>
-              <p className="text-green-300 mb-4">
+              <h3 className="text-2xl font-bold text-white mb-2">Message Sent!</h3>
+              <p className="text-green-200 mb-4">
                 Thank you for reaching out. We'll respond to your inquiry within 24 hours.
               </p>
-              <div className="text-sm text-green-400">
+              <div className="text-sm text-green-300">
                 Reference ID: #{Date.now().toString().slice(-6)}
               </div>
             </motion.div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   <User size={16} className="inline mr-2" />
                   Your Name *
                 </label>
@@ -241,13 +241,13 @@ const ContactPage: React.FC = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                  className="w-full px-4 py-3 bg-black/60 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-accent-blue transition-colors"
                   placeholder="John Doe"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   <Mail size={16} className="inline mr-2" />
                   Your Email Address *
                 </label>
@@ -257,13 +257,13 @@ const ContactPage: React.FC = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                  className="w-full px-4 py-3 bg-black/60 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-accent-blue transition-colors"
                   placeholder="john@example.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   <MessageCircle size={16} className="inline mr-2" />
                   What is this about? *
                 </label>
@@ -272,10 +272,10 @@ const ContactPage: React.FC = () => {
                   value={formData.subject}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-accent-blue transition-colors"
+                  className="w-full px-4 py-3 bg-black/60 border border-gray-600 rounded-xl text-white focus:outline-none focus:border-accent-blue transition-colors"
                 >
                   {subjectOptions.map((option, index) => (
-                    <option key={index} value={option} className="bg-gray-900 text-white">
+                    <option key={index} value={option} className="bg-gray-800 text-white">
                       {option}
                     </option>
                   ))}
@@ -283,7 +283,7 @@ const ContactPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">
+                <label className="block text-sm font-medium text-white mb-2">
                   Your Message *
                 </label>
                 <textarea
@@ -292,7 +292,7 @@ const ContactPage: React.FC = () => {
                   onChange={handleInputChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-black/60 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-accent-blue transition-colors resize-none"
                   placeholder="Tell us how we can help..."
                 />
               </div>
@@ -308,7 +308,7 @@ const ContactPage: React.FC = () => {
                 />
                 
                 {submitError && (
-                  <div className="text-red-500 text-sm mt-2">{submitError}</div>
+                  <div className="text-red-400 text-sm mt-2">{submitError}</div>
                 )}
               </div>
             </form>
@@ -325,7 +325,7 @@ const ContactPage: React.FC = () => {
           <h2 className="text-xl font-bold text-white mb-3">
             Looking for answers?
           </h2>
-          <p className="text-gray-400 mb-6">
+          <p className="text-gray-300 mb-6">
             Check our comprehensive help center for FAQs and documentation.
           </p>
           
@@ -339,8 +339,8 @@ const ContactPage: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-gray-400 text-sm">
+      <footer className="border-t border-white/20 py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-gray-300 text-sm">
           © 2024 Argent. All rights reserved. | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Privacy Policy</a> | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Terms of Service</a>
