@@ -1092,3 +1092,49 @@ textarea:focus-visible {
     display: none !important;
   }
 }
+
+/* ElevenLabs Widget Styling - Clean and Minimal */
+elevenlabs-convai {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+/* Remove all ElevenLabs branding and banners */
+elevenlabs-convai::part(iframe) {
+  border: none !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+elevenlabs-convai::part(container) {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+}
+
+/* Completely hide any footer or branding elements */
+elevenlabs-convai::part(footer),
+elevenlabs-convai::part(powered-by),
+elevenlabs-convai::part(banner),
+elevenlabs-convai::part(branding) {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Additional CSS to hide any remaining branding */
+elevenlabs-convai * {
+  border: none !important;
+}
+
+elevenlabs-convai iframe {
+  border: none !important;
+  outline: none !important;
+}
