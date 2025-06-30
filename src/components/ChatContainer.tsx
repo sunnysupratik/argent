@@ -110,8 +110,8 @@ const ChatContainer: React.FC = () => {
 
   return (
     <div className="flex flex-col h-full bg-white/80 backdrop-blur-xl relative overflow-hidden">
-      {/* Aurora background effect */}
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Fixed position background that doesn't scroll with content */}
+      <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/10 to-violet-50/20 animate-aurora opacity-50" />
       </div>
 
@@ -120,6 +120,13 @@ const ChatContainer: React.FC = () => {
         ref={chatContainerRef}
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto relative chat-scrollbar"
+        style={{ 
+          position: 'relative',
+          height: '100%',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          willChange: 'transform'
+        }}
       >
         <div className="p-4 lg:p-6 space-y-6 relative min-h-full">
           <AnimatePresence mode="wait">

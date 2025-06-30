@@ -11,6 +11,12 @@ const Chat: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
         className="flex-1 overflow-hidden relative"
+        style={{ 
+          position: 'relative',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
       >
         <ChatContainer />
       </motion.div>
