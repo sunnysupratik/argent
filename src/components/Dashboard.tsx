@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import CashFlowChart from './CashFlowChart';
 import RecentTransactions from './RecentTransactions';
-import AIAdvisorWidget from './AIAdvisorWidget';
 import AnimatedSection from './AnimatedSection';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
@@ -299,9 +298,6 @@ const Dashboard: React.FC = () => {
 
             {/* Right Column */}
             <div className="space-y-4 lg:space-y-6">
-              {/* AI Advisor Widget */}
-              <AIAdvisorWidget />
-
               {/* Account Stats */}
               <AnimatedSection delay={0.5}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
