@@ -119,13 +119,12 @@ const ChatContainer: React.FC = () => {
       <div 
         ref={chatContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto relative chat-scrollbar"
+        className="flex-1 overflow-y-scroll chat-scrollbar"
         style={{ 
-          position: 'relative',
-          height: '100%',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          willChange: 'transform'
+          scrollbarWidth: 'thin',
+          scrollbarColor: '#d1d5db transparent',
+          paddingRight: '4px', // Add padding to ensure scrollbar is visible
+          marginRight: '4px'
         }}
       >
         <div className="p-4 lg:p-6 space-y-6 relative min-h-full">

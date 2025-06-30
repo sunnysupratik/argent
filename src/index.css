@@ -61,12 +61,12 @@
 @layer components {
   .chat-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 122, 255, 0.3) rgba(0, 0, 0, 0.05);
+    scrollbar-color: rgba(180, 180, 180, 0.5) rgba(0, 0, 0, 0.05);
   }
 
   .chat-scrollbar::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
 
   .chat-scrollbar::-webkit-scrollbar-track {
@@ -76,26 +76,26 @@
   }
 
   .chat-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 122, 255, 0.3);
+    background: rgba(180, 180, 180, 0.5);
     border-radius: 4px;
     transition: all 0.2s ease;
   }
 
   .chat-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 122, 255, 0.5);
+    background: rgba(150, 150, 150, 0.7);
   }
 
   .chat-scrollbar::-webkit-scrollbar-thumb:active {
-    background: rgba(0, 122, 255, 0.7);
+    background: rgba(120, 120, 120, 0.8);
   }
 
   .chat-scrollbar::-webkit-scrollbar-corner {
     background: transparent;
   }
 
-  /* Enhanced scrollbar for better visibility */
-  .chat-scrollbar:hover::-webkit-scrollbar-thumb {
-    background: rgba(0, 122, 255, 0.4);
+  /* Make scrollbar always visible */
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    min-height: 40px;
   }
 }
 
@@ -1135,7 +1135,7 @@ textarea:focus-visible {
   }
 
   .chat-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(0, 122, 255, 0.5);
+    background: rgba(180, 180, 180, 0.5);
   }
 }
 
