@@ -88,12 +88,8 @@ const ChatContainer: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/10 to-violet-50/20 animate-aurora opacity-50" />
       </div>
 
-      {/* Messages Area - Scrollable Container */}
-      <div 
-        ref={chatContainerRef} 
-        className="flex-1 overflow-y-auto relative"
-        style={{ scrollbarWidth: 'thin', scrollbarColor: '#CBD5E1 transparent' }}
-      >
+      {/* Messages Area */}
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto relative">
         <AnimatePresence mode="wait">
           {messages.length === 0 ? (
             <motion.div
@@ -261,7 +257,7 @@ const ChatContainer: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Enhanced Input Area - Fixed at Bottom */}
+      {/* Enhanced Input Area */}
       <motion.div 
         className="p-4 lg:p-6 border-t border-gray-100/50 bg-white/80 backdrop-blur-xl relative"
         initial={{ opacity: 0, y: 20 }}
