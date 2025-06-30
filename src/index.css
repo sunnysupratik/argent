@@ -57,6 +57,48 @@
   }
 }
 
+/* Custom Chat Scrollbar Styling */
+@layer components {
+  .chat-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 122, 255, 0.3) rgba(0, 0, 0, 0.05);
+  }
+
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    margin: 8px 0;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 122, 255, 0.3);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 122, 255, 0.5);
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb:active {
+    background: rgba(0, 122, 255, 0.7);
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Enhanced scrollbar for better visibility */
+  .chat-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(0, 122, 255, 0.4);
+  }
+}
+
 /* Custom markdown styles */
 @layer components {
   .markdown-content {
@@ -971,6 +1013,11 @@
   .greeting-text-medium {
     font-size: clamp(1rem, 4vw, 1.75rem);
   }
+
+  /* Mobile chat scrollbar adjustments */
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1008,6 +1055,11 @@
   .greeting-text-medium {
     font-size: clamp(0.875rem, 3vw, 1.25rem);
   }
+
+  /* Smaller scrollbar for very small screens */
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
 }
 
 /* Accessibility & Performance */
@@ -1041,6 +1093,11 @@ textarea:focus-visible {
   .swiss-card {
     border-width: 2px;
   }
+
+  /* Enhanced scrollbar visibility in high contrast */
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 122, 255, 0.8);
+  }
 }
 
 /* Touch-friendly interactions */
@@ -1071,6 +1128,15 @@ textarea:focus-visible {
     min-height: 44px;
     min-width: 44px;
   }
+
+  /* Larger scrollbar for touch devices */
+  .chat-scrollbar::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  .chat-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 122, 255, 0.5);
+  }
 }
 
 /* Print styles */
@@ -1090,5 +1156,10 @@ textarea:focus-visible {
   .mobile-nav-overlay,
   .mobile-sidebar {
     display: none !important;
+  }
+
+  /* Hide scrollbars in print */
+  .chat-scrollbar {
+    overflow: visible !important;
   }
 }

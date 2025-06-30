@@ -120,6 +120,10 @@ const ChatContainer: React.FC = () => {
         ref={chatContainerRef}
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto relative chat-scrollbar"
+        style={{
+          scrollbarWidth: 'thin',
+          scrollbarColor: 'rgba(0, 122, 255, 0.3) rgba(0, 0, 0, 0.05)'
+        }}
       >
         <AnimatePresence mode="wait">
           {messages.length === 0 ? (
@@ -296,9 +300,10 @@ const ChatContainer: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             onClick={scrollToBottom}
-            className="absolute bottom-24 right-6 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-10"
+            className="absolute bottom-24 right-6 w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-10 border-2 border-white"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            title="Scroll to bottom"
           >
             <ChevronDown size={20} />
           </motion.button>
