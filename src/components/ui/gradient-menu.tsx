@@ -37,9 +37,9 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
               isActive ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'
             }`}></span>
 
-            {/* Icon - always visible */}
+            {/* Icon - always visible and stays in center when active, moves to left when hovering inactive */}
             <span className={`relative z-10 transition-all duration-300 ${
-              isActive ? 'text-white' : 'text-gray-500 group-hover:text-white'
+              isActive ? 'text-white' : 'text-gray-500 group-hover:text-white group-hover:absolute group-hover:left-5'
             }`}>
               <Icon size={24} />
             </span>
