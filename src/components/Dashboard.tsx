@@ -127,22 +127,26 @@ const Dashboard: React.FC = () => {
 
   const recentTransactions = getRecentTransactions(5);
   
-  // Get credit card data from accounts
+  // Get credit card data from accounts - use real data
   const creditAccount = accounts.find(acc => acc.account_type === 'credit_card');
-  const creditUsed = creditAccount ? Math.abs(Number(creditAccount.current_balance)) : 1240.80;
-  const creditLimit = 5000;
+  const creditUsed = creditAccount ? Math.abs(Number(creditAccount.current_balance)) : 0;
+  const creditLimit = creditUsed > 0 ? creditUsed * 2.5 : 5000; // Estimate credit limit
   const creditAvailable = creditLimit - creditUsed;
-  const creditUtilization = (creditUsed / creditLimit) * 100;
+  const creditUtilization = creditLimit > 0 ? (creditUsed / creditLimit) * 100 : 0;
 
-  // Cash flow data
-  const cashLimit = 10000;
+  // Cash flow data - use real monthly expenses
+  const cashLimit = finalValues.income > 0 ? finalValues.income * 1.2 : 10000;
   const cashUsed = finalValues.expenses;
   const cashAvailable = Math.max(0, cashLimit - cashUsed);
-  const cashUtilization = Math.min((cashUsed / cashLimit) * 100, 100);
+  const cashUtilization = cashLimit > 0 ? Math.min((cashUsed / cashLimit) * 100, 100) : 0;
 
-  // Savings rate calculation
+  // Savings rate calculation - use real data
   const savingsRate = finalValues.income > 0 ? 
     ((finalValues.income - finalValues.expenses) / finalValues.income) * 100 : 0;
+
+  // Get primary checking account for card display
+  const primaryAccount = accounts.find(acc => acc.account_type === 'checking') || accounts[0];
+  const cardBalance = primaryAccount ? Number(primaryAccount.current_balance) : 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -203,7 +207,7 @@ const Dashboard: React.FC = () => {
               {/* Credit and Cash Limits */}
               <AnimatedSection delay={0.2}>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-                  {/* Credit Limit */}
+                  {/* Credit Utilization */}
                   <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                     <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Credit Utilization</h3>
                     <div className="space-y-3 lg:space-y-4">
@@ -335,7 +339,7 @@ const Dashboard: React.FC = () => {
                 </div>
               </AnimatedSection>
 
-              {/* My Card */}
+              {/* My Card - Use real account data */}
               <AnimatedSection delay={0.6}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-3 lg:mb-4">
@@ -348,7 +352,7 @@ const Dashboard: React.FC = () => {
                     </button>
                   </div>
                   
-                  {/* Credit Card */}
+                  {/* Account Card */}
                   <motion.div 
                     className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl lg:rounded-2xl p-4 lg:p-6 text-white mb-3 lg:mb-4"
                     whileHover={{ scale: 1.02 }}
@@ -357,7 +361,9 @@ const Dashboard: React.FC = () => {
                     <div className="flex justify-between items-start mb-6 lg:mb-8">
                       <div>
                         <div className="text-xs lg:text-sm opacity-80">ARGENT CARD</div>
-                        <div className="text-base lg:text-lg font-bold">Premium</div>
+                        <div className="text-base lg:text-lg font-bold">
+                          {primaryAccount?.account_name || 'Primary Account'}
+                        </div>
                       </div>
                       <div className="w-6 lg:w-8 h-6 lg:h-8 bg-white/20 rounded-full"></div>
                     </div>
@@ -380,9 +386,9 @@ const Dashboard: React.FC = () => {
                   </motion.div>
 
                   <div className="text-center">
-                    <div className="text-xs lg:text-sm text-gray-500 mb-2">Available Credit</div>
+                    <div className="text-xs lg:text-sm text-gray-500 mb-2">Available Balance</div>
                     <div className="text-lg lg:text-xl font-bold text-green-600">
-                      ${creditAvailable.toLocaleString()}
+                      ${cardBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </div>
                   </div>
                 </div>

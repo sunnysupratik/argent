@@ -9,21 +9,21 @@ import AnimatedSection from './AnimatedSection';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
-  const { getTotalBalance } = useAccounts();
-  const { getMonthlyIncome, getMonthlyExpenses } = useTransactions();
+  const { getTotalBalance, getAccountsCount } = useAccounts();
+  const { getMonthlyIncome, getMonthlyExpenses, getTransactionsCount } = useTransactions();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
   const [profileData, setProfileData] = useState({
-    firstName: user?.full_name?.split(' ')[0] || 'John',
-    lastName: user?.full_name?.split(' ')[1] || 'Doe',
-    email: user?.email || 'john.doe@example.com',
+    firstName: user?.full_name?.split(' ')[0] || 'User',
+    lastName: user?.full_name?.split(' ')[1] || '',
+    email: user?.email || 'user@example.com',
     phone: '+1 (555) 123-4567',
     bio: 'Financial enthusiast focused on building long-term wealth through smart investments and disciplined budgeting.',
     location: 'San Francisco, CA',
     occupation: 'Software Engineer',
-    joinDate: user?.created_at || '2024-01-01'
+    joinDate: user?.created_at || new Date().toISOString()
   });
 
   const getUserProfile = () => {
@@ -33,7 +33,7 @@ const Profile: React.FC = () => {
     
     return {
       ...profileData,
-      creditScore: 742, // Mock data
+      creditScore: 742, // Mock data - would come from credit monitoring service
       totalBalance,
       monthlyIncome,
       monthlyExpenses,
@@ -43,90 +43,92 @@ const Profile: React.FC = () => {
 
   const userProfile = getUserProfile();
 
+  // Real achievements based on actual data
   const achievements = [
     {
-      id: 'budget_master',
-      title: 'Budget Master',
-      description: 'Successfully maintained budget for 3 months',
-      icon: '🎯',
-      unlocked: true,
-      unlockedDate: '2024-01-10',
+      id: 'account_holder',
+      title: 'Account Holder',
+      description: `Successfully connected ${getAccountsCount()} financial accounts`,
+      icon: '🏦',
+      unlocked: getAccountsCount() > 0,
+      unlockedDate: user?.created_at || new Date().toISOString(),
       progress: 100,
+      category: 'Banking'
+    },
+    {
+      id: 'transaction_tracker',
+      title: 'Transaction Tracker',
+      description: `Recorded ${getTransactionsCount()} transactions`,
+      icon: '📊',
+      unlocked: getTransactionsCount() > 0,
+      unlockedDate: user?.created_at || new Date().toISOString(),
+      progress: 100,
+      category: 'Tracking'
+    },
+    {
+      id: 'income_earner',
+      title: 'Income Earner',
+      description: 'Generated monthly income',
+      icon: '💰',
+      unlocked: userProfile.monthlyIncome > 0,
+      unlockedDate: user?.created_at || new Date().toISOString(),
+      progress: userProfile.monthlyIncome > 0 ? 100 : 0,
+      category: 'Income'
+    },
+    {
+      id: 'budget_conscious',
+      title: 'Budget Conscious',
+      description: 'Maintaining positive savings rate',
+      icon: '🎯',
+      unlocked: userProfile.savingsRate > 0,
+      progress: userProfile.savingsRate > 0 ? 100 : Math.max(0, userProfile.savingsRate + 100),
       category: 'Budgeting'
     },
     {
-      id: 'debt_destroyer',
-      title: 'Debt Destroyer',
-      description: 'Paid off a major loan or debt',
-      icon: '⚔️',
-      unlocked: true,
-      unlockedDate: '2024-01-05',
-      progress: 100,
-      category: 'Debt Management'
-    },
-    {
-      id: 'savings_starter',
-      title: 'Savings Starter',
-      description: 'Built emergency fund of $1,000+',
+      id: 'wealth_builder',
+      title: 'Wealth Builder',
+      description: 'Built substantial net worth',
       icon: '🌱',
-      unlocked: true,
-      unlockedDate: '2023-12-20',
-      progress: 100,
-      category: 'Savings'
+      unlocked: userProfile.totalBalance > 10000,
+      progress: Math.min(100, (userProfile.totalBalance / 10000) * 100),
+      category: 'Wealth'
     },
     {
-      id: 'investment_novice',
-      title: 'Investment Novice',
-      description: 'Made your first investment',
+      id: 'financial_planner',
+      title: 'Financial Planner',
+      description: 'Actively managing finances',
       icon: '📈',
-      unlocked: false,
-      progress: 75,
-      category: 'Investing'
-    },
-    {
-      id: 'diversification_pro',
-      title: 'Diversification Pro',
-      description: 'Invest across 5+ different asset classes',
-      icon: '🎲',
-      unlocked: false,
-      progress: 40,
-      category: 'Investing'
-    },
-    {
-      id: 'credit_champion',
-      title: 'Credit Champion',
-      description: 'Achieve credit score of 750+',
-      icon: '👑',
-      unlocked: false,
-      progress: 85,
-      category: 'Credit'
+      unlocked: getAccountsCount() >= 2 && getTransactionsCount() >= 5,
+      progress: Math.min(100, ((getAccountsCount() * 20) + (getTransactionsCount() * 4))),
+      category: 'Planning'
     }
   ];
 
+  // Real financial goals based on current data
   const financialGoals = [
     {
       id: 'emergency_fund',
       title: 'Emergency Fund',
       target: 10000,
-      current: 7500,
+      current: Math.max(0, userProfile.totalBalance * 0.3), // Assume 30% is emergency fund
       deadline: '2024-12-31',
       category: 'Savings'
     },
     {
-      id: 'retirement_401k',
-      title: 'Retirement Savings',
-      target: 50000,
-      current: 32000,
-      deadline: '2025-12-31',
-      category: 'Retirement'
+      id: 'monthly_savings',
+      title: 'Monthly Savings Target',
+      target: userProfile.monthlyIncome * 0.2, // 20% savings rate
+      current: Math.max(0, userProfile.monthlyIncome - userProfile.monthlyExpenses),
+      deadline: '2024-12-31',
+      category: 'Budgeting'
     },
     {
-      id: 'house_down_payment',
-      title: 'House Down Payment',
-      target: 80000,
-      current: 25000,
-      deadline: '2026-06-30',
-      category: 'Real Estate'
+      id: 'net_worth_growth',
+      title: 'Net Worth Growth',
+      target: userProfile.totalBalance * 1.1, // 10% growth
+      current: userProfile.totalBalance,
+      deadline: '2025-12-31',
+      category: 'Wealth'
     }
   ];
 
@@ -337,7 +339,7 @@ const Profile: React.FC = () => {
                   <div className="mb-3">
                     <div className="flex justify-between text-xs text-gray-600 mb-1">
                       <span>Progress</span>
-                      <span>{achievement.progress}%</span>
+                      <span>{achievement.progress.toFixed(0)}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div 
@@ -380,8 +382,8 @@ const Profile: React.FC = () => {
 
       <div className="space-y-4">
         {financialGoals.map((goal, index) => {
-          const progress = (goal.current / goal.target) * 100;
-          const remaining = goal.target - goal.current;
+          const progress = goal.target > 0 ? (goal.current / goal.target) * 100 : 0;
+          const remaining = Math.max(0, goal.target - goal.current);
           const daysLeft = Math.ceil((new Date(goal.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
           
           return (
