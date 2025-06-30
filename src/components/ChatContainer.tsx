@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage';
 import LoadingDots from './LoadingDots';
 import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
+import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 const ChatContainer: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -11,6 +13,7 @@ const ChatContainer: React.FC = () => {
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const {
     messages,
@@ -119,7 +122,8 @@ const ChatContainer: React.FC = () => {
     }, 100);
   };
 
-  return (
+  // Chat content component that can be used both in the main view and dialog
+  const ChatContent = () => (
     <div className="flex flex-col h-full bg-white/80 backdrop-blur-xl relative overflow-hidden">
       {/* Fixed position background that doesn't scroll with content */}
       <div className="absolute inset-0 pointer-events-none">
@@ -306,15 +310,15 @@ const ChatContainer: React.FC = () => {
           </div>
         </div>
 
-        {/* Scroll Navigation Buttons - FIXED POSITION WITHIN VIEWPORT */}
-        <div className="fixed right-8 bottom-32 z-50 flex flex-col gap-4">
+        {/* Scroll Navigation Buttons */}
+        <AnimatePresence>
           {showScrollToTop && (
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
               onClick={scrollToTop}
-              className="w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 border-2 border-white"
+              className="fixed right-6 top-24 w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-50 border-2 border-white"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to top"
@@ -326,11 +330,11 @@ const ChatContainer: React.FC = () => {
 
           {showScrollToBottom && (
             <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.8, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 20 }}
               onClick={scrollToBottom}
-              className="w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 border-2 border-white"
+              className="fixed right-6 bottom-24 w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-50 border-2 border-white"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to latest messages"
@@ -339,7 +343,7 @@ const ChatContainer: React.FC = () => {
               <ChevronDown size={24} />
             </motion.button>
           )}
-        </div>
+        </AnimatePresence>
       </div>
 
       {/* Enhanced Input Area */}
@@ -384,6 +388,47 @@ const ChatContainer: React.FC = () => {
         </motion.p>
       </motion.div>
     </div>
+  );
+
+  return (
+    <>
+      {/* Regular Chat Container */}
+      <div className="h-full w-full flex flex-col relative bg-gray-50 rounded-xl overflow-hidden">
+        {/* Main Chat Container */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex-1 overflow-hidden relative"
+          style={{ 
+            position: 'relative',
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          {/* Button to open dialog for fullscreen scrollable view */}
+          <Button 
+            variant="outline" 
+            className="absolute top-4 right-4 z-10"
+            onClick={() => setIsDialogOpen(true)}
+          >
+            Expand Chat
+          </Button>
+          
+          <ChatContent />
+        </motion.div>
+      </div>
+
+      {/* Dialog for fullscreen scrollable view */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="flex flex-col gap-0 p-0 sm:max-h-[90vh] sm:max-w-4xl w-[95vw] h-[90vh] [&>button:last-child]:hidden">
+          <div className="h-full overflow-hidden">
+            <ChatContent />
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
