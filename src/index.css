@@ -491,7 +491,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center;
     border: none;
     outline: none;
   }
@@ -1091,4 +1091,65 @@ textarea:focus-visible {
   .mobile-sidebar {
     display: none !important;
   }
+}
+
+/* Custom scrollbar styles for chat container */
+/* For Webkit browsers (Chrome, Safari) */
+.chat-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(203, 213, 225, 0.5);
+  border-radius: 20px;
+}
+
+.chat-scrollable::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(148, 163, 184, 0.7);
+}
+
+/* For Firefox */
+.chat-scrollable {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.5) transparent;
+}
+
+/* Modal styles for fixed header and footer with scrollable content */
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 90vh;
+}
+
+.modal-header {
+  flex-shrink: 0;
+}
+
+.modal-content {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(203, 213, 225, 0.5) transparent;
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background-color: rgba(203, 213, 225, 0.5);
+  border-radius: 20px;
+}
+
+.modal-footer {
+  flex-shrink: 0;
 }

@@ -248,7 +248,7 @@ const AppLayout: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Chat Modal */}
+      {/* Chat Modal - Improved with Scrollable Content */}
       <AnimatePresence>
         {showChatModal && (
           <motion.div
@@ -265,8 +265,8 @@ const AppLayout: React.FC = () => {
               className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header - Same style as Video Modal */}
-              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+              {/* Modal Header - Fixed */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 flex-shrink-0">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
                     <MessageCircle size={20} className="text-white" />
@@ -285,8 +285,8 @@ const AppLayout: React.FC = () => {
                 </button>
               </div>
 
-              {/* Modal Content */}
-              <div className="flex-1 relative">
+              {/* Modal Content - Scrollable */}
+              <div className="flex-1 overflow-hidden relative">
                 <Chat />
               </div>
             </motion.div>
