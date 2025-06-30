@@ -222,7 +222,7 @@ export const mockAccounts: MockAccount[] = [
   }
 ];
 
-// Mock Transactions
+// Mock Transactions - Comprehensive transaction history for cash flow
 export const mockTransactions: MockTransaction[] = [
   // Demo User Transactions (December 2024)
   {
@@ -380,6 +380,113 @@ export const mockTransactions: MockTransaction[] = [
     category: 'Housing',
     account_name: 'Chase Checking',
     created_at: '2024-11-01T00:00:00Z'
+  },
+
+  // Demo User October transactions
+  {
+    id: 'txn-demo-15',
+    user_name: 'demo',
+    description: 'Salary Deposit',
+    amount: 6500.00,
+    type: 'income',
+    transaction_date: '2024-10-01T00:00:00Z',
+    category: 'Salary',
+    account_name: 'Chase Checking',
+    created_at: '2024-10-01T00:00:00Z'
+  },
+  {
+    id: 'txn-demo-16',
+    user_name: 'demo',
+    description: 'Rent Payment',
+    amount: 2200.00,
+    type: 'expense',
+    transaction_date: '2024-10-01T00:00:00Z',
+    category: 'Housing',
+    account_name: 'Chase Checking',
+    created_at: '2024-10-01T00:00:00Z'
+  },
+  {
+    id: 'txn-demo-17',
+    user_name: 'demo',
+    description: 'Groceries',
+    amount: 95.00,
+    type: 'expense',
+    transaction_date: '2024-10-05T00:00:00Z',
+    category: 'Food & Dining',
+    account_name: 'Chase Checking',
+    created_at: '2024-10-05T00:00:00Z'
+  },
+
+  // Demo User September transactions
+  {
+    id: 'txn-demo-18',
+    user_name: 'demo',
+    description: 'Salary Deposit',
+    amount: 6500.00,
+    type: 'income',
+    transaction_date: '2024-09-01T00:00:00Z',
+    category: 'Salary',
+    account_name: 'Chase Checking',
+    created_at: '2024-09-01T00:00:00Z'
+  },
+  {
+    id: 'txn-demo-19',
+    user_name: 'demo',
+    description: 'Rent Payment',
+    amount: 2200.00,
+    type: 'expense',
+    transaction_date: '2024-09-01T00:00:00Z',
+    category: 'Housing',
+    account_name: 'Chase Checking',
+    created_at: '2024-09-01T00:00:00Z'
+  },
+
+  // Demo User August transactions
+  {
+    id: 'txn-demo-20',
+    user_name: 'demo',
+    description: 'Salary Deposit',
+    amount: 6500.00,
+    type: 'income',
+    transaction_date: '2024-08-01T00:00:00Z',
+    category: 'Salary',
+    account_name: 'Chase Checking',
+    created_at: '2024-08-01T00:00:00Z'
+  },
+  {
+    id: 'txn-demo-21',
+    user_name: 'demo',
+    description: 'Rent Payment',
+    amount: 2200.00,
+    type: 'expense',
+    transaction_date: '2024-08-01T00:00:00Z',
+    category: 'Housing',
+    account_name: 'Chase Checking',
+    created_at: '2024-08-01T00:00:00Z'
+  },
+
+  // Demo User July transactions
+  {
+    id: 'txn-demo-22',
+    user_name: 'demo',
+    description: 'Salary Deposit',
+    amount: 6500.00,
+    type: 'income',
+    transaction_date: '2024-07-01T00:00:00Z',
+    category: 'Salary',
+    account_name: 'Chase Checking',
+    created_at: '2024-07-01T00:00:00Z'
+  },
+  {
+    id: 'txn-demo-23',
+    user_name: 'demo',
+    description: 'Rent Payment',
+    amount: 2200.00,
+    type: 'expense',
+    transaction_date: '2024-07-01T00:00:00Z',
+    category: 'Housing',
+    account_name: 'Chase Checking',
+    created_at: '2024-07-01T00:00:00Z'
   },
 
   // Test User Transactions (December 2024)
@@ -635,62 +742,8 @@ export const mockInvestments: MockInvestment[] = [
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-12-29T00:00:00Z'
   },
-  {
-    id: 'inv-demo-4',
-    user_name: 'demo',
-    symbol: 'TSLA',
-    name: 'Tesla Inc.',
-    shares: 20.00,
-    current_price: 248.50,
-    total_value: 4970.00,
-    day_change: -5.20,
-    day_change_percent: -2.05,
-    sector: 'Automotive',
-    market_cap: 'Large Cap',
-    pe: 65.2,
-    dividend: 0.00,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-demo-5',
-    user_name: 'demo',
-    symbol: 'AMZN',
-    name: 'Amazon.com Inc.',
-    shares: 12.00,
-    current_price: 155.74,
-    total_value: 1868.88,
-    day_change: 1.15,
-    day_change_percent: 0.74,
-    sector: 'Consumer Discretionary',
-    market_cap: 'Large Cap',
-    pe: 48.7,
-    dividend: 0.00,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-demo-6',
-    user_name: 'demo',
-    symbol: 'NVDA',
-    name: 'NVIDIA Corporation',
-    shares: 8.00,
-    current_price: 140.15,
-    total_value: 1121.20,
-    day_change: 3.25,
-    day_change_percent: 2.37,
-    sector: 'Technology',
-    market_cap: 'Large Cap',
-    pe: 75.8,
-    dividend: 0.16,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
 
-  // Test User Portfolio (Smaller, growth-focused)
+  // Test User Portfolio
   {
     id: 'inv-testuser-1',
     user_name: 'testuser',
@@ -727,62 +780,8 @@ export const mockInvestments: MockInvestment[] = [
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-12-29T00:00:00Z'
   },
-  {
-    id: 'inv-testuser-3',
-    user_name: 'testuser',
-    symbol: 'NVDA',
-    name: 'NVIDIA Corporation',
-    shares: 12.00,
-    current_price: 140.15,
-    total_value: 1681.80,
-    day_change: 3.25,
-    day_change_percent: 2.37,
-    sector: 'Technology',
-    market_cap: 'Large Cap',
-    pe: 75.8,
-    dividend: 0.16,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-testuser-4',
-    user_name: 'testuser',
-    symbol: 'AMD',
-    name: 'Advanced Micro Devices',
-    shares: 30.00,
-    current_price: 152.33,
-    total_value: 4569.90,
-    day_change: 4.67,
-    day_change_percent: 3.16,
-    sector: 'Technology',
-    market_cap: 'Large Cap',
-    pe: 22.1,
-    dividend: 0.00,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-testuser-5',
-    user_name: 'testuser',
-    symbol: 'TSLA',
-    name: 'Tesla Inc.',
-    shares: 15.00,
-    current_price: 248.50,
-    total_value: 3727.50,
-    day_change: -5.20,
-    day_change_percent: -2.05,
-    sector: 'Automotive',
-    market_cap: 'Large Cap',
-    pe: 65.2,
-    dividend: 0.00,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
 
-  // John Doe Portfolio (Diversified, dividend-focused)
+  // John Doe Portfolio
   {
     id: 'inv-johndoe-1',
     user_name: 'johndoe',
@@ -815,150 +814,6 @@ export const mockInvestments: MockInvestment[] = [
     market_cap: 'Large Cap',
     pe: 32.1,
     dividend: 3.00,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-3',
-    user_name: 'johndoe',
-    symbol: 'JNJ',
-    name: 'Johnson & Johnson',
-    shares: 80.00,
-    current_price: 156.42,
-    total_value: 12513.60,
-    day_change: 0.35,
-    day_change_percent: 0.22,
-    sector: 'Healthcare',
-    market_cap: 'Large Cap',
-    pe: 15.2,
-    dividend: 3.05,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-4',
-    user_name: 'johndoe',
-    symbol: 'KO',
-    name: 'The Coca-Cola Company',
-    shares: 150.00,
-    current_price: 62.18,
-    total_value: 9327.00,
-    day_change: -0.15,
-    day_change_percent: -0.24,
-    sector: 'Consumer Staples',
-    market_cap: 'Large Cap',
-    pe: 26.8,
-    dividend: 3.38,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-5',
-    user_name: 'johndoe',
-    symbol: 'PG',
-    name: 'Procter & Gamble',
-    shares: 60.00,
-    current_price: 157.89,
-    total_value: 9473.40,
-    day_change: 0.85,
-    day_change_percent: 0.54,
-    sector: 'Consumer Staples',
-    market_cap: 'Large Cap',
-    pe: 24.1,
-    dividend: 2.41,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-6',
-    user_name: 'johndoe',
-    symbol: 'JPM',
-    name: 'JPMorgan Chase & Co.',
-    shares: 45.00,
-    current_price: 198.25,
-    total_value: 8921.25,
-    day_change: 1.25,
-    day_change_percent: 0.63,
-    sector: 'Financial Services',
-    market_cap: 'Large Cap',
-    pe: 12.5,
-    dividend: 4.00,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-7',
-    user_name: 'johndoe',
-    symbol: 'GOOGL',
-    name: 'Alphabet Inc.',
-    shares: 35.00,
-    current_price: 141.80,
-    total_value: 4963.00,
-    day_change: 0.85,
-    day_change_percent: 0.60,
-    sector: 'Technology',
-    market_cap: 'Large Cap',
-    pe: 25.4,
-    dividend: 0.00,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-8',
-    user_name: 'johndoe',
-    symbol: 'NVDA',
-    name: 'NVIDIA Corporation',
-    shares: 25.00,
-    current_price: 140.15,
-    total_value: 3503.75,
-    day_change: 3.25,
-    day_change_percent: 2.37,
-    sector: 'Technology',
-    market_cap: 'Large Cap',
-    pe: 75.8,
-    dividend: 0.16,
-    rating: 'Buy',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-9',
-    user_name: 'johndoe',
-    symbol: 'BRK.B',
-    name: 'Berkshire Hathaway Inc.',
-    shares: 20.00,
-    current_price: 445.20,
-    total_value: 8904.00,
-    day_change: 0.95,
-    day_change_percent: 0.21,
-    sector: 'Financial Services',
-    market_cap: 'Large Cap',
-    pe: 8.9,
-    dividend: 0.00,
-    rating: 'Hold',
-    created_at: '2024-01-01T00:00:00Z',
-    updated_at: '2024-12-29T00:00:00Z'
-  },
-  {
-    id: 'inv-johndoe-10',
-    user_name: 'johndoe',
-    symbol: 'VTI',
-    name: 'Vanguard Total Stock Market ETF',
-    shares: 100.00,
-    current_price: 285.45,
-    total_value: 28545.00,
-    day_change: 1.15,
-    day_change_percent: 0.40,
-    sector: 'ETF',
-    market_cap: 'Large Cap',
-    pe: 0.0,
-    dividend: 1.25,
     rating: 'Buy',
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-12-29T00:00:00Z'
