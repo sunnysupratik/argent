@@ -1102,7 +1102,7 @@ elevenlabs-convai {
   overflow: hidden;
 }
 
-/* Fix for ElevenLabs widget to remove white frame */
+/* Fix for ElevenLabs widget to remove white frame and banner */
 elevenlabs-convai::part(iframe) {
   border: none;
   width: 100%;
@@ -1114,4 +1114,10 @@ elevenlabs-convai::part(container) {
   padding: 0;
   margin: 0;
   background: transparent;
+}
+
+/* Hide the powered by banner */
+elevenlabs-convai::part(footer),
+elevenlabs-convai::part(powered-by) {
+  display: none !important;
 }
