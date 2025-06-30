@@ -41,7 +41,7 @@ function Component() {
                     </p>
                     <p>
                       Users can reset their password through the account settings page. Click
-                      &quot;Forgot Password&quot; and follow the email verification steps to regain
+                      "Forgot Password" and follow the email verification steps to regain
                       account access quickly and securely.
                     </p>
                   </div>
