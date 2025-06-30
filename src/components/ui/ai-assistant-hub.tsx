@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Video, Headphones, MessageCircle, X } from 'lucide-react';
+import { Sparkles, Video, Headphones, MessageCircle, X, Brain, Mic, Users } from 'lucide-react';
 import { AnimatedDock } from './animated-dock';
 
 interface AIAssistantHubProps {
@@ -57,20 +57,20 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
             >
               {[
                 { 
-                  icon: <Video size={20} />, 
-                  label: "Video Advisor",
+                  icon: <Users size={20} />, 
+                  label: "Strategist",
                   onClick: () => { onVideoClick(); setIsExpanded(false); },
                   active: activeAssistant === 'video'
                 },
                 { 
-                  icon: <Headphones size={20} />, 
-                  label: "Voice Assistant",
+                  icon: <Mic size={20} />, 
+                  label: "Advisor",
                   onClick: () => { onVoiceToggle(); setIsExpanded(false); },
                   active: activeAssistant === 'voice'
                 },
                 { 
-                  icon: <MessageCircle size={20} />, 
-                  label: "AI Chat",
+                  icon: <Brain size={20} />, 
+                  label: "Analyst",
                   onClick: () => { onChatClick(); setIsExpanded(false); },
                   active: activeAssistant === 'chat'
                 }
@@ -139,24 +139,24 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                 },
                 {
                   link: "#",
-                  Icon: <Video size={22} className="text-white" />,
+                  Icon: <Users size={22} className="text-white" />,
                   onClick: onVideoClick,
                   active: activeAssistant === 'video',
-                  label: "Video Advisor"
+                  label: "Strategist"
                 },
                 {
                   link: "#",
-                  Icon: <Headphones size={22} className="text-white" />,
+                  Icon: <Mic size={22} className="text-white" />,
                   onClick: onVoiceToggle,
                   active: activeAssistant === 'voice',
-                  label: "Voice Assistant"
+                  label: "Advisor"
                 },
                 {
                   link: "#",
-                  Icon: <MessageCircle size={22} className="text-white" />,
+                  Icon: <Brain size={22} className="text-white" />,
                   onClick: onChatClick,
                   active: activeAssistant === 'chat',
-                  label: "AI Chat"
+                  label: "Analyst"
                 }
               ]}
             />

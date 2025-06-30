@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Video, X, MessageCircle } from 'lucide-react';
+import { Users, X, Brain, Mic } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import MobileHeader from '../components/MobileHeader';
 import MobileSidebar from '../components/MobileSidebar';
@@ -80,7 +80,7 @@ const AppLayout: React.FC = () => {
       transactions: 'Transactions',
       accounts: 'Accounts',
       investments: 'Investments',
-      chat: 'AI Advisor',
+      chat: 'Argent Analyst',
       profile: 'Profile',
       settings: 'Settings'
     };
@@ -202,7 +202,7 @@ const AppLayout: React.FC = () => {
         activeAssistant={activeAssistant}
       />
 
-      {/* Video Modal */}
+      {/* Video Modal - Strategic Briefings */}
       <AnimatePresence>
         {showVideoModal && (
           <motion.div
@@ -223,11 +223,11 @@ const AppLayout: React.FC = () => {
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
-                    <Video size={20} className="text-white" />
+                    <Users size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900">AI Video Advisor</h2>
-                    <p className="text-sm text-gray-600">Video consultation</p>
+                    <h2 className="text-lg font-bold text-gray-900">Strategic Briefings</h2>
+                    <p className="text-sm text-gray-600">Video consultation with your AI Strategist</p>
                   </div>
                 </div>
                 
@@ -248,7 +248,7 @@ const AppLayout: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Chat Modal */}
+      {/* Chat Modal - Argent Analyst */}
       <AnimatePresence>
         {showChatModal && (
           <motion.div
@@ -265,15 +265,15 @@ const AppLayout: React.FC = () => {
               className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header - Same style as Video Modal */}
+              {/* Modal Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
-                    <MessageCircle size={20} className="text-white" />
+                    <Brain size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900">AI Chat Advisor</h2>
-                    <p className="text-sm text-gray-600">Text consultation</p>
+                    <h2 className="text-lg font-bold text-gray-900">Argent Analyst</h2>
+                    <p className="text-sm text-gray-600">Text consultation with your AI Analyst</p>
                   </div>
                 </div>
                 
@@ -294,7 +294,7 @@ const AppLayout: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* ElevenLabs Widget - Positioned above the buttons when active */}
+      {/* ElevenLabs Widget - Voice Advisor - Positioned above the buttons when active */}
       <AnimatePresence>
         {showNeedHelp && (
           <motion.div
@@ -303,6 +303,17 @@ const AppLayout: React.FC = () => {
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             className="fixed bottom-32 right-6 z-40"
           >
+            <div className="bg-white rounded-2xl p-4 shadow-2xl border border-gray-200 mb-4">
+              <div className="flex items-center space-x-3 mb-2">
+                <div className="w-8 h-8 bg-gradient-to-r from-accent-blue to-blue-600 rounded-lg flex items-center justify-center">
+                  <Mic size={16} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-gray-900 text-sm">Voice Advisor</h3>
+                  <p className="text-xs text-gray-600">Speak with your AI Advisor</p>
+                </div>
+              </div>
+            </div>
             <elevenlabs-convai agent-id="agent_01jyj0t1jderb9e505xd2vcjp9"></elevenlabs-convai>
           </motion.div>
         )}

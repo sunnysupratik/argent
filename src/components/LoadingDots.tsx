@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const LoadingDots: React.FC = () => {
   return (
     <div className="flex items-center space-x-3">
-      <span className="text-sm text-gray-600 font-medium">AI is thinking</span>
+      <span className="text-sm text-gray-600 font-medium">AI Analyst is thinking</span>
       <div className="flex space-x-1">
         {[0, 1, 2].map((index) => (
           <motion.div

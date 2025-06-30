@@ -3,7 +3,7 @@ import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage';
 import LoadingDots from './LoadingDots';
-import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
+import { Brain, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ChatContainer: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -167,8 +167,8 @@ const ChatContainer: React.FC = () => {
                         }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                       >
-                        <Sparkles size={32} className="text-white lg:hidden" />
-                        <Sparkles size={40} className="text-white hidden lg:block" />
+                        <Brain size={32} className="text-white lg:hidden" />
+                        <Brain size={40} className="text-white hidden lg:block" />
                       </motion.div>
                     </div>
                     
@@ -180,7 +180,7 @@ const ChatContainer: React.FC = () => {
                     >
                       <span className="block">Your AI Financial</span>
                       <span className="block bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
-                        Advisor
+                        Analyst
                       </span>
                     </motion.h2>
                     
@@ -273,7 +273,7 @@ const ChatContainer: React.FC = () => {
               >
                 <div className="flex items-start space-x-3">
                   <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center">
-                    <Bot size={20} className="text-gray-600" />
+                    <Brain size={20} className="text-gray-600" />
                   </div>
                   <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl rounded-tl-lg px-6 py-4 border border-gray-100/50">
                     <LoadingDots />
@@ -355,7 +355,7 @@ const ChatContainer: React.FC = () => {
               type="text"
               value={input}
               onChange={onInputChange}
-              placeholder="Ask me about your finances..."
+              placeholder="Ask your AI Analyst about your finances..."
               disabled={isLoading}
               className="w-full py-3 lg:py-4 px-4 lg:px-6 pr-14 lg:pr-16 bg-white/80 backdrop-blur-sm border border-gray-200/50 rounded-2xl focus:outline-none focus:ring-2 focus:ring-accent-blue focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed transition-all text-gray-900 placeholder-gray-500 text-sm lg:text-base"
               autoComplete="off"
@@ -382,7 +382,7 @@ const ChatContainer: React.FC = () => {
         >
           AI can make mistakes. Please verify important financial decisions.
         </motion.p>
-      </motion.div>
+      </div>
     </div>
   );
 };

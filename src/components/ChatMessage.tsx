@@ -1,5 +1,5 @@
 import React from 'react';
-import { Bot, User, Copy, Check } from 'lucide-react';
+import { Brain, User, Copy, Check } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -202,11 +202,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         >
           {isUser ? 
             <User size={16} className="text-white lg:hidden" /> : 
-            <Bot size={16} className="text-gray-600 lg:hidden" />
+            <Brain size={16} className="text-gray-600 lg:hidden" />
           }
           {isUser ? 
             <User size={18} className="text-white hidden lg:block" /> : 
-            <Bot size={18} className="text-gray-600 hidden lg:block" />
+            <Brain size={18} className="text-gray-600 hidden lg:block" />
           }
         </motion.div>
         
