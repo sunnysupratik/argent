@@ -1,5 +1,4 @@
 import React from 'react';
-import { IoHomeOutline, IoVideocamOutline, IoCameraOutline, IoShareSocialOutline, IoHeartOutline } from 'react-icons/io5';
 
 interface MenuItem {
   id: string;
@@ -23,24 +22,22 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
           <li
             key={id}
             style={{ '--gradient-from': gradientFrom, '--gradient-to': gradientTo } as React.CSSProperties}
-            className={`relative w-[60px] h-[60px] bg-white shadow-lg rounded-full flex items-center justify-center transition-all duration-500 hover:w-[180px] ${isActive ? 'w-[180px] shadow-none' : ''} group cursor-pointer`}
+            className={`relative w-[60px] h-[60px] bg-white shadow-lg rounded-full flex items-center justify-center transition-all duration-500 ${isActive ? 'w-[60px] shadow-none' : 'hover:w-[180px]'} group cursor-pointer`}
             onClick={onClick}
           >
             {/* Gradient background - always visible when active */}
             <span className={`absolute inset-0 rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] transition-all duration-500 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}></span>
             
-            {/* Blur glow - always visible when active */}
+            {/* Blur glow */}
             <span className={`absolute top-[10px] inset-x-0 h-full rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] blur-[15px] -z-10 transition-all duration-500 ${isActive ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`}></span>
 
-            {/* Icon - hidden when active */}
-            <span className={`relative z-10 transition-all duration-500 ${isActive ? 'scale-0' : 'group-hover:scale-0'} delay-0`}>
-              <span className="text-2xl text-gray-500">
-                <Icon size={24} />
-              </span>
+            {/* Icon - always visible */}
+            <span className={`relative z-10 transition-all duration-300 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-white'}`}>
+              <Icon size={24} />
             </span>
 
-            {/* Title - always visible when active */}
-            <span className={`absolute text-white uppercase tracking-wide text-sm transition-all duration-500 ${isActive ? 'scale-100' : 'scale-0 group-hover:scale-100'} delay-150`}>
+            {/* Title - only visible on hover when not active */}
+            <span className={`absolute text-white uppercase tracking-wide text-sm transition-all duration-500 ${isActive ? 'scale-0' : 'scale-0 group-hover:scale-100'} delay-150 left-16`}>
               {label}
             </span>
           </li>
