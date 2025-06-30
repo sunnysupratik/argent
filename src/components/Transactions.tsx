@@ -430,35 +430,18 @@ const Transactions: React.FC = () => {
               )}
             </div>
             
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-              <div className="text-center lg:text-right">
-                <div className="text-sm text-gray-500 uppercase tracking-wide font-normal">Net Total</div>
-                <motion.div 
-                  className="text-2xl font-bold text-accent-blue"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3, delay: 1.0 }}
-                >
-                  ${filteredTransactions.reduce((sum, t) => {
-                    return sum + (t.type === 'income' ? Number(t.amount) : -Number(t.amount));
-                  }, 0).toFixed(2)}
-                </motion.div>
-              </div>
-              
-              <div className="flex gap-2">
-                <InteractiveHoverButton
-                  variant="white"
-                  text="Export CSV"
-                  icon={<Download size={14} />}
-                  className="px-4 py-2 text-sm"
-                />
-                <InteractiveHoverButton
-                  variant="blue"
-                  text="Add Transaction"
-                  icon={<Plus size={14} />}
-                  className="px-4 py-2 text-sm"
-                />
-              </div>
+            <div className="text-center lg:text-right">
+              <div className="text-sm text-gray-500 uppercase tracking-wide font-normal">Net Total</div>
+              <motion.div 
+                className="text-2xl font-bold text-accent-blue"
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.3, delay: 1.0 }}
+              >
+                ${filteredTransactions.reduce((sum, t) => {
+                  return sum + (t.type === 'income' ? Number(t.amount) : -Number(t.amount));
+                }, 0).toFixed(2)}
+              </motion.div>
             </div>
           </div>
         </motion.div>
