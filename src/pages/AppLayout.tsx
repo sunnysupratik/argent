@@ -183,14 +183,14 @@ const AppLayout: React.FC = () => {
       <main className="flex-1 overflow-auto pt-16 lg:pt-0 relative">
         <PageTransition>
           <Routes>
-            <Route path="/" element={<Navigate to="/app/dashboard" replace />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/accounts" element={<Accounts />} />
-            <Route path="/investments" element={<Investments />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="transactions" element={<Transactions />} />
+            <Route path="accounts" element={<Accounts />} />
+            <Route path="investments" element={<Investments />} />
+            <Route path="chat" element={<Chat />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="settings" element={<Settings />} />
             <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
           </Routes>
         </PageTransition>
