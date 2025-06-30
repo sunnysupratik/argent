@@ -46,7 +46,7 @@ const ChatContainer: React.FC = () => {
       
       setIsUserScrolling(!isNearBottom);
       setShowScrollToBottom(!isNearBottom && messages.length > 0);
-      setShowScrollToTop(!isNearTop && messages.length > 0);
+      setShowScrollToTop(!isNearTop && scrollTop > 100 && messages.length > 0);
     }
   };
 
@@ -126,7 +126,7 @@ const ChatContainer: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/10 to-violet-50/20 animate-aurora opacity-50" />
       </div>
 
-      {/* Messages Area with Custom Scrollbar - RELATIVE POSITIONING FOR BUTTONS */}
+      {/* Messages Area with Custom Scrollbar */}
       <div className="flex-1 relative">
         <div 
           ref={chatContainerRef}
@@ -306,42 +306,40 @@ const ChatContainer: React.FC = () => {
           </div>
         </div>
 
-        {/* Scroll Navigation Buttons - POSITIONED WITHIN THE MESSAGES CONTAINER */}
-        <AnimatePresence>
+        {/* Scroll Navigation Buttons - FIXED POSITION WITHIN VIEWPORT */}
+        <div className="fixed right-8 bottom-32 z-50 flex flex-col gap-4">
           {showScrollToTop && (
             <motion.button
-              initial={{ opacity: 0, scale: 0.8, y: -20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: -20 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
               onClick={scrollToTop}
-              className="absolute top-4 right-4 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-20 border border-white/20"
+              className="w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 border-2 border-white"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to top"
               title="Scroll to top"
             >
-              <ChevronUp size={18} />
+              <ChevronUp size={24} />
             </motion.button>
           )}
-        </AnimatePresence>
 
-        <AnimatePresence>
           {showScrollToBottom && (
             <motion.button
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 20 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
               onClick={scrollToBottom}
-              className="absolute bottom-4 right-4 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-20 border border-white/20"
+              className="w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 border-2 border-white"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to latest messages"
               title="Scroll to latest messages"
             >
-              <ChevronDown size={18} />
+              <ChevronDown size={24} />
             </motion.button>
           )}
-        </AnimatePresence>
+        </div>
       </div>
 
       {/* Enhanced Input Area */}
