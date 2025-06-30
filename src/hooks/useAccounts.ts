@@ -22,19 +22,25 @@ export function useAccounts() {
       console.log('useAccounts.fetchAccounts - Fetching accounts for user ID:', user.id);
       console.log('useAccounts.fetchAccounts - User object:', user);
 
-      // Debug: Check what's in the accounts table
-      const { data: allAccounts, error: debugError } = await supabase
-        .from('accounts')
-        .select('id, custom_user_id, account_name, account_type')
-        .limit(10);
-      
-      console.log('useAccounts.fetchAccounts - Sample accounts in database:', allAccounts);
-
-      const { data, error } = await supabase
+      // First try to fetch by custom_user_id
+      let { data, error } = await supabase
         .from('accounts')
         .select('*')
         .eq('custom_user_id', user.id)
         .order('account_name', { ascending: true });
+
+      // If no results or error, try by user_name
+      if ((!data || data.length === 0) && user.username) {
+        console.log('useAccounts.fetchAccounts - No accounts found by custom_user_id, trying user_name:', user.username);
+        const { data: dataByUsername, error: errorByUsername } = await supabase
+          .from('accounts')
+          .select('*')
+          .eq('user_name', user.username)
+          .order('account_name', { ascending: true });
+        
+        data = dataByUsername;
+        error = errorByUsername;
+      }
 
       if (error) {
         console.error('useAccounts.fetchAccounts - Database error:', error);
@@ -63,7 +69,7 @@ export function useAccounts() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, user?.username]);
 
   useEffect(() => {
     if (user?.id) {

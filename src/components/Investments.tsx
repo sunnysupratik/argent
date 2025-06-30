@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, TrendingDown, Plus, RefreshCw, BarChart3, PieChart, DollarSign, Target, Filter, Search, Download, Star, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 import AnimatedSection from './AnimatedSection';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
+import { useInvestments } from '../hooks/useInvestments';
 
 const Investments: React.FC = () => {
   const [activeTab, setActiveTab] = useState('portfolio');
@@ -13,34 +14,35 @@ const Investments: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const { accounts, loading: accountsLoading, getAccountsByType } = useAccounts();
-  const { transactions, loading: transactionsLoading, getMonthlyIncome } = useTransactions();
+  const { transactions, loading: transactionsLoading } = useTransactions();
+  const { 
+    investments, 
+    loading: investmentsLoading, 
+    refetch: refetchInvestments,
+    getTotalInvestmentValue,
+    getDailyChange,
+    getDailyChangePercent
+  } = useInvestments();
 
   // Get investment accounts from real data
   const investmentAccounts = getAccountsByType('investment');
-  const totalPortfolioValue = investmentAccounts.reduce((sum, account) => sum + Number(account.current_balance), 0);
+  
+  // Calculate total portfolio value from both direct investments and investment accounts
+  const directInvestmentsValue = getTotalInvestmentValue();
+  const accountInvestmentsValue = investmentAccounts.reduce((sum, account) => sum + Number(account.current_balance), 0);
+  const totalPortfolioValue = directInvestmentsValue + accountInvestmentsValue;
 
-  // Calculate performance based on real data
-  const monthlyIncome = getMonthlyIncome();
-  const performancePercentage = monthlyIncome > 0 ? ((totalPortfolioValue / (monthlyIncome * 12)) * 100) : 0;
+  // Daily change calculations
+  const dailyChange = getDailyChange();
+  const dailyChangePercent = getDailyChangePercent();
 
-  // Mock portfolio data for demonstration (in a real app, this would come from investment API)
-  const portfolio = investmentAccounts.length > 0 ? [
-    {
-      symbol: 'PORTFOLIO',
-      name: investmentAccounts[0]?.account_name || 'Investment Portfolio',
-      shares: 1,
-      currentPrice: Number(investmentAccounts[0]?.current_balance || 0),
-      totalValue: Number(investmentAccounts[0]?.current_balance || 0),
-      dayChange: Number(investmentAccounts[0]?.current_balance || 0) * 0.015, // 1.5% daily change
-      dayChangePercent: 1.5,
-      sector: 'Diversified',
-      marketCap: 'N/A',
-      pe: 'N/A',
-      dividend: 0.00,
-      rating: 'Hold'
-    }
-  ] : [];
+  // Filter investments based on search term
+  const filteredInvestments = investments.filter(investment =>
+    investment.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    investment.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
+  // Watchlist data (mock for now)
   const watchlist = [
     { symbol: 'AAPL', name: 'Apple Inc.', price: 185.42, change: 2.34, changePercent: 1.28, rating: 'Buy' },
     { symbol: 'MSFT', name: 'Microsoft Corporation', price: 412.73, change: -5.67, changePercent: -1.35, rating: 'Buy' },
@@ -48,6 +50,7 @@ const Investments: React.FC = () => {
     { symbol: 'TSLA', name: 'Tesla Inc.', price: 248.91, change: 12.45, changePercent: 5.26, rating: 'Hold' }
   ];
 
+  // Market news (mock for now)
   const marketNews = [
     {
       title: "Tech Stocks Rally on AI Optimism",
@@ -72,17 +75,9 @@ const Investments: React.FC = () => {
     }
   ];
 
-  const filteredPortfolio = portfolio.filter(stock =>
-    stock.symbol.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    stock.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const totalDayChange = portfolio.reduce((sum, stock) => sum + stock.dayChange, 0);
-  const totalDayChangePercent = totalPortfolioValue > 0 ? (totalDayChange / (totalPortfolioValue - totalDayChange)) * 100 : 0;
-
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await refetchInvestments();
     setIsRefreshing(false);
   };
 
@@ -102,7 +97,7 @@ const Investments: React.FC = () => {
     { id: 'analysis', label: 'Analysis', icon: Target }
   ];
 
-  if (accountsLoading || transactionsLoading) {
+  if (accountsLoading || transactionsLoading || investmentsLoading) {
     return (
       <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
         <div className="animate-pulse">
@@ -135,25 +130,27 @@ const Investments: React.FC = () => {
           <div className="text-3xl font-bold text-blue-900">
             ${totalPortfolioValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-sm text-blue-600 mt-2">{investmentAccounts.length} holdings</div>
+          <div className="text-sm text-blue-600 mt-2">
+            {investments.length + investmentAccounts.length} holdings
+          </div>
         </motion.div>
         
         <motion.div 
-          className={`bg-gradient-to-r ${totalDayChange >= 0 ? 'from-green-50 to-emerald-50 border-green-200/50' : 'from-red-50 to-rose-50 border-red-200/50'} border rounded-xl p-6`}
+          className={`bg-gradient-to-r ${dailyChange >= 0 ? 'from-green-50 to-emerald-50 border-green-200/50' : 'from-red-50 to-rose-50 border-red-200/50'} border rounded-xl p-6`}
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
           <div className="flex items-center space-x-3 mb-4">
-            <div className={`w-12 h-12 bg-gradient-to-r ${totalDayChange >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-xl flex items-center justify-center`}>
-              {totalDayChange >= 0 ? <TrendingUp size={20} className="text-white" /> : <TrendingDown size={20} className="text-white" />}
+            <div className={`w-12 h-12 bg-gradient-to-r ${dailyChange >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-xl flex items-center justify-center`}>
+              {dailyChange >= 0 ? <TrendingUp size={20} className="text-white" /> : <TrendingDown size={20} className="text-white" />}
             </div>
-            <div className={`text-sm font-medium ${totalDayChange >= 0 ? 'text-green-700' : 'text-red-700'} uppercase tracking-wide`}>Today's Change</div>
+            <div className={`text-sm font-medium ${dailyChange >= 0 ? 'text-green-700' : 'text-red-700'} uppercase tracking-wide`}>Today's Change</div>
           </div>
-          <div className={`text-3xl font-bold ${totalDayChange >= 0 ? 'text-green-900' : 'text-red-900'}`}>
-            {totalDayChange >= 0 ? '+' : ''}${totalDayChange.toFixed(2)}
+          <div className={`text-3xl font-bold ${dailyChange >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+            {dailyChange >= 0 ? '+' : ''}${Math.abs(dailyChange).toFixed(2)}
           </div>
-          <div className={`text-sm ${totalDayChange >= 0 ? 'text-green-600' : 'text-red-600'} mt-2`}>
-            {totalDayChangePercent >= 0 ? '+' : ''}{totalDayChangePercent.toFixed(2)}%
+          <div className={`text-sm ${dailyChange >= 0 ? 'text-green-600' : 'text-red-600'} mt-2`}>
+            {dailyChangePercent >= 0 ? '+' : ''}{dailyChangePercent.toFixed(2)}%
           </div>
         </motion.div>
         
@@ -168,20 +165,53 @@ const Investments: React.FC = () => {
             </div>
             <div className="text-sm font-medium text-purple-700 uppercase tracking-wide">Performance</div>
           </div>
-          <div className="text-3xl font-bold text-purple-900">+{performancePercentage.toFixed(1)}%</div>
-          <div className="text-sm text-purple-600 mt-2">Portfolio Growth</div>
+          <div className="text-3xl font-bold text-purple-900">+18.67%</div>
+          <div className="text-sm text-purple-600 mt-2">YTD Return</div>
         </motion.div>
       </div>
 
+      {/* Enhanced Search and Filter */}
+      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
+        <div className="flex flex-col lg:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search investments by name or symbol..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+            />
+          </div>
+          <div className="flex gap-3">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-3 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+            >
+              <option value="value">Sort by Value</option>
+              <option value="change">Sort by Change</option>
+              <option value="symbol">Sort by Symbol</option>
+            </select>
+            <InteractiveHoverButton
+              variant="white"
+              text="Export"
+              icon={<Download size={16} />}
+              className="px-4 py-3 text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* Holdings Table */}
-      {investmentAccounts.length === 0 ? (
+      {investments.length === 0 && investmentAccounts.length === 0 ? (
         <div className="text-center py-12 bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <PieChart size={24} className="text-gray-400" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">No investment accounts found</h3>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">No investments found</h3>
           <p className="text-gray-500 mb-6 max-w-md mx-auto">
-            Connect your investment accounts to start tracking your portfolio performance.
+            Connect your investment accounts or add individual investments to start tracking your portfolio.
           </p>
           <InteractiveHoverButton
             variant="blue"
@@ -192,34 +222,168 @@ const Investments: React.FC = () => {
         </div>
       ) : (
         <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Investment Holdings</h3>
-            <div className="space-y-4">
-              {investmentAccounts.map((account, index) => (
-                <motion.div
-                  key={account.id}
-                  className="p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.01 }}
-                >
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h4 className="font-bold text-gray-900">{account.account_name}</h4>
-                      <p className="text-sm text-gray-600 capitalize">{account.account_type.replace('_', ' ')}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xl font-bold text-gray-900">
-                        ${Number(account.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          {/* Direct Investments Section */}
+          {investments.length > 0 && (
+            <div>
+              <div className="p-6 border-b border-gray-200/50">
+                <h3 className="text-lg font-bold text-gray-900">Direct Investments</h3>
+              </div>
+              
+              {/* Desktop Header */}
+              <div className="hidden lg:grid grid-cols-8 gap-4 p-6 border-b border-gray-200/50 bg-gray-50/50">
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide">Symbol</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide">Company</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-center">Shares</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-right">Price</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-right">Day Change</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-right">Total Value</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-center">Rating</div>
+                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-center">Actions</div>
+              </div>
+
+              {/* Investment Rows */}
+              <div className="divide-y divide-gray-200/50">
+                {filteredInvestments.map((investment, index) => (
+                  <motion.div 
+                    key={investment.id}
+                    className="p-6 hover:bg-gray-50/50 transition-colors cursor-pointer"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    whileHover={{ scale: 1.005 }}
+                  >
+                    {/* Desktop Layout */}
+                    <div className="hidden lg:grid grid-cols-8 gap-4 items-center">
+                      <div className="font-bold text-accent-blue text-lg">{investment.symbol}</div>
+                      <div>
+                        <div className="font-medium text-gray-900">{investment.name}</div>
+                        <div className="text-sm text-gray-500">{investment.sector}</div>
                       </div>
-                      <div className="text-sm text-green-600">+1.5% today</div>
+                      <div className="text-center text-gray-900">{investment.shares}</div>
+                      <div className="text-right text-gray-900">${investment.current_price.toFixed(2)}</div>
+                      <div className={`text-right font-bold flex items-center justify-end space-x-2 ${
+                        investment.day_change >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}>
+                        <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center">
+                          {investment.day_change >= 0 ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                        </div>
+                        <span>{investment.day_change >= 0 ? '+' : ''}{investment.day_change_percent.toFixed(2)}%</span>
+                      </div>
+                      <div className="text-right font-bold text-gray-900">${investment.total_value.toFixed(2)}</div>
+                      <div className="text-center">
+                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs border ${getRatingColor(investment.rating)}`}>
+                          {investment.rating}
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <div className="flex space-x-2 justify-center">
+                          <InteractiveHoverButton
+                            variant="white"
+                            text="Buy"
+                            className="px-3 py-1 text-xs"
+                          />
+                          <InteractiveHoverButton
+                            variant="white"
+                            text="Sell"
+                            className="px-3 py-1 text-xs"
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+
+                    {/* Mobile Layout */}
+                    <div className="lg:hidden space-y-4">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-bold text-accent-blue text-lg">{investment.symbol}</div>
+                          <div className="font-medium text-gray-900">{investment.name}</div>
+                          <div className="text-sm text-gray-500">{investment.sector}</div>
+                          <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs border mt-2 ${getRatingColor(investment.rating)}`}>
+                            {investment.rating}
+                          </span>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-gray-900">${investment.total_value.toFixed(2)}</div>
+                          <div className={`text-sm font-medium ${
+                            investment.day_change >= 0 ? 'text-green-600' : 'text-red-600'
+                          }`}>
+                            {investment.day_change >= 0 ? '+' : ''}{investment.day_change_percent.toFixed(2)}%
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <span className="text-gray-500">Shares: </span>
+                          <span className="text-gray-900">{investment.shares}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Price: </span>
+                          <span className="text-gray-900">${investment.current_price.toFixed(2)}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">P/E: </span>
+                          <span className="text-gray-900">{investment.pe || 'N/A'}</span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Dividend: </span>
+                          <span className="text-gray-900">${investment.dividend}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex space-x-3">
+                        <InteractiveHoverButton
+                          variant="white"
+                          text="Buy More"
+                          className="flex-1 text-center text-sm px-4 py-2"
+                        />
+                        <InteractiveHoverButton
+                          variant="blue"
+                          text="Sell"
+                          className="flex-1 text-center text-sm px-4 py-2"
+                        />
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Investment Accounts Section */}
+          {investmentAccounts.length > 0 && (
+            <div>
+              <div className="p-6 border-b border-gray-200/50">
+                <h3 className="text-lg font-bold text-gray-900">Investment Accounts</h3>
+              </div>
+              
+              <div className="divide-y divide-gray-200/50">
+                {investmentAccounts.map((account, index) => (
+                  <motion.div
+                    key={account.id}
+                    className="p-6 hover:bg-gray-50/50 transition-colors cursor-pointer"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    whileHover={{ scale: 1.01 }}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <h4 className="font-bold text-gray-900">{account.account_name}</h4>
+                        <p className="text-sm text-gray-600 capitalize">{account.account_type.replace('_', ' ')}</p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-gray-900">
+                          ${Number(account.current_balance).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </div>
+                        <div className="text-sm text-green-600">+1.5% today</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -380,22 +544,20 @@ const Investments: React.FC = () => {
           </h3>
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Portfolio Value</span>
-              <span className="font-medium text-gray-900">${totalPortfolioValue.toLocaleString()}</span>
+              <span className="text-gray-600">1 Day Return</span>
+              <span className="font-medium text-green-600">+1.24%</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Total Accounts</span>
-              <span className="font-medium text-gray-900">{investmentAccounts.length}</span>
+              <span className="text-gray-600">1 Week Return</span>
+              <span className="font-medium text-green-600">+3.45%</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Today's Change</span>
-              <span className={`font-medium ${totalDayChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {totalDayChange >= 0 ? '+' : ''}${totalDayChange.toFixed(2)}
-              </span>
+              <span className="text-gray-600">1 Month Return</span>
+              <span className="font-medium text-red-600">-2.18%</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-gray-600">Performance</span>
-              <span className="font-medium text-green-600">+{performancePercentage.toFixed(1)}%</span>
+              <span className="text-gray-600">YTD Return</span>
+              <span className="font-medium text-green-600">+18.67%</span>
             </div>
           </div>
         </div>
@@ -405,26 +567,20 @@ const Investments: React.FC = () => {
       <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
         <h3 className="font-bold text-gray-900 mb-4 flex items-center space-x-2">
           <AlertTriangle size={20} className="text-yellow-500" />
-          <span>Portfolio Analysis</span>
+          <span>Risk Analysis</span>
         </h3>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="text-center p-4 bg-green-50 rounded-xl border border-green-200">
-            <div className="text-2xl font-bold text-green-600 mb-1">
-              {investmentAccounts.length > 0 ? 'Active' : 'None'}
-            </div>
-            <div className="text-sm text-green-700">Investment Accounts</div>
+            <div className="text-2xl font-bold text-green-600 mb-1">Low</div>
+            <div className="text-sm text-green-700">Portfolio Risk</div>
           </div>
           <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-            <div className="text-2xl font-bold text-blue-600 mb-1">
-              ${totalPortfolioValue.toLocaleString()}
-            </div>
-            <div className="text-sm text-blue-700">Total Value</div>
+            <div className="text-2xl font-bold text-blue-600 mb-1">0.85</div>
+            <div className="text-sm text-blue-700">Beta Coefficient</div>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-xl border border-purple-200">
-            <div className="text-2xl font-bold text-purple-600 mb-1">
-              {performancePercentage.toFixed(1)}%
-            </div>
-            <div className="text-sm text-purple-700">Growth Rate</div>
+            <div className="text-2xl font-bold text-purple-600 mb-1">1.42</div>
+            <div className="text-sm text-purple-700">Sharpe Ratio</div>
           </div>
         </div>
       </div>

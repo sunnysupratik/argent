@@ -22,15 +22,8 @@ export function useTransactions() {
       console.log('useTransactions.fetchTransactions - Fetching transactions for user ID:', user.id);
       console.log('useTransactions.fetchTransactions - User object:', user);
 
-      // Debug: Check what's in the transactions table
-      const { data: allTransactions, error: debugError } = await supabase
-        .from('transactions')
-        .select('id, custom_user_id, description, amount, type')
-        .limit(10);
-      
-      console.log('useTransactions.fetchTransactions - Sample transactions in database:', allTransactions);
-
-      const { data, error } = await supabase
+      // First try to fetch by custom_user_id
+      let { data, error } = await supabase
         .from('transactions')
         .select(`
           *,
@@ -40,6 +33,24 @@ export function useTransactions() {
         .eq('custom_user_id', user.id)
         .order('transaction_date', { ascending: false })
         .limit(100);
+
+      // If no results or error, try by user_name
+      if ((!data || data.length === 0) && user.username) {
+        console.log('useTransactions.fetchTransactions - No transactions found by custom_user_id, trying user_name:', user.username);
+        const { data: dataByUsername, error: errorByUsername } = await supabase
+          .from('transactions')
+          .select(`
+            *,
+            category:categories(*),
+            account:accounts(*)
+          `)
+          .eq('user_name', user.username)
+          .order('transaction_date', { ascending: false })
+          .limit(100);
+        
+        data = dataByUsername;
+        error = errorByUsername;
+      }
 
       if (error) {
         console.error('useTransactions.fetchTransactions - Database error:', error);
@@ -69,7 +80,7 @@ export function useTransactions() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, user?.username]);
 
   useEffect(() => {
     if (user?.id) {

@@ -17,6 +17,7 @@ export interface CustomUser {
   full_name: string | null;
   email: string;
   created_at: string;
+  user_name?: string;
 }
 
 export interface Profile {
@@ -27,30 +28,30 @@ export interface Profile {
   location?: string | null;
   occupation?: string | null;
   bio?: string | null;
+  user_name?: string;
 }
 
 export interface Account {
   id: string;
-  user_id: string;
   custom_user_id: string | null;
   account_name: string;
   account_type: string;
   current_balance: number;
   created_at: string;
+  user_name?: string;
 }
 
 export interface Category {
   id: string;
-  user_id: string | null;
   custom_user_id: string | null;
   name: string;
   icon_name: string | null;
   created_at: string;
+  user_name?: string;
 }
 
 export interface Transaction {
   id: string;
-  user_id: string;
   custom_user_id: string | null;
   account_id: string;
   category_id: string | null;
@@ -60,6 +61,26 @@ export interface Transaction {
   transaction_date: string;
   category?: Category;
   account?: Account;
+  user_name?: string;
+}
+
+export interface Investment {
+  id: string;
+  custom_user_id: string | null;
+  user_name?: string;
+  symbol: string;
+  name: string;
+  shares: number;
+  current_price: number;
+  total_value: number;
+  day_change: number;
+  day_change_percent: number;
+  sector: string;
+  market_cap: string;
+  pe: number;
+  dividend: number;
+  rating: string;
+  created_at: string;
 }
 
 // Custom authentication functions
