@@ -13,48 +13,48 @@ import {
 export function FeaturesSectionWithHoverEffects() {
   const features = [
     {
-      title: "Smart Analytics",
+      title: "AI-Powered Insights",
       description:
-        "Advanced AI-powered insights to track your spending patterns and optimize your budget with precision.",
+        "Go beyond simple charts. Let your dedicated AI Analyst sift through your spending patterns to find hidden savings, identify trends, and help you understand where your money truly goes.",
       icon: <BarChart3 />,
     },
     {
-      title: "Investment Tracking",
+      title: "Proactive Portfolio Monitoring",
       description:
-        "Real-time portfolio monitoring with comprehensive performance analytics and market insights.",
+        "This isn't just a list of your stocks. Your AI Strategist actively monitors your portfolio, providing performance analytics and contextual market insights to help you see the bigger picture and guide your long-term vision.",
       icon: <TrendingUp />,
     },
     {
-      title: "Secure Banking",
+      title: "Fortified Security",
       description:
-        "Bank-level security with end-to-end encryption protecting all your sensitive financial data.",
+        "Bank-level, end-to-end encryption protecting all your sensitive financial data. This is the bedrock of our platform. Your trust and privacy are our foundation.",
       icon: <Shield />,
     },
     {
-      title: "Budget Management",
-      description: "Intelligent budgeting tools that help you save more and spend wisely with automated insights.",
+      title: "Intelligent Budgeting",
+      description: "Forget spreadsheets. Create budgets that actually work for you. Your AI team helps you set realistic goals, automates tracking, and provides intelligent alerts to keep you on track without the hassle.",
       icon: <Target />,
     },
     {
-      title: "Multi-Account Support",
-      description: "Connect and manage all your bank accounts and credit cards seamlessly in one unified platform.",
+      title: "The Unified HQ",
+      description: "Securely connect all your banks, credit cards, and investment accounts into one seamless platform. This is your Financial Headquarters—the single source of truth that empowers your AI team.",
       icon: <Wallet />,
     },
     {
-      title: "Credit Monitoring",
+      title: "Guided Credit Improvement",
       description:
-        "Track your credit score and receive personalized recommendations for continuous improvement.",
+        "Don't just watch your credit score, improve it. Your AI Analyst provides clear, personalized recommendations to help you understand the key factors and build your credit with confidence over time.",
       icon: <CreditCard />,
     },
     {
-      title: "Financial Goals",
+      title: "AI-Driven Goal Planning",
       description:
-        "Set and track financial goals with AI-powered recommendations and detailed progress insights.",
+        "Whether you're saving for a home or planning for retirement, collaborate with your AI Strategist to build a clear path forward with progress tracking, projections, and motivational insights.",
       icon: <PieChart />,
     },
     {
-      title: "Premium Support",
-      description: "24/7 customer support with dedicated financial advisors available whenever you need assistance.",
+      title: "Dedicated Human & AI Support",
+      description: "You're never alone. Get 24/7 access to our expert human support team for any technical assistance, and lean on your dedicated AI team for financial analysis and guidance anytime, day or night.",
       icon: <DollarSign />,
     },
   ];
