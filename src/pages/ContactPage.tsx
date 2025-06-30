@@ -67,13 +67,13 @@ const ContactPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#030303] text-white relative overflow-hidden">
       {/* Subtle gradient background with reduced opacity for better contrast */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-black to-purple-900/10 pointer-events-none"></div>
       
       {/* Header */}
       <motion.header 
-        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/30 bg-black/95 backdrop-blur-xl relative z-50"
+        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl relative z-50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -162,6 +162,7 @@ const ContactPage: React.FC = () => {
           <motion.button
             className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
             whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/')}
           >
             <div className="w-6 h-6 flex flex-col justify-center space-y-1">
               <div className="w-full h-0.5 bg-white"></div>
@@ -191,7 +192,7 @@ const ContactPage: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="bg-gray-900/95 border border-gray-600 rounded-2xl p-8 backdrop-blur-sm shadow-xl"
+          className="bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.08] p-6 lg:p-8"
         >
           {formSubmitted ? (
             <motion.div
@@ -231,7 +232,7 @@ const ContactPage: React.FC = () => {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-white/70 mb-2">
                   <User size={16} className="inline mr-2" />
                   Your Name *
                 </label>
@@ -241,13 +242,13 @@ const ContactPage: React.FC = () => {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-black/70 border border-gray-500 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-colors"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
                   placeholder="John Doe"
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-white/70 mb-2">
                   <Mail size={16} className="inline mr-2" />
                   Your Email Address *
                 </label>
@@ -257,13 +258,13 @@ const ContactPage: React.FC = () => {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-black/70 border border-gray-500 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-colors"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors"
                   placeholder="john@example.com"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-white/70 mb-2">
                   <MessageCircle size={16} className="inline mr-2" />
                   What is this about? *
                 </label>
@@ -272,7 +273,7 @@ const ContactPage: React.FC = () => {
                   value={formData.subject}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 bg-black/70 border border-gray-500 rounded-xl text-white focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-colors"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-accent-blue transition-colors"
                 >
                   {subjectOptions.map((option, index) => (
                     <option key={index} value={option} className="bg-gray-800 text-white">
@@ -283,7 +284,7 @@ const ContactPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-white mb-2">
+                <label className="block text-sm font-medium text-white/70 mb-2">
                   Your Message *
                 </label>
                 <textarea
@@ -292,7 +293,7 @@ const ContactPage: React.FC = () => {
                   onChange={handleInputChange}
                   required
                   rows={6}
-                  className="w-full px-4 py-3 bg-black/70 border border-gray-500 rounded-xl text-white placeholder-gray-300 focus:outline-none focus:border-accent-blue focus:ring-1 focus:ring-accent-blue transition-colors resize-none"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-accent-blue transition-colors resize-none"
                   placeholder="Tell us how we can help..."
                 />
               </div>
@@ -341,8 +342,8 @@ const ContactPage: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/30 py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-white/90 text-sm">
+      <footer className="border-t border-white/10 py-8 mt-16">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-white/70 text-sm">
           © 2024 Argent. All rights reserved. | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Privacy Policy</a> | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Terms of Service</a>

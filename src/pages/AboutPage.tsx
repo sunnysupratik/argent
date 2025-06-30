@@ -16,22 +16,6 @@ const AboutPage: React.FC = () => {
     navigate('/');
   };
 
-  const getUserName = () => {
-    if (user?.full_name) {
-      const firstName = user.full_name.split(' ')[0];
-      return firstName.replace(/\s*(test|user|demo).*$/i, '');
-    }
-    const email = user?.email?.split('@')[0] || 'User';
-    return email.replace(/\s*(test|user|demo).*$/i, '');
-  };
-
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 17) return 'Good afternoon';
-    return 'Good evening';
-  };
-
   return (
     <div className="min-h-screen bg-[#030303] transition-colors duration-500 relative overflow-hidden">
       {/* Aurora background effect */}
@@ -51,6 +35,8 @@ const AboutPage: React.FC = () => {
             className="relative"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
+            onClick={() => navigate('/')}
+            style={{ cursor: 'pointer' }}
           >
             <div className="text-2xl lg:text-3xl font-black tracking-tight text-white transition-colors duration-500">
               AR
@@ -112,7 +98,6 @@ const AboutPage: React.FC = () => {
 
             {user ? (
               <div className="flex items-center space-x-4">
-                {/* NO WELCOME MESSAGE HERE - HIDDEN ON ABOUT PAGE */}
                 <InteractiveHoverButton 
                   variant="white" 
                   text="Sign Out" 
@@ -134,6 +119,7 @@ const AboutPage: React.FC = () => {
           <motion.button
             className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
             whileTap={{ scale: 0.95 }}
+            onClick={() => navigate('/')}
           >
             <div className="w-6 h-6 flex flex-col justify-center space-y-1">
               <div className="w-full h-0.5 bg-white"></div>
@@ -187,7 +173,7 @@ const AboutPage: React.FC = () => {
 
             {/* Enhanced Description - Same Typography as Homepage */}
             <motion.p 
-              className="text-lg md:text-xl leading-relaxed tracking-tight text-muted-foreground max-w-2xl text-center mx-auto"
+              className="text-lg md:text-xl leading-relaxed tracking-tight text-white/70 max-w-2xl text-center mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
@@ -282,6 +268,41 @@ const AboutPage: React.FC = () => {
           </motion.div>
         </AnimatedSection>
       </div>
+
+      {/* Footer */}
+      <footer className="px-4 lg:px-8 py-8 lg:py-12 border-t border-white/10 bg-[#030303] transition-colors duration-500">
+        <div className="max-w-7xl mx-auto">
+          <motion.div 
+            className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="relative">
+              <div className="text-xl lg:text-2xl font-black tracking-tight text-white">
+                AR
+                <span className="relative">
+                  G
+                  <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-accent-blue transform rotate-45"></div>
+                </span>
+                ENT
+              </div>
+              <div className="absolute -bottom-0.5 left-0 w-6 lg:w-8 h-0.5 bg-accent-blue"></div>
+            </div>
+            
+            <div className="flex space-x-6 lg:space-x-8">
+              <a href="#" className="text-white/70 hover:text-accent-blue transition-colors">Privacy</a>
+              <a href="#" className="text-white/70 hover:text-accent-blue transition-colors">Terms</a>
+              <a href="/contact" className="text-white/70 hover:text-accent-blue transition-colors">Support</a>
+            </div>
+            
+            <div className="text-sm lg:text-base text-white/70">
+              © 2024 Argent. All rights reserved.
+            </div>
+          </motion.div>
+        </div>
+      </footer>
     </div>
   );
 };
