@@ -3,13 +3,14 @@ import { useChat } from '@ai-sdk/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ChatMessage from './ChatMessage';
 import LoadingDots from './LoadingDots';
-import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3, ChevronDown } from 'lucide-react';
+import { Bot, Send, Sparkles, TrendingUp, DollarSign, Target, BarChart3, ChevronDown, ChevronUp } from 'lucide-react';
 
 const ChatContainer: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [isUserScrolling, setIsUserScrolling] = useState(false);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   const {
     messages,
@@ -36,14 +37,16 @@ const ChatContainer: React.FC = () => {
     }
   }, [messages, isUserScrolling]);
 
-  // Handle scroll events to detect user scrolling
+  // Handle scroll events to detect user scrolling and show/hide buttons
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
       const isNearBottom = scrollHeight - scrollTop - clientHeight < 100; // 100px threshold
+      const isNearTop = scrollTop < 100; // 100px threshold
       
       setIsUserScrolling(!isNearBottom);
       setShowScrollToBottom(!isNearBottom && messages.length > 0);
+      setShowScrollToTop(!isNearTop && messages.length > 0);
     }
   };
 
@@ -53,6 +56,14 @@ const ChatContainer: React.FC = () => {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
       setIsUserScrolling(false);
       setShowScrollToBottom(false);
+    }
+  };
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      setShowScrollToTop(false);
     }
   };
 
@@ -294,7 +305,25 @@ const ChatContainer: React.FC = () => {
         </div>
       </div>
 
-      {/* Scroll to Bottom Button */}
+      {/* Scroll Navigation Buttons */}
+      <AnimatePresence>
+        {showScrollToTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8, y: -20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: -20 }}
+            onClick={scrollToTop}
+            className="absolute top-6 right-6 w-12 h-12 bg-white/90 hover:bg-white border border-gray-200/50 text-gray-600 hover:text-gray-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-10 backdrop-blur-sm"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            aria-label="Scroll to top"
+            title="Scroll to top"
+          >
+            <ChevronUp size={20} />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showScrollToBottom && (
           <motion.button
@@ -302,13 +331,13 @@ const ChatContainer: React.FC = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 20 }}
             onClick={scrollToBottom}
-            className="absolute bottom-24 right-6 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-colors z-10 border border-white/20"
+            className="absolute bottom-24 right-6 w-12 h-12 bg-white/90 hover:bg-white border border-gray-200/50 text-gray-600 hover:text-gray-800 rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-10 backdrop-blur-sm"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             aria-label="Scroll to latest messages"
             title="Scroll to latest messages"
           >
-            <ChevronDown size={18} />
+            <ChevronDown size={20} />
           </motion.button>
         )}
       </AnimatePresence>
