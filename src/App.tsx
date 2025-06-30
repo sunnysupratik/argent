@@ -15,6 +15,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/app/*" element={<AppLayout />} />
+        {/* Catch-all route to redirect to home page */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>

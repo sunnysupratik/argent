@@ -46,16 +46,22 @@ const AppLayout: React.FC = () => {
   // Update active view based on current route
   useEffect(() => {
     const path = location.pathname;
-    if (path.includes('dashboard')) setActiveView('dashboard');
-    else if (path.includes('transactions')) setActiveView('transactions');
-    else if (path.includes('accounts')) setActiveView('accounts');
-    else if (path.includes('investments')) setActiveView('investments');
-    else if (path.includes('chat')) {
+    if (path.includes('dashboard') || path === '/app' || path === '/app/') {
+      setActiveView('dashboard');
+    } else if (path.includes('transactions')) {
+      setActiveView('transactions');
+    } else if (path.includes('accounts')) {
+      setActiveView('accounts');
+    } else if (path.includes('investments')) {
+      setActiveView('investments');
+    } else if (path.includes('chat')) {
       setActiveView('chat');
       setActiveAssistant('chat');
+    } else if (path.includes('profile')) {
+      setActiveView('profile');
+    } else if (path.includes('settings')) {
+      setActiveView('settings');
     }
-    else if (path.includes('profile')) setActiveView('profile');
-    else if (path.includes('settings')) setActiveView('settings');
   }, [location]);
 
   // Close mobile menu when route changes
@@ -183,7 +189,8 @@ const AppLayout: React.FC = () => {
       <main className="flex-1 overflow-auto pt-16 lg:pt-0 relative">
         <PageTransition>
           <Routes>
-            <Route index element={<Dashboard />} />
+            {/* Default route - redirect to dashboard */}
+            <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="transactions" element={<Transactions />} />
             <Route path="accounts" element={<Accounts />} />
@@ -191,7 +198,8 @@ const AppLayout: React.FC = () => {
             <Route path="chat" element={<Chat />} />
             <Route path="profile" element={<Profile />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="*" element={<Navigate to="/app/dashboard" replace />} />
+            {/* Catch-all route also redirects to dashboard */}
+            <Route path="*" element={<Navigate to="dashboard" replace />} />
           </Routes>
         </PageTransition>
       </main>
