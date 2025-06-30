@@ -126,185 +126,187 @@ const ChatContainer: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/10 to-violet-50/20 animate-aurora opacity-50" />
       </div>
 
-      {/* Messages Area with Custom Scrollbar */}
-      <div 
-        ref={chatContainerRef}
-        onScroll={handleScroll}
-        className="flex-1 overflow-y-auto chat-scrollbar relative"
-        style={{ 
-          scrollbarWidth: 'thin',
-          scrollbarColor: 'rgba(160, 160, 160, 0.7) rgba(0, 0, 0, 0.05)'
-        }}
-      >
-        <div className="p-4 lg:p-6 space-y-6 relative min-h-full">
-          <AnimatePresence mode="wait">
-            {messages.length === 0 ? (
+      {/* Messages Area with Custom Scrollbar - RELATIVE POSITIONING FOR BUTTONS */}
+      <div className="flex-1 relative">
+        <div 
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+          className="h-full overflow-y-auto chat-scrollbar"
+          style={{ 
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(160, 160, 160, 0.7) rgba(0, 0, 0, 0.05)'
+          }}
+        >
+          <div className="p-4 lg:p-6 space-y-6 relative min-h-full">
+            <AnimatePresence mode="wait">
+              {messages.length === 0 ? (
+                <motion.div
+                  key="welcome"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  className="flex flex-col items-center justify-center h-full px-4 lg:px-8 py-8 lg:py-16"
+                >
+                  {/* Hero Section */}
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.2 }}
+                    className="text-center mb-8 lg:mb-12"
+                  >
+                    <div className="relative mb-6 lg:mb-8">
+                      <motion.div 
+                        className="w-16 h-16 lg:w-24 lg:h-24 bg-gradient-to-r from-accent-blue to-blue-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl"
+                        animate={{ 
+                          boxShadow: [
+                            "0 25px 50px -12px rgba(0, 122, 255, 0.25)",
+                            "0 25px 50px -12px rgba(0, 122, 255, 0.4)",
+                            "0 25px 50px -12px rgba(0, 122, 255, 0.25)"
+                          ]
+                        }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        <Sparkles size={32} className="text-white lg:hidden" />
+                        <Sparkles size={40} className="text-white hidden lg:block" />
+                      </motion.div>
+                    </div>
+                    
+                    <motion.h2 
+                      className="text-2xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.4 }}
+                    >
+                      <span className="block">Your AI Financial</span>
+                      <span className="block bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
+                        Advisor
+                      </span>
+                    </motion.h2>
+                    
+                    <motion.p 
+                      className="text-base lg:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.6 }}
+                    >
+                      Get personalized financial insights powered by AI and enhanced with financial intelligence. 
+                      Ask me anything about budgeting, investments, or financial planning.
+                    </motion.p>
+                  </motion.div>
+                  
+                  {/* Quick Action Cards */}
+                  <motion.div 
+                    className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-4xl"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                  >
+                    {quickPrompts.map((prompt, index) => {
+                      const Icon = prompt.icon;
+                      return (
+                        <motion.button
+                          key={index}
+                          onClick={() => handleQuickPrompt(prompt.prompt)}
+                          className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-gray-200/50 hover:border-gray-300/50 rounded-2xl p-4 lg:p-6 text-left transition-all duration-300 hover:shadow-xl"
+                          whileHover={{ y: -4, scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          disabled={isLoading}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
+                        >
+                          {/* Gradient background on hover */}
+                          <div className={`absolute inset-0 bg-gradient-to-r ${prompt.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+                          
+                          <div className="relative flex items-center space-x-4">
+                            <div className={`w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r ${prompt.gradient} rounded-xl flex items-center justify-center shadow-lg`}>
+                              <Icon size={20} className="text-white lg:hidden" />
+                              <Icon size={24} className="text-white hidden lg:block" />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-gray-800 transition-colors text-sm lg:text-base">
+                                {prompt.text}
+                              </h3>
+                              <p className="text-xs lg:text-sm text-gray-500 group-hover:text-gray-600 transition-colors">
+                                Get AI-powered insights and recommendations
+                              </p>
+                            </div>
+                            <motion.div
+                              className="w-6 h-6 text-gray-400 group-hover:text-gray-600"
+                              animate={{ x: [0, 4, 0] }}
+                              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                            >
+                              →
+                            </motion.div>
+                          </div>
+                        </motion.button>
+                      );
+                    })}
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.div 
+                  key="messages"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="relative"
+                >
+                  {messages.map((message, index) => (
+                    <ChatMessage 
+                      key={message.id || `${message.role}-${index}`} 
+                      message={{
+                        ...message,
+                        createdAt: new Date()
+                      }} 
+                    />
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {isLoading && (
               <motion.div
-                key="welcome"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-                className="flex flex-col items-center justify-center h-full px-4 lg:px-8 py-8 lg:py-16"
-              >
-                {/* Hero Section */}
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  className="text-center mb-8 lg:mb-12"
-                >
-                  <div className="relative mb-6 lg:mb-8">
-                    <motion.div 
-                      className="w-16 h-16 lg:w-24 lg:h-24 bg-gradient-to-r from-accent-blue to-blue-600 rounded-3xl flex items-center justify-center mx-auto shadow-2xl"
-                      animate={{ 
-                        boxShadow: [
-                          "0 25px 50px -12px rgba(0, 122, 255, 0.25)",
-                          "0 25px 50px -12px rgba(0, 122, 255, 0.4)",
-                          "0 25px 50px -12px rgba(0, 122, 255, 0.25)"
-                        ]
-                      }}
-                      transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <Sparkles size={32} className="text-white lg:hidden" />
-                      <Sparkles size={40} className="text-white hidden lg:block" />
-                    </motion.div>
-                  </div>
-                  
-                  <motion.h2 
-                    className="text-2xl lg:text-5xl font-bold text-gray-900 mb-4 tracking-tight"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                  >
-                    <span className="block">Your AI Financial</span>
-                    <span className="block bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
-                      Advisor
-                    </span>
-                  </motion.h2>
-                  
-                  <motion.p 
-                    className="text-base lg:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed font-light"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.6 }}
-                  >
-                    Get personalized financial insights powered by AI and enhanced with financial intelligence. 
-                    Ask me anything about budgeting, investments, or financial planning.
-                  </motion.p>
-                </motion.div>
-                
-                {/* Quick Action Cards */}
-                <motion.div 
-                  className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full max-w-4xl"
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                >
-                  {quickPrompts.map((prompt, index) => {
-                    const Icon = prompt.icon;
-                    return (
-                      <motion.button
-                        key={index}
-                        onClick={() => handleQuickPrompt(prompt.prompt)}
-                        className="group relative overflow-hidden bg-white/80 backdrop-blur-sm border border-gray-200/50 hover:border-gray-300/50 rounded-2xl p-4 lg:p-6 text-left transition-all duration-300 hover:shadow-xl"
-                        whileHover={{ y: -4, scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        disabled={isLoading}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.4, delay: 0.9 + index * 0.1 }}
-                      >
-                        {/* Gradient background on hover */}
-                        <div className={`absolute inset-0 bg-gradient-to-r ${prompt.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                        
-                        <div className="relative flex items-center space-x-4">
-                          <div className={`w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r ${prompt.gradient} rounded-xl flex items-center justify-center shadow-lg`}>
-                            <Icon size={20} className="text-white lg:hidden" />
-                            <Icon size={24} className="text-white hidden lg:block" />
-                          </div>
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-gray-800 transition-colors text-sm lg:text-base">
-                              {prompt.text}
-                            </h3>
-                            <p className="text-xs lg:text-sm text-gray-500 group-hover:text-gray-600 transition-colors">
-                              Get AI-powered insights and recommendations
-                            </p>
-                          </div>
-                          <motion.div
-                            className="w-6 h-6 text-gray-400 group-hover:text-gray-600"
-                            animate={{ x: [0, 4, 0] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                          >
-                            →
-                          </motion.div>
-                        </div>
-                      </motion.button>
-                    );
-                  })}
-                </motion.div>
-              </motion.div>
-            ) : (
-              <motion.div 
-                key="messages"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
                 className="relative"
               >
-                {messages.map((message, index) => (
-                  <ChatMessage 
-                    key={message.id || `${message.role}-${index}`} 
-                    message={{
-                      ...message,
-                      createdAt: new Date()
-                    }} 
-                  />
-                ))}
+                <div className="flex items-start space-x-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center">
+                    <Bot size={20} className="text-gray-600" />
+                  </div>
+                  <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl rounded-tl-lg px-6 py-4 border border-gray-100/50">
+                    <LoadingDots />
+                  </div>
+                </div>
               </motion.div>
             )}
-          </AnimatePresence>
 
-          {isLoading && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative"
-            >
-              <div className="flex items-start space-x-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-2xl flex items-center justify-center">
-                  <Bot size={20} className="text-gray-600" />
-                </div>
-                <div className="bg-gray-50/80 backdrop-blur-sm rounded-2xl rounded-tl-lg px-6 py-4 border border-gray-100/50">
-                  <LoadingDots />
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="relative"
-            >
-              <div className="p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-2xl">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                    <span className="text-red-600 text-sm font-bold">!</span>
-                  </div>
-                  <div>
-                    <p className="text-red-800 font-medium">Connection Error</p>
-                    <p className="text-red-600 text-sm">{error.message || 'Something went wrong. Please try again.'}</p>
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="relative"
+              >
+                <div className="p-4 bg-red-50/80 backdrop-blur-sm border border-red-200/50 rounded-2xl">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                      <span className="text-red-600 text-sm font-bold">!</span>
+                    </div>
+                    <div>
+                      <p className="text-red-800 font-medium">Connection Error</p>
+                      <p className="text-red-600 text-sm">{error.message || 'Something went wrong. Please try again.'}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
 
-          <div ref={messagesEndRef} className="h-4" />
+            <div ref={messagesEndRef} className="h-4" />
+          </div>
         </div>
 
-        {/* Scroll Navigation Buttons - Positioned within the scrollable area */}
+        {/* Scroll Navigation Buttons - POSITIONED WITHIN THE MESSAGES CONTAINER */}
         <AnimatePresence>
           {showScrollToTop && (
             <motion.button
@@ -312,14 +314,13 @@ const ChatContainer: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: -20 }}
               onClick={scrollToTop}
-              className="fixed top-20 right-4 lg:right-8 w-10 h-10 lg:w-12 lg:h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-50 border border-white/20"
+              className="absolute top-4 right-4 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-20 border border-white/20"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to top"
               title="Scroll to top"
             >
-              <ChevronUp size={18} className="lg:hidden" />
-              <ChevronUp size={20} className="hidden lg:block" />
+              <ChevronUp size={18} />
             </motion.button>
           )}
         </AnimatePresence>
@@ -331,14 +332,13 @@ const ChatContainer: React.FC = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.8, y: 20 }}
               onClick={scrollToBottom}
-              className="fixed bottom-32 right-4 lg:right-8 w-10 h-10 lg:w-12 lg:h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-50 border border-white/20"
+              className="absolute bottom-4 right-4 w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 z-20 border border-white/20"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to latest messages"
               title="Scroll to latest messages"
             >
-              <ChevronDown size={18} className="lg:hidden" />
-              <ChevronDown size={20} className="hidden lg:block" />
+              <ChevronDown size={18} />
             </motion.button>
           )}
         </AnimatePresence>
