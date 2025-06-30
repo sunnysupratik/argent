@@ -125,7 +125,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
             >
               <div className="text-2xl lg:text-3xl font-black tracking-tight text-text-primary">
                 AR
-                <span className="relative inline-block">
+                <span className="relative">
                   G
                   <motion.div 
                     className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45"
