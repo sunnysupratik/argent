@@ -5,32 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* CSS Variables for shadcn/ui */
-@layer base {
-  :root {
-    --background: 234 234 234;
-    --foreground: 0 0 0;
-    --card: 255 255 255;
-    --card-foreground: 0 0 0;
-    --popover: 255 255 255;
-    --popover-foreground: 0 0 0;
-    --primary: 0 122 255;
-    --primary-foreground: 255 255 255;
-    --secondary: 241 245 249;
-    --secondary-foreground: 15 23 42;
-    --muted: 248 250 252;
-    --muted-foreground: 100 116 139;
-    --accent: 241 245 249;
-    --accent-foreground: 15 23 42;
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 0 122 255;
-    --radius: 0.5rem;
-  }
-}
-
 /* Custom Chat Scrollbar Styling */
 @layer components {
   .chat-scrollbar {
@@ -71,6 +45,32 @@
 
   .chat-scrollbar::-webkit-scrollbar-corner {
     background: transparent;
+  }
+}
+
+/* CSS Variables for shadcn/ui */
+@layer base {
+  :root {
+    --background: 234 234 234;
+    --foreground: 0 0 0;
+    --card: 255 255 255;
+    --card-foreground: 0 0 0;
+    --popover: 255 255 255;
+    --popover-foreground: 0 0 0;
+    --primary: 0 122 255;
+    --primary-foreground: 255 255 255;
+    --secondary: 241 245 249;
+    --secondary-foreground: 15 23 42;
+    --muted: 248 250 252;
+    --muted-foreground: 100 116 139;
+    --accent: 241 245 249;
+    --accent-foreground: 15 23 42;
+    --destructive: 239 68 68;
+    --destructive-foreground: 255 255 255;
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 0 122 255;
+    --radius: 0.5rem;
   }
 }
 
@@ -338,7 +338,7 @@
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    justify-center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
@@ -480,7 +480,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center;
     border: none;
     outline: none;
   }
@@ -507,7 +507,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center;
     border: none;
     outline: none;
   }
@@ -534,7 +534,7 @@
     overflow: hidden;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center;
     border: none;
     outline: none;
   }
@@ -559,7 +559,7 @@
     height: clamp(48px, 8vw, 56px);
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-center;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
