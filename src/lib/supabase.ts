@@ -4,13 +4,59 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://example.supabase.co';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'public-anon-key';
 
+// Enhanced logging for debugging
+console.log('Environment check:', {
+  isDev: import.meta.env.DEV,
+  isProd: import.meta.env.PROD,
+  mode: import.meta.env.MODE,
+  supabaseUrlExists: !!import.meta.env.VITE_SUPABASE_URL,
+  supabaseKeyExists: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+  supabaseUrlValid: import.meta.env.VITE_SUPABASE_URL && !import.meta.env.VITE_SUPABASE_URL.includes('example'),
+});
+
 // Log environment variables for debugging (only in development)
 if (import.meta.env.DEV) {
   console.log('Supabase URL:', supabaseUrl);
   console.log('Supabase Anon Key:', supabaseAnonKey ? 'Exists (not shown for security)' : 'Missing');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Validate environment variables
+const isValidSupabase = supabaseUrl && 
+  !supabaseUrl.includes('example.supabase.co') && 
+  supabaseAnonKey && 
+  supabaseAnonKey !== 'public-anon-key';
+
+if (!isValidSupabase && import.meta.env.PROD) {
+  console.warn('⚠️ Supabase configuration missing in production. Using fallback mode.');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+  realtime: {
+    params: {
+      eventsPerSecond: 10,
+    },
+  },
+});
+
+// Test connection function
+export const testSupabaseConnection = async () => {
+  try {
+    const { data, error } = await supabase.from('custom_users').select('count').limit(1);
+    if (error) {
+      console.error('Supabase connection test failed:', error);
+      return false;
+    }
+    console.log('✅ Supabase connection successful');
+    return true;
+  } catch (err) {
+    console.error('Supabase connection error:', err);
+    return false;
+  }
+};
 
 // Database types
 export interface CustomUser {
@@ -81,36 +127,40 @@ export interface Investment {
   updated_at?: string;
 }
 
-// Custom authentication functions
+// Enhanced custom authentication functions with better error handling
 export const customAuth = {
   signIn: async (username: string, password: string) => {
     try {
       console.log('CustomAuth.signIn - Attempting login for:', username);
       
       // Check if we have a valid Supabase connection
-      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
-      
       if (isValidSupabase) {
         console.log('Using real Supabase authentication');
         
-        // Try to authenticate with the database
-        const { data, error } = await supabase
-          .from('custom_users')
-          .select('*')
-          .eq('username', username)
-          .eq('password', password)
-          .single();
-
-        if (error || !data) {
-          console.log('CustomAuth.signIn - Database login failed:', error?.message || 'User not found');
-          // Fall through to demo mode
+        // Test connection first
+        const connectionTest = await testSupabaseConnection();
+        if (!connectionTest) {
+          console.warn('Supabase connection failed, falling back to demo mode');
         } else {
-          console.log('CustomAuth.signIn - Database login successful for user:', data.username, 'ID:', data.id);
-          
-          // Store user in localStorage for session management
-          localStorage.setItem('customUser', JSON.stringify(data));
-          
-          return { user: data, error: null };
+          // Try to authenticate with the database
+          const { data, error } = await supabase
+            .from('custom_users')
+            .select('*')
+            .eq('username', username)
+            .eq('password', password)
+            .single();
+
+          if (error || !data) {
+            console.log('CustomAuth.signIn - Database login failed:', error?.message || 'User not found');
+            // Fall through to demo mode
+          } else {
+            console.log('CustomAuth.signIn - Database login successful for user:', data.username, 'ID:', data.id);
+            
+            // Store user in localStorage for session management
+            localStorage.setItem('customUser', JSON.stringify(data));
+            
+            return { user: data, error: null };
+          }
         }
       }
       
@@ -148,7 +198,7 @@ export const customAuth = {
       
     } catch (err) {
       console.error('CustomAuth.signIn - Unexpected error:', err);
-      return { user: null, error: { message: 'Authentication failed' } };
+      return { user: null, error: { message: 'Authentication failed. Please check your connection and try again.' } };
     }
   },
 
@@ -157,34 +207,36 @@ export const customAuth = {
       console.log('CustomAuth.signUp - Attempting signup for:', username);
       
       // Check if we have a valid Supabase connection
-      const isValidSupabase = supabaseUrl && !supabaseUrl.includes('example.supabase.co') && supabaseAnonKey && supabaseAnonKey !== 'public-anon-key';
-      
       if (isValidSupabase) {
         console.log('Using real Supabase for signup');
         
-        const { data, error } = await supabase
-          .from('custom_users')
-          .insert([{
-            username,
-            password,
-            full_name: fullName,
-            email,
-            user_name: username
-          }])
-          .select()
-          .single();
+        // Test connection first
+        const connectionTest = await testSupabaseConnection();
+        if (connectionTest) {
+          const { data, error } = await supabase
+            .from('custom_users')
+            .insert([{
+              username,
+              password,
+              full_name: fullName,
+              email,
+              user_name: username
+            }])
+            .select()
+            .single();
 
-        if (error) {
-          console.log('CustomAuth.signUp - Database signup failed:', error.message);
-          return { user: null, error: { message: error.message } };
+          if (error) {
+            console.log('CustomAuth.signUp - Database signup failed:', error.message);
+            return { user: null, error: { message: error.message } };
+          }
+
+          console.log('CustomAuth.signUp - Database signup successful for user:', data.username, 'ID:', data.id);
+          
+          // Store user in localStorage for session management
+          localStorage.setItem('customUser', JSON.stringify(data));
+          
+          return { user: data, error: null };
         }
-
-        console.log('CustomAuth.signUp - Database signup successful for user:', data.username, 'ID:', data.id);
-        
-        // Store user in localStorage for session management
-        localStorage.setItem('customUser', JSON.stringify(data));
-        
-        return { user: data, error: null };
       }
       
       // Demo mode - create a mock user
@@ -207,7 +259,7 @@ export const customAuth = {
       
     } catch (err) {
       console.error('CustomAuth.signUp - Unexpected error:', err);
-      return { user: null, error: { message: 'Sign up failed' } };
+      return { user: null, error: { message: 'Sign up failed. Please check your connection and try again.' } };
     }
   },
 

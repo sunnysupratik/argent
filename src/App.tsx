@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AppLayout from './pages/AppLayout';
+import Debug from './components/Debug';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/app/*" element={<AppLayout />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Debug />
     </Router>
   );
 }

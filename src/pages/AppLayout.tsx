@@ -14,6 +14,7 @@ import Profile from '../components/Profile';
 import Settings from '../components/Settings';
 import VideoChat from '../components/VideoChat';
 import PageTransition from '../components/PageTransition';
+import ConnectionStatus from '../components/ConnectionStatus';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import { useAuth } from '../hooks/useAuth';
 import AIAssistantHub from '../components/ui/ai-assistant-hub';
@@ -86,6 +87,10 @@ const AppLayout: React.FC = () => {
         console.log('ElevenLabs script loaded successfully');
         setElevenLabsScriptLoaded(true);
       };
+      script.onerror = () => {
+        console.error('Failed to load ElevenLabs script');
+        setElevenLabsScriptLoaded(false);
+      };
       
       document.body.appendChild(script);
     }
@@ -157,6 +162,9 @@ const AppLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative">
+      {/* Connection Status */}
+      <ConnectionStatus />
+
       {/* Desktop Horizontal Navigation */}
       <div className="desktop-only">
         <Sidebar activeView={activeView} onViewChange={setActiveView} />
