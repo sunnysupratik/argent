@@ -1,3 +1,0 @@
-# Netlify redirects file (fallback if netlify.toml isn't processed)
-)
-/*    /index.html   200
