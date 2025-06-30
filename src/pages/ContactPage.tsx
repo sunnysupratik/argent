@@ -272,7 +272,7 @@ const ContactPage: React.FC = () => {
         {/* Contact Form and Support Channels */}
         <AnimatedSection className="mb-8 lg:mb-16" delay={0.8}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Enhanced Contact Form with Airtable Integration */}
+            {/* Contact Form with Supabase Integration */}
             <motion.div
               initial={{ opacity: 0, x: -40 }}
               animate={{ opacity: 1, x: 0 }}
@@ -319,7 +319,7 @@ const ContactPage: React.FC = () => {
                 );
               })}
 
-              {/* Airtable Integration Status */}
+              {/* Supabase Integration Status */}
               <motion.div
                 className="bg-gradient-to-r from-green-50/10 to-emerald-50/10 border border-green-500/20 rounded-2xl p-6"
                 initial={{ opacity: 0, y: 20 }}
@@ -333,7 +333,7 @@ const ContactPage: React.FC = () => {
                   <div className="flex-1">
                     <h4 className="text-lg font-bold text-white mb-2">Lead Management</h4>
                     <p className="text-white/60 mb-2">
-                      All form submissions are automatically saved to our Airtable CRM system for efficient lead tracking and follow-up.
+                      All form submissions are securely stored in our Supabase database for efficient lead tracking and follow-up.
                     </p>
                     <div className="text-sm text-green-400">
                       ✓ Secure data storage ✓ Automated lead scoring ✓ 24h response guarantee
