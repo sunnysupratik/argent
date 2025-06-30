@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, Clock, MessageCircle, Shield, BarChart3, Send, User, Building } from 'lucide-react';
+import { Mail, User, MessageCircle, Send, BarChart3 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { InteractiveHoverButton } from '../components/ui/interactive-hover-button';
 import { useLeads } from '../hooks/useLeads';
@@ -14,10 +14,8 @@ const ContactPage: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
-    phone: '',
-    message: '',
-    subject: ''
+    subject: 'I need technical support with the app.',
+    message: ''
   });
 
   const handleSignOut = async () => {
@@ -25,7 +23,7 @@ const ContactPage: React.FC = () => {
     navigate('/');
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -40,11 +38,9 @@ const ContactPage: React.FC = () => {
       const success = await createLead({
         name: formData.name,
         email: formData.email,
-        company: formData.company || '',
-        phone: formData.phone || '',
-        subject: formData.subject || 'Contact Form Submission',
+        subject: formData.subject,
         message: formData.message,
-        source: 'Website Contact Form'
+        source: 'Support Form'
       });
       
       if (success) {
@@ -54,10 +50,8 @@ const ContactPage: React.FC = () => {
         setFormData({
           name: '',
           email: '',
-          company: '',
-          phone: '',
-          message: '',
-          subject: ''
+          subject: 'I need technical support with the app.',
+          message: ''
         });
       }
     } catch (err) {
@@ -65,35 +59,11 @@ const ContactPage: React.FC = () => {
     }
   };
 
-  const contactInfo = [
-    {
-      icon: Mail,
-      title: 'Email Support',
-      content: 'support@argent.com',
-      description: 'Get help with your account',
-      gradient: 'from-blue-500 to-blue-600'
-    },
-    {
-      icon: Phone,
-      title: 'Phone Support',
-      content: '+1 (555) 123-4567',
-      description: '24/7 customer service',
-      gradient: 'from-green-500 to-green-600'
-    },
-    {
-      icon: MapPin,
-      title: 'Office Location',
-      content: 'San Francisco, CA',
-      description: '123 Financial District',
-      gradient: 'from-purple-500 to-purple-600'
-    },
-    {
-      icon: Clock,
-      title: 'Business Hours',
-      content: '24/7 Available',
-      description: 'Always here to help',
-      gradient: 'from-orange-500 to-orange-600'
-    }
+  const subjectOptions = [
+    "I need technical support with the app.",
+    "I have a question about my account or billing.",
+    "I have feedback or a feature suggestion.",
+    "Other"
   ];
 
   return (
@@ -202,263 +172,169 @@ const ContactPage: React.FC = () => {
         </nav>
       </motion.header>
 
-      <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16 lg:py-24">
+      <div className="max-w-3xl mx-auto px-4 lg:px-8 py-16 lg:py-24">
         {/* Hero Section */}
         <motion.div 
-          className="text-center mb-16"
+          className="text-center mb-12"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6">Let's connect.</h1>
-          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-            Whether you have a question, a project idea, or need support, we're here to help.
+          <h1 className="text-4xl lg:text-5xl font-bold mb-4">How can we help?</h1>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Whether you need help with a feature or have a suggestion, we're here to listen.
           </p>
         </motion.div>
 
         {/* Contact Form Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="bg-gray-900 border border-gray-800 rounded-2xl p-8"
-          >
-            <h2 className="text-2xl font-bold mb-6">Send us a message</h2>
-            
-            {formSubmitted ? (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-green-900/30 border border-green-800/50 rounded-xl p-6 text-center"
-              >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="32" 
-                    height="32" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    className="text-white"
-                  >
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </motion.div>
-                <h3 className="text-2xl font-bold text-green-400 mb-2">Message Sent!</h3>
-                <p className="text-green-300 mb-4">
-                  Thank you for reaching out. We'll respond to your inquiry within 24 hours.
-                </p>
-                <div className="text-sm text-green-400">
-                  Reference ID: #{Date.now().toString().slice(-6)}
-                </div>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      <User size={16} className="inline mr-2" />
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
-                      placeholder="John Doe"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      <Mail size={16} className="inline mr-2" />
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
-                      placeholder="john@company.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      <Building size={16} className="inline mr-2" />
-                      Company
-                    </label>
-                    <input
-                      type="text"
-                      name="company"
-                      value={formData.company}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
-                      placeholder="Your Company"
-                    />
-                  </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      <Phone size={16} className="inline mr-2" />
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
-                      placeholder="+1 (555) 123-4567"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    <MessageCircle size={16} className="inline mr-2" />
-                    Subject *
-                  </label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
-                    placeholder="How can we help you?"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    required
-                    rows={5}
-                    className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
-                    placeholder="Tell us how we can help..."
-                  />
-                </div>
-
-                <div>
-                  <InteractiveHoverButton
-                    type="submit"
-                    disabled={loading}
-                    variant="blue"
-                    text={loading ? "Sending..." : "Send Message"}
-                    icon={<Send size={16} />}
-                    className="w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                  />
-                  
-                  {submitError && (
-                    <div className="text-red-500 text-sm mt-2">{submitError}</div>
-                  )}
-                </div>
-              </form>
-            )}
-          </motion.div>
-
-          {/* Contact Information - FIXED READABILITY ISSUES */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold mb-6 text-white">Contact Information</h2>
-              <div className="space-y-6">
-                {contactInfo.map((info, index) => {
-                  const Icon = info.icon;
-                  return (
-                    <div key={index} className="flex items-start space-x-4">
-                      <div className={`w-12 h-12 bg-gradient-to-r ${info.gradient} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                        <Icon size={20} className="text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-lg font-bold text-white mb-1">{info.title}</h3>
-                        <p className="text-accent-blue font-medium mb-1">{info.content}</p>
-                        <p className="text-gray-300 text-sm">{info.description}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
-              <h2 className="text-2xl font-bold mb-6 text-white">Security & Urgent Issues</h2>
-              <div className="flex items-start space-x-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
-                  <Shield size={20} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white mb-2">Security Team</h3>
-                  <p className="text-gray-300 mb-4">
-                    For all security-related matters, please email our dedicated security desk directly at <span className="text-red-400 font-semibold">security@argent.com</span>
-                  </p>
-                  <InteractiveHoverButton
-                    variant="white"
-                    text="Contact Security Team"
-                    onClick={() => window.location.href = 'mailto:security@argent.com'}
-                    className="px-4 py-2 text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* FAQ Section */}
         <motion.div
-          className="text-center max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="bg-gray-900/50 border border-gray-800/50 rounded-2xl p-8 backdrop-blur-sm"
+        >
+          {formSubmitted ? (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="bg-green-900/30 border border-green-800/50 rounded-xl p-6 text-center"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  width="32" 
+                  height="32" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  className="text-white"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </motion.div>
+              <h3 className="text-2xl font-bold text-green-400 mb-2">Message Sent!</h3>
+              <p className="text-green-300 mb-4">
+                Thank you for reaching out. We'll respond to your inquiry within 24 hours.
+              </p>
+              <div className="text-sm text-green-400">
+                Reference ID: #{Date.now().toString().slice(-6)}
+              </div>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <User size={16} className="inline mr-2" />
+                  Your Name *
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                  placeholder="John Doe"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <Mail size={16} className="inline mr-2" />
+                  Your Email Address *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                  placeholder="john@example.com"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  <MessageCircle size={16} className="inline mr-2" />
+                  What is this about? *
+                </label>
+                <select
+                  name="subject"
+                  value={formData.subject}
+                  onChange={handleInputChange}
+                  required
+                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-accent-blue transition-colors"
+                >
+                  {subjectOptions.map((option, index) => (
+                    <option key={index} value={option} className="bg-gray-900 text-white">
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">
+                  Your Message *
+                </label>
+                <textarea
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  required
+                  rows={6}
+                  className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
+                  placeholder="Tell us how we can help..."
+                />
+              </div>
+
+              <div>
+                <InteractiveHoverButton
+                  type="submit"
+                  disabled={loading}
+                  variant="blue"
+                  text={loading ? "Sending..." : "Send Message"}
+                  icon={<Send size={16} />}
+                  className="w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                />
+                
+                {submitError && (
+                  <div className="text-red-500 text-sm mt-2">{submitError}</div>
+                )}
+              </div>
+            </form>
+          )}
+        </motion.div>
+
+        {/* Help Center Link */}
+        <motion.div
+          className="text-center mt-12"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6">
+          <h2 className="text-xl font-bold text-white mb-3">
             Looking for answers?
           </h2>
-          <p className="text-gray-300 leading-relaxed mb-8">
+          <p className="text-gray-400 mb-6">
             Check our comprehensive help center for FAQs and documentation.
-            Our knowledge base contains answers to most common questions.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <InteractiveHoverButton
-              variant="blue"
-              text="Visit Help Center"
-              onClick={() => window.open('#', '_blank')}
-              className="px-8 py-3"
-            />
-            <InteractiveHoverButton
-              variant="white"
-              text="Schedule a Call"
-              onClick={() => window.open('#', '_blank')}
-              className="px-8 py-3"
-            />
-          </div>
+          <InteractiveHoverButton
+            variant="white"
+            text="Visit Help Center"
+            onClick={() => window.open('#', '_blank')}
+            className="px-8 py-3"
+          />
         </motion.div>
       </div>
 
