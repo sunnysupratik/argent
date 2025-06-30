@@ -4,12 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, Clock, MessageCircle, Shield, BarChart3, X, Send, User, Building, ArrowRight } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { InteractiveHoverButton } from '../components/ui/interactive-hover-button';
-import { useLeads } from '../hooks/useLeads';
 
 const ContactPage: React.FC = () => {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
-  const { createLead, loading: submitLoading, error: submitError } = useLeads();
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -20,6 +18,8 @@ const ContactPage: React.FC = () => {
     message: '',
     subject: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignOut = async () => {
     await signOut();
@@ -36,34 +36,28 @@ const ContactPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
     
     try {
-      // Create lead in Supabase
-      const success = await createLead({
-        name: formData.name,
-        email: formData.email,
-        company: formData.company || '',
-        phone: formData.phone || '',
-        subject: formData.subject || 'Contact Form Submission',
-        message: formData.message,
-        source: 'Website Contact Form'
-      });
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      console.log('Form submitted:', formData);
+      setFormSubmitted(true);
       
-      if (success) {
-        setFormSubmitted(true);
-        
-        // Reset form
-        setFormData({
-          name: '',
-          email: '',
-          company: '',
-          phone: '',
-          message: '',
-          subject: ''
-        });
-      }
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        company: '',
+        phone: '',
+        message: '',
+        subject: ''
+      });
     } catch (err) {
-      console.error('Error submitting form:', err);
+      setError('An error occurred while submitting the form. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -123,13 +117,41 @@ const ContactPage: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 relative overflow-hidden">
-      {/* Subtle background pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-white to-purple-50/30 pointer-events-none"></div>
+    <div className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-black to-purple-900/10 pointer-events-none"></div>
       
+      {/* Animated background shapes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          className="absolute top-[10%] left-[5%] w-64 h-64 rounded-full bg-blue-500/5 blur-3xl"
+          animate={{ 
+            x: [0, 50, 0],
+            y: [0, 30, 0],
+          }}
+          transition={{ 
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div 
+          className="absolute bottom-[20%] right-[10%] w-80 h-80 rounded-full bg-purple-500/5 blur-3xl"
+          animate={{ 
+            x: [0, -40, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{ 
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </div>
+
       {/* Header */}
       <motion.header 
-        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-gray-200 bg-white/90 backdrop-blur-sm relative z-50"
+        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-black/95 backdrop-blur-xl relative z-50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -142,7 +164,7 @@ const ContactPage: React.FC = () => {
             onClick={() => navigate('/')}
             style={{ cursor: 'pointer' }}
           >
-            <div className="text-2xl lg:text-3xl font-black tracking-tight text-gray-900">
+            <div className="text-2xl lg:text-3xl font-black tracking-tight text-white">
               AR
               <span className="relative">
                 G
@@ -216,13 +238,13 @@ const ContactPage: React.FC = () => {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="lg:hidden p-2 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors"
+            className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
             whileTap={{ scale: 0.95 }}
           >
             <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-              <div className="w-full h-0.5 bg-gray-900"></div>
-              <div className="w-full h-0.5 bg-gray-900"></div>
-              <div className="w-full h-0.5 bg-gray-900"></div>
+              <div className="w-full h-0.5 bg-white"></div>
+              <div className="w-full h-0.5 bg-white"></div>
+              <div className="w-full h-0.5 bg-white"></div>
             </div>
           </motion.button>
         </nav>
@@ -236,8 +258,8 @@ const ContactPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <h1 className="text-5xl lg:text-7xl font-bold mb-6 text-gray-900">Let's connect.</h1>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <h1 className="text-5xl lg:text-7xl font-bold mb-6">Let's connect.</h1>
+          <p className="text-xl text-gray-400 max-w-3xl mx-auto">
             Whether you have a question, a project idea, or need support, we're here to help.
             Select a topic below to get started.
           </p>
@@ -250,7 +272,7 @@ const ContactPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <h2 className="text-2xl font-semibold col-span-full mb-4 text-gray-900">What's on your mind?</h2>
+          <h2 className="text-2xl font-semibold col-span-full mb-4">What's on your mind?</h2>
           
           {contactCards.map((card, index) => {
             const Icon = card.icon;
@@ -259,10 +281,10 @@ const ContactPage: React.FC = () => {
             return (
               <motion.div
                 key={card.id}
-                className={`bg-white border border-gray-200 rounded-2xl p-6 cursor-pointer transition-all duration-300 shadow-sm hover:shadow-md ${
-                  activeSection && !isActive ? 'opacity-70' : 'opacity-100'
+                className={`bg-gray-900 border border-gray-800 rounded-2xl p-6 cursor-pointer transition-all duration-300 ${
+                  activeSection && !isActive ? 'opacity-50' : 'opacity-100'
                 } ${isActive ? 'ring-2 ring-accent-blue' : ''}`}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -5, scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveSection(card.id)}
                 initial={{ opacity: 0, y: 20 }}
@@ -272,8 +294,8 @@ const ContactPage: React.FC = () => {
                 <div className={`w-14 h-14 rounded-xl bg-gradient-to-r ${card.gradient} flex items-center justify-center mb-4`}>
                   <Icon size={24} className="text-white" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-900">{card.title}</h3>
-                <p className="text-gray-600">{card.description}</p>
+                <h3 className="text-xl font-bold mb-2">{card.title}</h3>
+                <p className="text-gray-400">{card.description}</p>
               </motion.div>
             );
           })}
@@ -283,15 +305,15 @@ const ContactPage: React.FC = () => {
         <AnimatePresence>
           {activeSection === 'general' && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.5 }}
-              className="mb-16"
+              className="overflow-hidden mb-16"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <motion.div 
-                  className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm"
+                  className="bg-gray-900 border border-gray-800 rounded-2xl p-6"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
@@ -301,8 +323,8 @@ const ContactPage: React.FC = () => {
                       <MessageCircle size={20} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">Live Chat</h3>
-                      <p className="text-gray-600">Chat with our support team in real-time</p>
+                      <h3 className="text-xl font-bold">Live Chat</h3>
+                      <p className="text-gray-400">Chat with our support team in real-time</p>
                     </div>
                   </div>
                   <InteractiveHoverButton
@@ -313,7 +335,7 @@ const ContactPage: React.FC = () => {
                 </motion.div>
 
                 <motion.div 
-                  className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm"
+                  className="bg-gray-900 border border-gray-800 rounded-2xl p-6"
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
@@ -323,8 +345,8 @@ const ContactPage: React.FC = () => {
                       <Mail size={20} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900">Email Support</h3>
-                      <p className="text-gray-600">Send us an email and we'll get back to you</p>
+                      <h3 className="text-xl font-bold">Email Support</h3>
+                      <p className="text-gray-400">Send us an email and we'll get back to you</p>
                     </div>
                   </div>
                   
@@ -332,10 +354,10 @@ const ContactPage: React.FC = () => {
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="bg-green-50 border border-green-200 rounded-xl p-4 text-center"
+                      className="bg-green-900/30 border border-green-800/50 rounded-xl p-4 text-center"
                     >
-                      <h4 className="text-lg font-semibold text-green-700 mb-2">Message Sent!</h4>
-                      <p className="text-green-600 text-sm">
+                      <h4 className="text-lg font-semibold text-green-400 mb-2">Message Sent!</h4>
+                      <p className="text-green-300 text-sm">
                         Thank you for reaching out. We'll respond to your inquiry within 24 hours.
                       </p>
                     </motion.div>
@@ -349,7 +371,7 @@ const ContactPage: React.FC = () => {
                           onChange={handleInputChange}
                           placeholder="Your Email"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                          className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
                         />
                       </div>
                       <div>
@@ -360,20 +382,20 @@ const ContactPage: React.FC = () => {
                           placeholder="Your Message"
                           required
                           rows={3}
-                          className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
+                          className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
                         />
                       </div>
                       <InteractiveHoverButton
                         type="submit"
                         variant="blue"
-                        text={submitLoading ? "Sending..." : "Send Message"}
+                        text={loading ? "Sending..." : "Send Message"}
                         icon={<Send size={16} />}
                         className="w-full py-3"
-                        disabled={submitLoading}
+                        disabled={loading}
                       />
                       
-                      {submitError && (
-                        <div className="text-red-500 text-sm mt-2">{submitError}</div>
+                      {error && (
+                        <div className="text-red-500 text-sm mt-2">{error}</div>
                       )}
                     </form>
                   )}
@@ -384,25 +406,25 @@ const ContactPage: React.FC = () => {
 
           {activeSection === 'project' && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.5 }}
-              className="mb-16"
+              className="overflow-hidden mb-16"
             >
-              <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-sm">
+              <div className="bg-gray-900 border border-gray-800 rounded-2xl p-8">
                 <div className="flex justify-between items-start mb-8">
                   <div>
-                    <h3 className="text-2xl font-bold mb-2 text-gray-900">Tell us about your project</h3>
-                    <p className="text-gray-600">
+                    <h3 className="text-2xl font-bold mb-2">Tell us about your project</h3>
+                    <p className="text-gray-400">
                       Share the details of your project and we'll get back to you with a personalized proposal.
                     </p>
                   </div>
                   <button 
                     onClick={() => setActiveSection(null)}
-                    className="p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                    className="p-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors"
                   >
-                    <X size={18} className="text-gray-600" />
+                    <X size={18} />
                   </button>
                 </div>
 
@@ -410,7 +432,7 @@ const ContactPage: React.FC = () => {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-green-50 border border-green-200 rounded-xl p-6 text-center"
+                    className="bg-green-900/30 border border-green-800/50 rounded-xl p-6 text-center"
                   >
                     <motion.div
                       initial={{ scale: 0 }}
@@ -420,18 +442,18 @@ const ContactPage: React.FC = () => {
                     >
                       <Check size={32} className="text-white" />
                     </motion.div>
-                    <h3 className="text-2xl font-bold text-green-700 mb-2">Proposal Received!</h3>
-                    <p className="text-green-600 mb-4">
+                    <h3 className="text-2xl font-bold text-green-400 mb-2">Proposal Received!</h3>
+                    <p className="text-green-300 mb-4">
                       Thank you for sharing your project details. Our team will review your proposal and get back to you within 24-48 hours.
                     </p>
-                    <div className="text-sm text-green-600">
+                    <div className="text-sm text-green-400">
                       Reference ID: #{Date.now().toString().slice(-6)}
                     </div>
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         <User size={16} className="inline mr-2" />
                         Full Name *
                       </label>
@@ -441,13 +463,13 @@ const ContactPage: React.FC = () => {
                         value={formData.name}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                        className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
                         placeholder="John Doe"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         <Mail size={16} className="inline mr-2" />
                         Email Address *
                       </label>
@@ -457,13 +479,13 @@ const ContactPage: React.FC = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         required
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                        className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
                         placeholder="john@company.com"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         <Building size={16} className="inline mr-2" />
                         Company
                       </label>
@@ -472,13 +494,13 @@ const ContactPage: React.FC = () => {
                         name="company"
                         value={formData.company}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                        className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
                         placeholder="Your Company"
                       />
                     </div>
                     
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         <Phone size={16} className="inline mr-2" />
                         Phone Number
                       </label>
@@ -487,13 +509,13 @@ const ContactPage: React.FC = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
+                        className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors"
                         placeholder="+1 (555) 123-4567"
                       />
                     </div>
 
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
                         <MessageCircle size={16} className="inline mr-2" />
                         Project Details *
                       </label>
@@ -503,7 +525,7 @@ const ContactPage: React.FC = () => {
                         onChange={handleInputChange}
                         required
                         rows={5}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
+                        className="w-full px-4 py-3 bg-black/30 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-colors resize-none"
                         placeholder="Tell us about your project, goals, and how we can help..."
                       />
                     </div>
@@ -511,15 +533,15 @@ const ContactPage: React.FC = () => {
                     <div className="md:col-span-2">
                       <InteractiveHoverButton
                         type="submit"
-                        disabled={submitLoading}
+                        disabled={loading}
                         variant="blue"
-                        text={submitLoading ? "Sending..." : "Submit Proposal"}
+                        text={loading ? "Sending..." : "Submit Proposal"}
                         icon={<Send size={16} />}
                         className="w-full py-4 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       />
                       
-                      {submitError && (
-                        <div className="text-red-500 text-sm mt-2">{submitError}</div>
+                      {error && (
+                        <div className="text-red-500 text-sm mt-2">{error}</div>
                       )}
                     </div>
                   </form>
@@ -530,45 +552,45 @@ const ContactPage: React.FC = () => {
 
           {activeSection === 'security' && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.5 }}
-              className="mb-16"
+              className="overflow-hidden mb-16"
             >
-              <div className="bg-white border border-red-200 rounded-2xl p-8 shadow-sm">
+              <div className="bg-gray-900 border border-red-900/30 rounded-2xl p-8">
                 <div className="flex items-start space-x-6">
                   <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-red-500 to-red-600 flex items-center justify-center flex-shrink-0">
                     <Shield size={28} className="text-white" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-bold mb-4 text-gray-900">Security & Urgent Issues</h3>
-                    <p className="text-gray-700 mb-6 max-w-3xl">
-                      For all security-related matters, please email our dedicated security desk directly at <span className="text-red-600 font-semibold">security@argent.com</span>. These inquiries are monitored 24/7 and receive priority response.
+                    <h3 className="text-2xl font-bold mb-4">Security & Urgent Issues</h3>
+                    <p className="text-gray-300 mb-6 max-w-3xl">
+                      For all security-related matters, please email our dedicated security desk directly at <span className="text-red-400 font-semibold">security@argent.com</span>. These inquiries are monitored 24/7 and receive priority response.
                     </p>
-                    <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-                      <h4 className="text-lg font-semibold text-gray-900 mb-3">When to contact security:</h4>
-                      <ul className="space-y-2 text-gray-700">
+                    <div className="bg-black/30 border border-red-900/30 rounded-xl p-6">
+                      <h4 className="text-lg font-semibold text-white mb-3">When to contact security:</h4>
+                      <ul className="space-y-2 text-gray-300">
                         <li className="flex items-start space-x-2">
-                          <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
+                          <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
                           </div>
                           <span>Suspected unauthorized access to your account</span>
                         </li>
                         <li className="flex items-start space-x-2">
-                          <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
+                          <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
                           </div>
                           <span>Suspicious transactions or activities</span>
                         </li>
                         <li className="flex items-start space-x-2">
-                          <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
+                          <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
                           </div>
                           <span>Potential vulnerabilities or security concerns</span>
                         </li>
                         <li className="flex items-start space-x-2">
-                          <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center mt-0.5">
+                          <div className="w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
                           </div>
                           <span>Phishing attempts or suspicious communications</span>
@@ -602,18 +624,18 @@ const ContactPage: React.FC = () => {
             return (
               <motion.div
                 key={index}
-                className="bg-white border border-gray-200 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow"
+                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 text-center"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.5 + index * 0.1 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -5, scale: 1.02 }}
               >
                 <div className={`w-16 h-16 bg-gradient-to-r ${info.gradient} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
                   <Icon size={24} className="text-white" />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{info.title}</h3>
+                <h3 className="text-lg font-bold text-white mb-2">{info.title}</h3>
                 <p className="text-accent-blue font-medium mb-1">{info.content}</p>
-                <p className="text-gray-600 text-sm">{info.description}</p>
+                <p className="text-gray-400 text-sm">{info.description}</p>
               </motion.div>
             );
           })}
@@ -626,10 +648,10 @@ const ContactPage: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
         >
-          <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6">
             Looking for answers?
           </h2>
-          <p className="text-gray-600 leading-relaxed mb-8">
+          <p className="text-gray-400 leading-relaxed mb-8">
             Check our comprehensive help center for FAQs and documentation.
             Our knowledge base contains answers to most common questions.
           </p>
@@ -652,7 +674,7 @@ const ContactPage: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 py-8 mt-16 bg-white">
+      <footer className="border-t border-white/10 py-8 mt-16">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 text-center text-gray-500 text-sm">
           © 2024 Argent. All rights reserved. | 
           <a href="#" className="text-accent-blue hover:underline ml-1">Privacy Policy</a> | 
@@ -661,6 +683,13 @@ const ContactPage: React.FC = () => {
       </footer>
     </div>
   );
+};
+
+// Helper component for AnimatePresence
+const AnimatePresence: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  return <>{children}</>;
 };
 
 // Helper component for Check icon
@@ -684,13 +713,6 @@ const Check: React.FC<{
       <polyline points="20 6 9 17 4 12"></polyline>
     </svg>
   );
-};
-
-// Helper component for AnimatePresence
-const AnimatePresence: React.FC<{
-  children: React.ReactNode;
-}> = ({ children }) => {
-  return <>{children}</>;
 };
 
 export default ContactPage;
