@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { openai } from "npm:@ai-sdk/openai";
 import { convertToCoreMessages, streamText } from "npm:ai";
-import { Pica } from "npm:@picahq/ai";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,31 +15,42 @@ serve(async (req) => {
 
   try {
     const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
-    const picaSecretKey = Deno.env.get("PICA_SECRET_KEY");
 
-    if (!openaiApiKey) throw new Error("OPENAI_API_KEY is not set");
-    if (!picaSecretKey) throw new Error("PICA_SECRET_KEY is not set");
+    if (!openaiApiKey) {
+      console.error("OPENAI_API_KEY is not set");
+      throw new Error("OpenAI API key is not configured");
+    }
 
     const { messages } = await req.json();
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       throw new Error("Messages array is required");
     }
 
-    const pica = new Pica(picaSecretKey, {
-      connectors: [
-        "*"
-      ],
-      identity: "user_123", // Replace with dynamic identity if available
-      identityType: "user"
-    });
-    const systemPrompt = await pica.generateSystemPrompt();
+    console.log("Processing chat request with", messages.length, "messages");
+
+    const systemPrompt = `You are a helpful AI financial advisor for Argent, a modern financial management platform. 
+
+You help users with:
+- Personal finance management and budgeting advice
+- Investment strategies and portfolio analysis
+- Spending pattern analysis and optimization
+- Financial goal setting and planning
+- General financial education and literacy
+
+Keep your responses:
+- Helpful and actionable
+- Professional but friendly
+- Focused on practical financial advice
+- Appropriate for the user's experience level
+
+Always remind users that your advice is for educational purposes and they should consult with qualified financial professionals for personalized advice.`;
 
     const result = streamText({
-      model: openai("gpt-4.1"),
+      model: openai("gpt-4"),
       system: systemPrompt,
-      tools: { ...pica.oneTool },
       messages: convertToCoreMessages(messages),
-      maxSteps: 10
+      maxTokens: 1000,
+      temperature: 0.7,
     });
 
     return result.toDataStreamResponse({ headers: corsHeaders });
