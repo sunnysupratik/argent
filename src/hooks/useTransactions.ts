@@ -99,15 +99,25 @@ export function useTransactions() {
   }, [transactions]);
 
   const getMonthlyIncome = useCallback(() => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    console.log('useTransactions.getMonthlyIncome - Current month/year:', currentMonth, currentYear);
+    console.log('useTransactions.getMonthlyIncome - Total transactions:', transactions.length);
     
     const monthlyIncome = transactions
       .filter(t => {
         const transactionDate = new Date(t.transaction_date);
-        return transactionDate.getMonth() === currentMonth &&
-               transactionDate.getFullYear() === currentYear &&
-               t.type === 'income';
+        const isCurrentMonth = transactionDate.getMonth() === currentMonth && 
+                              transactionDate.getFullYear() === currentYear;
+        const isIncome = t.type === 'income';
+        
+        if (isCurrentMonth && isIncome) {
+          console.log('useTransactions.getMonthlyIncome - Found income transaction:', t.description, t.amount);
+        }
+        
+        return isCurrentMonth && isIncome;
       })
       .reduce((sum, t) => sum + Number(t.amount), 0);
     
@@ -116,15 +126,25 @@ export function useTransactions() {
   }, [transactions]);
 
   const getMonthlyExpenses = useCallback(() => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    
+    console.log('useTransactions.getMonthlyExpenses - Current month/year:', currentMonth, currentYear);
+    console.log('useTransactions.getMonthlyExpenses - Total transactions:', transactions.length);
     
     const monthlyExpenses = transactions
       .filter(t => {
         const transactionDate = new Date(t.transaction_date);
-        return transactionDate.getMonth() === currentMonth &&
-               transactionDate.getFullYear() === currentYear &&
-               t.type === 'expense';
+        const isCurrentMonth = transactionDate.getMonth() === currentMonth && 
+                              transactionDate.getFullYear() === currentYear;
+        const isExpense = t.type === 'expense';
+        
+        if (isCurrentMonth && isExpense) {
+          console.log('useTransactions.getMonthlyExpenses - Found expense transaction:', t.description, t.amount);
+        }
+        
+        return isCurrentMonth && isExpense;
       })
       .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
     
