@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TrendingUp, TrendingDown, DollarSign, MessageCircle, Maximize2, CreditCard, Wallet, PieChart, BarChart3, ArrowRight, Plus, Eye, EyeOff } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, MessageCircle, Maximize2, CreditCard, Wallet, PieChart, BarChart3, ArrowRight, Plus, Eye, EyeOff, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import CashFlowChart from './CashFlowChart';
