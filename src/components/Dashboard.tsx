@@ -9,7 +9,6 @@ import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
 import { useAuth } from '../hooks/useAuth';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
-import { convertToCSV, downloadCSV } from '../utils/csvExport';
 import { convertToCSV, downloadCSV, formatTransactionsForCSV, formatAccountsForCSV } from '../utils/csvExport';
 
 const Dashboard: React.FC = () => {
