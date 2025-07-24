@@ -81,6 +81,26 @@ const Dashboard: React.FC = () => {
     return '+2.1%';
   };
 
+  // Debug logging for transaction data
+  useEffect(() => {
+    console.log('Dashboard - Debug Info:');
+    console.log('- User:', user?.username, 'ID:', user?.id);
+    console.log('- Accounts loading:', accountsLoading, 'count:', accounts.length);
+    console.log('- Transactions loading:', transactionsLoading, 'count:', transactions.length);
+    console.log('- Monthly income:', finalValues.income);
+    console.log('- Monthly expenses:', finalValues.expenses);
+    console.log('- Net worth:', finalValues.netWorth);
+    
+    if (transactions.length > 0) {
+      console.log('- Sample transactions:', transactions.slice(0, 3).map(t => ({
+        description: t.description,
+        amount: t.amount,
+        type: t.type,
+        date: t.transaction_date
+      })));
+    }
+  }, [user, accounts, transactions, finalValues, accountsLoading, transactionsLoading]);
+
   useEffect(() => {
     if (!accountsLoading && !transactionsLoading) {
       const duration = 1000;

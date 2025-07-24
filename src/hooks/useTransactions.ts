@@ -22,8 +22,11 @@ export function useTransactions() {
       console.log('useTransactions.fetchTransactions - Fetching transactions for user ID:', user.id);
       console.log('useTransactions.fetchTransactions - User object:', user);
 
-      // First try to fetch by custom_user_id
-      let { data, error } = await supabase
+      // Try to fetch from both transaction tables
+      let allTransactions: any[] = [];
+
+      // First, try the main transactions table
+      const { data: mainTransactions, error: mainError } = await supabase
         .from('transactions')
         .select(`
           *,
@@ -31,11 +34,47 @@ export function useTransactions() {
           account:accounts(*)
         `)
         .eq('custom_user_id', user.id)
-        .order('transaction_date', { ascending: false })
-        .limit(100);
+        .order('transaction_date', { ascending: false });
 
-      // If no results or error, try by user_name
-      if ((!data || data.length === 0) && user.username) {
+      if (mainError) {
+        console.log('useTransactions.fetchTransactions - Error from main transactions table:', mainError);
+      } else if (mainTransactions && mainTransactions.length > 0) {
+        console.log('useTransactions.fetchTransactions - Found', mainTransactions.length, 'transactions in main table');
+        allTransactions = [...allTransactions, ...mainTransactions];
+      }
+
+      // Also try the direct_transactions table
+      const { data: directTransactions, error: directError } = await supabase
+        .from('direct_transactions')
+        .select('*')
+        .eq('user_name', user.username)
+        .order('transaction_date', { ascending: false });
+
+      if (directError) {
+        console.log('useTransactions.fetchTransactions - Error from direct_transactions table:', directError);
+      } else if (directTransactions && directTransactions.length > 0) {
+        console.log('useTransactions.fetchTransactions - Found', directTransactions.length, 'transactions in direct_transactions table');
+        
+        // Convert direct_transactions to match the Transaction interface
+        const convertedTransactions = directTransactions.map(dt => ({
+          id: dt.id,
+          custom_user_id: user.id,
+          account_id: dt.account_name, // Use account_name as account_id for now
+          category_id: null,
+          description: dt.description,
+          amount: dt.amount,
+          type: dt.type,
+          transaction_date: dt.transaction_date,
+          user_name: dt.user_name,
+          category: { name: dt.category },
+          account: { account_name: dt.account_name }
+        }));
+        
+        allTransactions = [...allTransactions, ...convertedTransactions];
+      }
+
+      // If no transactions found by custom_user_id, try by user_name in main table
+      if (allTransactions.length === 0 && user.username) {
         console.log('useTransactions.fetchTransactions - No transactions found by custom_user_id, trying user_name:', user.username);
         const { data: dataByUsername, error: errorByUsername } = await supabase
           .from('transactions')
@@ -45,33 +84,28 @@ export function useTransactions() {
             account:accounts(*)
           `)
           .eq('user_name', user.username)
-          .order('transaction_date', { ascending: false })
-          .limit(100);
+          .order('transaction_date', { ascending: false });
         
-        data = dataByUsername;
-        error = errorByUsername;
+        if (!errorByUsername && dataByUsername && dataByUsername.length > 0) {
+          console.log('useTransactions.fetchTransactions - Found', dataByUsername.length, 'transactions by user_name');
+          allTransactions = [...allTransactions, ...dataByUsername];
+        }
       }
 
-      if (error) {
-        console.error('useTransactions.fetchTransactions - Database error:', error);
-        throw error;
-      }
+      console.log('useTransactions.fetchTransactions - Total transactions found:', allTransactions.length);
       
-      console.log('useTransactions.fetchTransactions - Query result for user', user.id, ':', data);
-      console.log('useTransactions.fetchTransactions - Found', data?.length || 0, 'transactions');
-      
-      if (data && data.length > 0) {
-        console.log('useTransactions.fetchTransactions - Transaction details:', data.slice(0, 5).map(txn => ({
+      if (allTransactions.length > 0) {
+        console.log('useTransactions.fetchTransactions - Sample transactions:', allTransactions.slice(0, 3).map(txn => ({
           id: txn.id,
           description: txn.description,
           amount: txn.amount,
           type: txn.type,
-          custom_user_id: txn.custom_user_id,
-          date: txn.transaction_date
+          date: txn.transaction_date,
+          source_table: txn.account_id ? 'transactions' : 'direct_transactions'
         })));
       }
       
-      setTransactions(data || []);
+      setTransactions(allTransactions || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load transactions';
       console.error('useTransactions.fetchTransactions - Error:', errorMessage);
@@ -103,7 +137,7 @@ export function useTransactions() {
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
     
-    console.log('useTransactions.getMonthlyIncome - Current month/year:', currentMonth, currentYear);
+    console.log('useTransactions.getMonthlyIncome - Current month/year:', currentMonth + 1, currentYear);
     console.log('useTransactions.getMonthlyIncome - Total transactions:', transactions.length);
     
     const monthlyIncome = transactions
@@ -114,12 +148,21 @@ export function useTransactions() {
         const isIncome = t.type === 'income';
         
         if (isCurrentMonth && isIncome) {
-          console.log('useTransactions.getMonthlyIncome - Found income transaction:', t.description, t.amount);
+          console.log('useTransactions.getMonthlyIncome - Found income transaction:', {
+            description: t.description,
+            amount: t.amount,
+            date: t.transaction_date,
+            type: t.type
+          });
         }
         
         return isCurrentMonth && isIncome;
       })
-      .reduce((sum, t) => sum + Number(t.amount), 0);
+      .reduce((sum, t) => {
+        const amount = Number(t.amount);
+        console.log('useTransactions.getMonthlyIncome - Adding income amount:', amount);
+        return sum + amount;
+      }, 0);
     
     console.log('useTransactions.getMonthlyIncome - Calculated monthly income:', monthlyIncome);
     return monthlyIncome;
@@ -130,7 +173,7 @@ export function useTransactions() {
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
     
-    console.log('useTransactions.getMonthlyExpenses - Current month/year:', currentMonth, currentYear);
+    console.log('useTransactions.getMonthlyExpenses - Current month/year:', currentMonth + 1, currentYear);
     console.log('useTransactions.getMonthlyExpenses - Total transactions:', transactions.length);
     
     const monthlyExpenses = transactions
@@ -141,12 +184,21 @@ export function useTransactions() {
         const isExpense = t.type === 'expense';
         
         if (isCurrentMonth && isExpense) {
-          console.log('useTransactions.getMonthlyExpenses - Found expense transaction:', t.description, t.amount);
+          console.log('useTransactions.getMonthlyExpenses - Found expense transaction:', {
+            description: t.description,
+            amount: t.amount,
+            date: t.transaction_date,
+            type: t.type
+          });
         }
         
         return isCurrentMonth && isExpense;
       })
-      .reduce((sum, t) => sum + Math.abs(Number(t.amount)), 0);
+      .reduce((sum, t) => {
+        const amount = Math.abs(Number(t.amount));
+        console.log('useTransactions.getMonthlyExpenses - Adding expense amount:', amount);
+        return sum + amount;
+      }, 0);
     
     console.log('useTransactions.getMonthlyExpenses - Calculated monthly expenses:', monthlyExpenses);
     return monthlyExpenses;
