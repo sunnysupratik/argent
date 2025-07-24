@@ -40,6 +40,7 @@ export function useUserProfile() {
       if (!user?.id) {
         console.log('No user ID available for profile');
         setProfile(null);
+        setLoading(false);
         return;
       }
 
@@ -49,17 +50,18 @@ export function useUserProfile() {
         .from('user_profiles')
         .select('*')
         .eq('custom_user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (fetchError) {
-        if (fetchError.code === 'PGRST116') {
-          // No profile found, create a default one
-          console.log('No profile found, creating default profile');
-          await createDefaultProfile();
-          return;
-        }
         console.error('Error fetching profile:', fetchError);
         throw fetchError;
+      }
+
+      if (!data) {
+        // No profile found, create a default one
+        console.log('No profile found, creating default profile');
+        await createDefaultProfile();
+        return;
       }
 
       console.log('Profile data fetched:', data);
@@ -76,29 +78,39 @@ export function useUserProfile() {
 
   const createDefaultProfile = useCallback(async () => {
     try {
-      if (!user?.id) return;
+      if (!user?.id) {
+        console.log('No user available for profile creation');
+        return;
+      }
 
       console.log('Creating default profile for user:', user.username);
 
+      // Get the user's join date from custom_users table
+      const { data: userData } = await supabase
+        .from('custom_users')
+        .select('created_at, full_name, email')
+        .eq('id', user.id)
+        .single();
+
       const defaultProfile = {
         custom_user_id: user.id,
-        first_name: user.full_name?.split(' ')[0] || 'User',
-        last_name: user.full_name?.split(' ')[1] || '',
-        email: user.email,
+        first_name: userData?.full_name?.split(' ')[0] || user.full_name?.split(' ')[0] || 'User',
+        last_name: userData?.full_name?.split(' ').slice(1).join(' ') || user.full_name?.split(' ').slice(1).join(' ') || '',
+        email: userData?.email || user.email || 'user@example.com',
         phone: null,
         bio: 'Financial enthusiast focused on building long-term wealth through smart investments and disciplined budgeting.',
         location: 'San Francisco, CA',
         occupation: 'Software Engineer',
         profile_picture_url: null,
-        credit_score: 700,
-        total_balance: 0.00,
-        monthly_income: 0.00,
-        monthly_expenses: 0.00,
-        savings_rate: 0.00,
+        credit_score: 742,
+        total_balance: 381499.50,
+        monthly_income: 8150.00,
+        monthly_expenses: 2984.09,
+        savings_rate: 63.4,
         timezone: 'America/New_York',
         currency: 'USD',
         language: 'en',
-        join_date: user.created_at || new Date().toISOString()
+        join_date: userData?.created_at || user.created_at || new Date().toISOString()
       };
 
       const { data, error } = await supabase
@@ -179,9 +191,27 @@ export function useUserProfile() {
     return profile.monthly_income - profile.monthly_expenses;
   }, [profile]);
 
+  const formatCurrency = useCallback((amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: profile?.currency || 'USD',
+    }).format(amount);
+  }, [profile?.currency]);
+
+  const formatDate = useCallback((dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }, []);
+
   useEffect(() => {
     if (user?.id) {
       fetchProfile();
+    } else {
+      setProfile(null);
+      setLoading(false);
     }
   }, [fetchProfile, user?.id]);
 
@@ -199,5 +229,7 @@ export function useUserProfile() {
     getDisplayName,
     getSavingsRate,
     getNetIncome,
+    formatCurrency,
+    formatDate,
   };
 }
