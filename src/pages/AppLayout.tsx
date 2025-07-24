@@ -256,14 +256,15 @@ const AppLayout: React.FC = () => {
             animate="visible"
             exit="exit"
             variants={modalVariants}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-hidden"
             onClick={closeChatModal}
           >
             <motion.div
               variants={contentVariants}
               transition={{ duration: 0.3 }}
-              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col overflow-hidden shadow-2xl"
+              className="bg-white rounded-2xl w-full max-w-6xl h-[90vh] flex flex-col shadow-2xl relative"
               onClick={(e) => e.stopPropagation()}
+              style={{ overflow: 'hidden' }}
             >
               {/* Modal Header */}
               <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -286,7 +287,7 @@ const AppLayout: React.FC = () => {
               </div>
 
               {/* Modal Content */}
-              <div className="flex-1 relative">
+              <div className="flex-1 relative overflow-hidden">
                 <Chat />
               </div>
             </motion.div>

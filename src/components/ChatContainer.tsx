@@ -120,21 +120,22 @@ const ChatContainer: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white/80 backdrop-blur-xl relative overflow-hidden">
+    <div className="flex flex-col h-full bg-white/80 backdrop-blur-xl relative">
       {/* Fixed position background that doesn't scroll with content */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/20 via-indigo-50/10 to-violet-50/20 animate-aurora opacity-50" />
       </div>
 
       {/* Messages Area with Custom Scrollbar */}
-      <div className="flex-1 relative">
+      <div className="flex-1 relative overflow-hidden">
         <div 
           ref={chatContainerRef}
           onScroll={handleScroll}
-          className="h-full overflow-y-auto chat-scrollbar"
+          className="h-full overflow-y-auto chat-scrollbar relative"
           style={{ 
             scrollbarWidth: 'thin',
-            scrollbarColor: 'rgba(160, 160, 160, 0.7) rgba(0, 0, 0, 0.05)'
+            scrollbarColor: 'rgba(160, 160, 160, 0.7) rgba(0, 0, 0, 0.05)',
+            overscrollBehavior: 'contain'
           }}
         >
           <div className="p-4 lg:p-6 space-y-6 relative min-h-full">
@@ -306,21 +307,21 @@ const ChatContainer: React.FC = () => {
           </div>
         </div>
 
-        {/* Scroll Navigation Buttons - FIXED POSITION WITHIN VIEWPORT */}
-        <div className="fixed right-8 bottom-32 z-50 flex flex-col gap-4">
+        {/* Scroll Navigation Buttons - POSITIONED WITHIN MODAL */}
+        <div className="absolute right-4 bottom-24 z-10 flex flex-col gap-2">
           {showScrollToTop && (
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={scrollToTop}
-              className="w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 border-2 border-white"
+              className="w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to top"
               title="Scroll to top"
             >
-              <ChevronUp size={24} />
+              <ChevronUp size={18} />
             </motion.button>
           )}
 
@@ -330,13 +331,13 @@ const ChatContainer: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               onClick={scrollToBottom}
-              className="w-12 h-12 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-xl flex items-center justify-center transition-all duration-200 border-2 border-white"
+              className="w-10 h-10 bg-accent-blue hover:bg-accent-blue-hover text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               aria-label="Scroll to latest messages"
               title="Scroll to latest messages"
             >
-              <ChevronDown size={24} />
+              <ChevronDown size={18} />
             </motion.button>
           )}
         </div>
