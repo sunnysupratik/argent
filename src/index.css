@@ -884,6 +884,25 @@
     display: none;
   }
   
+  /* Compact layout utilities for minimized views */
+  .compact-spacing {
+    padding: 0.5rem;
+  }
+  
+  .compact-spacing-lg {
+    padding: 0.75rem;
+  }
+  
+  @media (min-width: 768px) {
+    .compact-spacing {
+      padding: 0.75rem;
+    }
+    
+    .compact-spacing-lg {
+      padding: 1rem;
+    }
+  }
+  
   @media (min-width: 1024px) {
     .mobile-only {
       display: none;
@@ -891,6 +910,14 @@
     
     .desktop-only {
       display: block;
+    }
+    
+    .compact-spacing {
+      padding: 1rem;
+    }
+    
+    .compact-spacing-lg {
+      padding: 1.5rem;
     }
   }
 

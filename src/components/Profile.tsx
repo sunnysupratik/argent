@@ -656,26 +656,26 @@ const Profile: React.FC = () => {
     <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
       {/* Page Header */}
       <AnimatedSection className="mb-8 lg:mb-12">
-        <h1 className="text-lg lg:text-2xl mb-2 font-bold uppercase tracking-wide">PROFILE</h1>
+        <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl mb-2 font-bold uppercase tracking-wide">PROFILE</h1>
         <motion.div 
-          className="w-12 lg:w-16 h-px bg-accent-blue"
+          className="w-8 md:w-10 lg:w-12 xl:w-16 h-px bg-accent-blue"
           initial={{ width: 0 }}
-          animate={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
+          animate={{ width: window.innerWidth >= 1280 ? 64 : window.innerWidth >= 1024 ? 48 : window.innerWidth >= 768 ? 40 : 32 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         />
-        <p className="text-gray-600 mt-2 text-sm lg:text-base">Manage your personal information and preferences</p>
+        <p className="text-gray-600 mt-2 text-xs md:text-sm lg:text-base">Manage your personal information and preferences</p>
       </AnimatedSection>
 
       {/* Tab Navigation */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-1 lg:p-2">
-        <nav className="flex space-x-1 overflow-x-auto scrollbar-hide">
+      <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-1">
+        <nav className="flex space-x-1 overflow-x-auto scrollbar-hide min-w-0">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 lg:py-3 rounded-lg lg:rounded-xl transition-all whitespace-nowrap ${
+                className={`flex items-center space-x-1 lg:space-x-2 px-2 md:px-3 lg:px-4 py-2 lg:py-3 rounded-lg lg:rounded-xl transition-all whitespace-nowrap flex-shrink-0 ${
                   activeTab === tab.id
                     ? 'bg-accent-blue text-white shadow-lg'
                     : 'text-gray-700 hover:bg-gray-100'
@@ -683,9 +683,10 @@ const Profile: React.FC = () => {
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Icon size={14} className="lg:hidden" />
+                <Icon size={12} className="md:hidden" />
+                <Icon size={14} className="hidden md:block lg:hidden" />
                 <Icon size={16} className="hidden lg:block" />
-                <span className="font-medium text-xs lg:text-sm">{tab.label}</span>
+                <span className="font-medium text-xs">{tab.label}</span>
               </motion.button>
             );
           })}
