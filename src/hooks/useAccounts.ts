@@ -13,33 +13,15 @@ export function useAccounts() {
       setLoading(true);
       setError(null);
       
-      if (!user?.id) {
-        console.log('useAccounts.fetchAccounts - No user ID available');
+      if (!user?.username) {
+        console.log('useAccounts.fetchAccounts - No username available');
         setAccounts([]);
         return;
       }
 
-      console.log('useAccounts.fetchAccounts - Fetching accounts for user ID:', user.id);
-      console.log('useAccounts.fetchAccounts - User object:', user);
+      console.log('useAccounts.fetchAccounts - Fetching accounts for username:', user.username);
 
-      // Try to fetch from both account tables
-      let allAccounts: any[] = [];
-
-      // First try the main accounts table
-      const { data: mainAccounts, error: mainError } = await supabase
-        .from('accounts')
-        .select('*')
-        .eq('custom_user_id', user.id)
-        .order('account_name', { ascending: true });
-
-      if (mainError) {
-        console.log('useAccounts.fetchAccounts - Error from main accounts table:', mainError);
-      } else if (mainAccounts && mainAccounts.length > 0) {
-        console.log('useAccounts.fetchAccounts - Found', mainAccounts.length, 'accounts in main table');
-        allAccounts = [...allAccounts, ...mainAccounts];
-      }
-
-      // Also try the direct_accounts table
+      // Query direct_accounts table using user_name field
       const { data: directAccounts, error: directError } = await supabase
         .from('direct_accounts')
         .select('*')
@@ -47,14 +29,24 @@ export function useAccounts() {
         .order('account_name', { ascending: true });
 
       if (directError) {
-        console.log('useAccounts.fetchAccounts - Error from direct_accounts table:', directError);
-      } else if (directAccounts && directAccounts.length > 0) {
-        console.log('useAccounts.fetchAccounts - Found', directAccounts.length, 'accounts in direct_accounts table');
-        
+        console.error('useAccounts.fetchAccounts - Error from direct_accounts:', directError);
+        throw directError;
+      }
+
+      console.log('useAccounts.fetchAccounts - Found', directAccounts?.length || 0, 'accounts');
+      
+      if (directAccounts && directAccounts.length > 0) {
+        console.log('useAccounts.fetchAccounts - Account details:', directAccounts.map(acc => ({
+          id: acc.id,
+          name: acc.account_name,
+          type: acc.account_type,
+          balance: acc.current_balance
+        })));
+
         // Convert direct_accounts to match the Account interface
         const convertedAccounts = directAccounts.map(da => ({
           id: da.id,
-          custom_user_id: user.id,
+          custom_user_id: null,
           account_name: da.account_name,
           account_type: da.account_type,
           current_balance: da.current_balance,
@@ -62,38 +54,11 @@ export function useAccounts() {
           user_name: da.user_name
         }));
         
-        allAccounts = [...allAccounts, ...convertedAccounts];
+        setAccounts(convertedAccounts);
+      } else {
+        console.log('useAccounts.fetchAccounts - No accounts found for user:', user.username);
+        setAccounts([]);
       }
-
-      // If no accounts found by custom_user_id, try by user_name in main table
-      if (allAccounts.length === 0 && user.username) {
-        console.log('useAccounts.fetchAccounts - No accounts found, trying user_name:', user.username);
-        const { data: dataByUsername, error: errorByUsername } = await supabase
-          .from('accounts')
-          .select('*')
-          .eq('user_name', user.username)
-          .order('account_name', { ascending: true });
-        
-        if (!errorByUsername && dataByUsername && dataByUsername.length > 0) {
-          console.log('useAccounts.fetchAccounts - Found', dataByUsername.length, 'accounts by user_name');
-          allAccounts = [...allAccounts, ...dataByUsername];
-        }
-      }
-
-      console.log('useAccounts.fetchAccounts - Total accounts found:', allAccounts.length);
-      
-      if (allAccounts.length > 0) {
-        console.log('useAccounts.fetchAccounts - Account details:', allAccounts.map(acc => ({
-          id: acc.id,
-          name: acc.account_name,
-          type: acc.account_type,
-          balance: acc.current_balance,
-          custom_user_id: acc.custom_user_id,
-          source_table: acc.user_name && !acc.custom_user_id ? 'direct_accounts' : 'accounts'
-        })));
-      }
-      
-      setAccounts(allAccounts || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load accounts';
       console.error('useAccounts.fetchAccounts - Error:', errorMessage);
@@ -102,17 +67,17 @@ export function useAccounts() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, user?.username]);
+  }, [user?.username]);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.username) {
       fetchAccounts();
     } else {
-      console.log('useAccounts - No user, clearing accounts');
+      console.log('useAccounts - No username, clearing accounts');
       setLoading(false);
       setAccounts([]);
     }
-  }, [user?.id, fetchAccounts]);
+  }, [user?.username, fetchAccounts]);
 
   const getTotalBalance = useCallback(() => {
     const total = accounts.reduce((sum, account) => {

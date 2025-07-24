@@ -13,37 +13,15 @@ export function useTransactions() {
       setLoading(true);
       setError(null);
       
-      if (!user?.id) {
-        console.log('useTransactions.fetchTransactions - No user ID available');
+      if (!user?.username) {
+        console.log('useTransactions.fetchTransactions - No username available');
         setTransactions([]);
         return;
       }
 
-      console.log('useTransactions.fetchTransactions - Fetching transactions for user ID:', user.id);
-      console.log('useTransactions.fetchTransactions - User object:', user);
+      console.log('useTransactions.fetchTransactions - Fetching transactions for username:', user.username);
 
-      // Try to fetch from both transaction tables
-      let allTransactions: any[] = [];
-
-      // First, try the main transactions table
-      const { data: mainTransactions, error: mainError } = await supabase
-        .from('transactions')
-        .select(`
-          *,
-          category:categories(*),
-          account:accounts(*)
-        `)
-        .eq('custom_user_id', user.id)
-        .order('transaction_date', { ascending: false });
-
-      if (mainError) {
-        console.log('useTransactions.fetchTransactions - Error from main transactions table:', mainError);
-      } else if (mainTransactions && mainTransactions.length > 0) {
-        console.log('useTransactions.fetchTransactions - Found', mainTransactions.length, 'transactions in main table');
-        allTransactions = [...allTransactions, ...mainTransactions];
-      }
-
-      // Also try the direct_transactions table
+      // Query direct_transactions table using user_name field
       const { data: directTransactions, error: directError } = await supabase
         .from('direct_transactions')
         .select('*')
@@ -51,15 +29,28 @@ export function useTransactions() {
         .order('transaction_date', { ascending: false });
 
       if (directError) {
-        console.log('useTransactions.fetchTransactions - Error from direct_transactions table:', directError);
-      } else if (directTransactions && directTransactions.length > 0) {
-        console.log('useTransactions.fetchTransactions - Found', directTransactions.length, 'transactions in direct_transactions table');
-        
+        console.error('useTransactions.fetchTransactions - Error from direct_transactions:', directError);
+        throw directError;
+      }
+
+      console.log('useTransactions.fetchTransactions - Found', directTransactions?.length || 0, 'transactions');
+      
+      if (directTransactions && directTransactions.length > 0) {
+        console.log('useTransactions.fetchTransactions - Sample transactions:', directTransactions.slice(0, 3).map(txn => ({
+          id: txn.id,
+          description: txn.description,
+          amount: txn.amount,
+          type: txn.type,
+          date: txn.transaction_date,
+          category: txn.category,
+          account_name: txn.account_name
+        })));
+
         // Convert direct_transactions to match the Transaction interface
         const convertedTransactions = directTransactions.map(dt => ({
           id: dt.id,
-          custom_user_id: user.id,
-          account_id: dt.account_name, // Use account_name as account_id for now
+          custom_user_id: null,
+          account_id: dt.account_name, // Use account_name as account_id
           category_id: null,
           description: dt.description,
           amount: dt.amount,
@@ -70,42 +61,11 @@ export function useTransactions() {
           account: { account_name: dt.account_name }
         }));
         
-        allTransactions = [...allTransactions, ...convertedTransactions];
+        setTransactions(convertedTransactions);
+      } else {
+        console.log('useTransactions.fetchTransactions - No transactions found for user:', user.username);
+        setTransactions([]);
       }
-
-      // If no transactions found by custom_user_id, try by user_name in main table
-      if (allTransactions.length === 0 && user.username) {
-        console.log('useTransactions.fetchTransactions - No transactions found by custom_user_id, trying user_name:', user.username);
-        const { data: dataByUsername, error: errorByUsername } = await supabase
-          .from('transactions')
-          .select(`
-            *,
-            category:categories(*),
-            account:accounts(*)
-          `)
-          .eq('user_name', user.username)
-          .order('transaction_date', { ascending: false });
-        
-        if (!errorByUsername && dataByUsername && dataByUsername.length > 0) {
-          console.log('useTransactions.fetchTransactions - Found', dataByUsername.length, 'transactions by user_name');
-          allTransactions = [...allTransactions, ...dataByUsername];
-        }
-      }
-
-      console.log('useTransactions.fetchTransactions - Total transactions found:', allTransactions.length);
-      
-      if (allTransactions.length > 0) {
-        console.log('useTransactions.fetchTransactions - Sample transactions:', allTransactions.slice(0, 3).map(txn => ({
-          id: txn.id,
-          description: txn.description,
-          amount: txn.amount,
-          type: txn.type,
-          date: txn.transaction_date,
-          source_table: txn.account_id ? 'transactions' : 'direct_transactions'
-        })));
-      }
-      
-      setTransactions(allTransactions || []);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load transactions';
       console.error('useTransactions.fetchTransactions - Error:', errorMessage);
@@ -114,17 +74,17 @@ export function useTransactions() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, user?.username]);
+  }, [user?.username]);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.username) {
       fetchTransactions();
     } else {
-      console.log('useTransactions - No user, clearing transactions');
+      console.log('useTransactions - No username, clearing transactions');
       setLoading(false);
       setTransactions([]);
     }
-  }, [user?.id, fetchTransactions]);
+  }, [user?.username, fetchTransactions]);
 
   const getRecentTransactions = useCallback((limit: number = 5) => {
     const recent = transactions.slice(0, limit);
@@ -140,30 +100,31 @@ export function useTransactions() {
     console.log('useTransactions.getMonthlyIncome - Current month/year:', currentMonth + 1, currentYear);
     console.log('useTransactions.getMonthlyIncome - Total transactions:', transactions.length);
     
-    const monthlyIncome = transactions
-      .filter(t => {
-        const transactionDate = new Date(t.transaction_date);
-        const isCurrentMonth = transactionDate.getMonth() === currentMonth && 
-                              transactionDate.getFullYear() === currentYear;
-        const isIncome = t.type === 'income';
-        
-        if (isCurrentMonth && isIncome) {
-          console.log('useTransactions.getMonthlyIncome - Found income transaction:', {
-            description: t.description,
-            amount: t.amount,
-            date: t.transaction_date,
-            type: t.type
-          });
-        }
-        
-        return isCurrentMonth && isIncome;
-      })
-      .reduce((sum, t) => {
-        const amount = Number(t.amount);
-        console.log('useTransactions.getMonthlyIncome - Adding income amount:', amount);
-        return sum + amount;
-      }, 0);
+    const incomeTransactions = transactions.filter(t => {
+      const transactionDate = new Date(t.transaction_date);
+      const isCurrentMonth = transactionDate.getMonth() === currentMonth && 
+                            transactionDate.getFullYear() === currentYear;
+      const isIncome = t.type === 'income';
+      
+      if (isCurrentMonth && isIncome) {
+        console.log('useTransactions.getMonthlyIncome - Found income transaction:', {
+          description: t.description,
+          amount: t.amount,
+          date: t.transaction_date,
+          type: t.type
+        });
+      }
+      
+      return isCurrentMonth && isIncome;
+    });
+
+    const monthlyIncome = incomeTransactions.reduce((sum, t) => {
+      const amount = Number(t.amount);
+      console.log('useTransactions.getMonthlyIncome - Adding income amount:', amount);
+      return sum + amount;
+    }, 0);
     
+    console.log('useTransactions.getMonthlyIncome - Income transactions found:', incomeTransactions.length);
     console.log('useTransactions.getMonthlyIncome - Calculated monthly income:', monthlyIncome);
     return monthlyIncome;
   }, [transactions]);
@@ -176,30 +137,31 @@ export function useTransactions() {
     console.log('useTransactions.getMonthlyExpenses - Current month/year:', currentMonth + 1, currentYear);
     console.log('useTransactions.getMonthlyExpenses - Total transactions:', transactions.length);
     
-    const monthlyExpenses = transactions
-      .filter(t => {
-        const transactionDate = new Date(t.transaction_date);
-        const isCurrentMonth = transactionDate.getMonth() === currentMonth && 
-                              transactionDate.getFullYear() === currentYear;
-        const isExpense = t.type === 'expense';
-        
-        if (isCurrentMonth && isExpense) {
-          console.log('useTransactions.getMonthlyExpenses - Found expense transaction:', {
-            description: t.description,
-            amount: t.amount,
-            date: t.transaction_date,
-            type: t.type
-          });
-        }
-        
-        return isCurrentMonth && isExpense;
-      })
-      .reduce((sum, t) => {
-        const amount = Math.abs(Number(t.amount));
-        console.log('useTransactions.getMonthlyExpenses - Adding expense amount:', amount);
-        return sum + amount;
-      }, 0);
+    const expenseTransactions = transactions.filter(t => {
+      const transactionDate = new Date(t.transaction_date);
+      const isCurrentMonth = transactionDate.getMonth() === currentMonth && 
+                            transactionDate.getFullYear() === currentYear;
+      const isExpense = t.type === 'expense';
+      
+      if (isCurrentMonth && isExpense) {
+        console.log('useTransactions.getMonthlyExpenses - Found expense transaction:', {
+          description: t.description,
+          amount: t.amount,
+          date: t.transaction_date,
+          type: t.type
+        });
+      }
+      
+      return isCurrentMonth && isExpense;
+    });
+
+    const monthlyExpenses = expenseTransactions.reduce((sum, t) => {
+      const amount = Math.abs(Number(t.amount));
+      console.log('useTransactions.getMonthlyExpenses - Adding expense amount:', amount);
+      return sum + amount;
+    }, 0);
     
+    console.log('useTransactions.getMonthlyExpenses - Expense transactions found:', expenseTransactions.length);
     console.log('useTransactions.getMonthlyExpenses - Calculated monthly expenses:', monthlyExpenses);
     return monthlyExpenses;
   }, [transactions]);

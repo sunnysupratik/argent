@@ -15,77 +15,45 @@ export function useInvestments() {
       setLoading(true);
       setError(null);
       
-      if (!user?.id) {
-        console.log('useInvestments.fetchInvestments - No user ID available');
+      if (!user?.username) {
+        console.log('useInvestments.fetchInvestments - No username available');
         setInvestments([]);
         return;
       }
 
-      console.log('useInvestments.fetchInvestments - Fetching investments for user ID:', user.id);
+      console.log('useInvestments.fetchInvestments - Fetching investments for username:', user.username);
 
-      // First try to fetch from direct_investments table
-      let { data, error } = await supabase
+      // Query direct_investments table using user_name field
+      const { data: directInvestments, error: directError } = await supabase
         .from('direct_investments')
         .select('*')
-        .eq('custom_user_id', user.id)
+        .eq('user_name', user.username)
         .order('symbol', { ascending: true });
 
-      // If no results or error, try by user_name
-      if ((!data || data.length === 0) && user.username) {
-        console.log('useInvestments.fetchInvestments - No investments found by custom_user_id, trying user_name:', user.username);
-        const { data: dataByUsername, error: errorByUsername } = await supabase
-          .from('direct_investments')
-          .select('*')
-          .eq('user_name', user.username)
-          .order('symbol', { ascending: true });
-        
-        data = dataByUsername;
-        error = errorByUsername;
+      if (directError) {
+        console.error('useInvestments.fetchInvestments - Error from direct_investments:', directError);
+        // Don't throw error, just log it and continue with empty array
+        setInvestments([]);
+        return;
       }
 
-      // If still no data, use investment accounts as fallback
-      if ((!data || data.length === 0)) {
-        console.log('useInvestments.fetchInvestments - No direct investments found, using investment accounts as fallback');
-        
-        // Get investment accounts
-        const investmentAccounts = getAccountsByType('investment');
-        
-        if (investmentAccounts.length > 0) {
-          // Create synthetic investment data from accounts
-          const syntheticInvestments = investmentAccounts.map(account => ({
-            id: account.id,
-            custom_user_id: account.custom_user_id,
-            user_name: account.user_name,
-            symbol: 'PORTFOLIO',
-            name: account.account_name,
-            shares: 1,
-            current_price: Number(account.current_balance),
-            total_value: Number(account.current_balance),
-            day_change: Number(account.current_balance) * 0.015, // 1.5% daily change
-            day_change_percent: 1.5,
-            sector: 'Diversified',
-            market_cap: 'N/A',
-            pe: 0,
-            dividend: 0,
-            rating: 'Hold',
-            created_at: account.created_at
-          }));
-          
-          setInvestments(syntheticInvestments);
-          setLoading(false);
-          return;
-        }
-      }
-
-      if (error && error.code !== 'PGRST116') { // Ignore "relation does not exist" error
-        console.error('useInvestments.fetchInvestments - Database error:', error);
-        throw error;
-      }
+      console.log('useInvestments.fetchInvestments - Found', directInvestments?.length || 0, 'investments');
       
-      console.log('useInvestments.fetchInvestments - Query result for user', user.id, ':', data);
-      console.log('useInvestments.fetchInvestments - Found', data?.length || 0, 'investments');
-      
-      setInvestments(data || []);
+      if (directInvestments && directInvestments.length > 0) {
+        console.log('useInvestments.fetchInvestments - Sample investments:', directInvestments.slice(0, 3).map(inv => ({
+          id: inv.id,
+          symbol: inv.symbol,
+          name: inv.name,
+          shares: inv.shares,
+          current_price: inv.current_price,
+          total_value: inv.total_value
+        })));
+        
+        setInvestments(directInvestments);
+      } else {
+        console.log('useInvestments.fetchInvestments - No investments found for user:', user.username);
+        setInvestments([]);
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load investments';
       console.error('useInvestments.fetchInvestments - Error:', errorMessage);
@@ -94,17 +62,17 @@ export function useInvestments() {
     } finally {
       setLoading(false);
     }
-  }, [user?.id, user?.username, getAccountsByType]);
+  }, [user?.username]);
 
   useEffect(() => {
-    if (user?.id) {
+    if (user?.username) {
       fetchInvestments();
     } else {
-      console.log('useInvestments - No user, clearing investments');
+      console.log('useInvestments - No username, clearing investments');
       setLoading(false);
       setInvestments([]);
     }
-  }, [user?.id, fetchInvestments]);
+  }, [user?.username, fetchInvestments]);
 
   const getTotalInvestmentValue = useCallback(() => {
     const total = investments.reduce((sum, investment) => {
