@@ -83,6 +83,30 @@ export interface Investment {
   created_at: string;
 }
 
+export interface UserProfile {
+  id: string;
+  custom_user_id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  phone: string | null;
+  bio: string | null;
+  location: string | null;
+  occupation: string | null;
+  profile_picture_url: string | null;
+  credit_score: number;
+  total_balance: number;
+  monthly_income: number;
+  monthly_expenses: number;
+  savings_rate: number;
+  timezone: string;
+  currency: string;
+  language: string;
+  join_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Custom authentication functions
 export const customAuth = {
   signIn: async (username: string, password: string) => {

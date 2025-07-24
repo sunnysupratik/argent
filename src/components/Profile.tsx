@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { User, Mail, Calendar, CreditCard, Award, Edit3, Camera, Shield, Bell, Palette, Save, RefreshCw, Plus } from 'lucide-react';
+import { User, Mail, Calendar, CreditCard, Award, Edit3, Camera, Shield, Bell, Palette, Save, RefreshCw, Plus, MapPin, Briefcase } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
+import { useUserProfile } from '../hooks/useUserProfile';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
@@ -9,39 +10,37 @@ import AnimatedSection from './AnimatedSection';
 
 const Profile: React.FC = () => {
   const { user } = useAuth();
-  const { getTotalBalance, getAccountsCount } = useAccounts();
-  const { getMonthlyIncome, getMonthlyExpenses, getTransactionsCount } = useTransactions();
+  const { profile, loading: profileLoading, updateProfile } = useUserProfile();
+  const { getAccountsCount } = useAccounts();
+  const { getTransactionsCount } = useTransactions();
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
 
-  const [profileData, setProfileData] = useState({
-    firstName: user?.full_name?.split(' ')[0] || 'User',
-    lastName: user?.full_name?.split(' ')[1] || '',
-    email: user?.email || 'user@example.com',
-    phone: '+1 (555) 123-4567',
-    bio: 'Financial enthusiast focused on building long-term wealth through smart investments and disciplined budgeting.',
-    location: 'San Francisco, CA',
-    occupation: 'Software Engineer',
-    joinDate: user?.created_at || new Date().toISOString()
+  const [editData, setEditData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    bio: '',
+    location: '',
+    occupation: ''
   });
 
-  const getUserProfile = () => {
-    const totalBalance = getTotalBalance();
-    const monthlyIncome = getMonthlyIncome();
-    const monthlyExpenses = getMonthlyExpenses();
-    
-    return {
-      ...profileData,
-      creditScore: 742, // Mock data - would come from credit monitoring service
-      totalBalance,
-      monthlyIncome,
-      monthlyExpenses,
-      savingsRate: monthlyIncome > 0 ? ((monthlyIncome - monthlyExpenses) / monthlyIncome * 100) : 0
-    };
-  };
-
-  const userProfile = getUserProfile();
+  // Update edit data when profile loads
+  React.useEffect(() => {
+    if (profile && !isEditing) {
+      setEditData({
+        first_name: profile.first_name || '',
+        last_name: profile.last_name || '',
+        email: profile.email || '',
+        phone: profile.phone || '',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        occupation: profile.occupation || ''
+      });
+    }
+  }, [profile, isEditing]);
 
   // Real achievements based on actual data
   const achievements = [
@@ -51,7 +50,7 @@ const Profile: React.FC = () => {
       description: `Successfully connected ${getAccountsCount()} financial accounts`,
       icon: '🏦',
       unlocked: getAccountsCount() > 0,
-      unlockedDate: user?.created_at || new Date().toISOString(),
+      unlockedDate: profile?.join_date || new Date().toISOString(),
       progress: 100,
       category: 'Banking'
     },
@@ -61,7 +60,7 @@ const Profile: React.FC = () => {
       description: `Recorded ${getTransactionsCount()} transactions`,
       icon: '📊',
       unlocked: getTransactionsCount() > 0,
-      unlockedDate: user?.created_at || new Date().toISOString(),
+      unlockedDate: profile?.join_date || new Date().toISOString(),
       progress: 100,
       category: 'Tracking'
     },
@@ -70,9 +69,9 @@ const Profile: React.FC = () => {
       title: 'Income Earner',
       description: 'Generated monthly income',
       icon: '💰',
-      unlocked: userProfile.monthlyIncome > 0,
-      unlockedDate: user?.created_at || new Date().toISOString(),
-      progress: userProfile.monthlyIncome > 0 ? 100 : 0,
+      unlocked: (profile?.monthly_income || 0) > 0,
+      unlockedDate: profile?.join_date || new Date().toISOString(),
+      progress: (profile?.monthly_income || 0) > 0 ? 100 : 0,
       category: 'Income'
     },
     {
@@ -80,8 +79,8 @@ const Profile: React.FC = () => {
       title: 'Budget Conscious',
       description: 'Maintaining positive savings rate',
       icon: '🎯',
-      unlocked: userProfile.savingsRate > 0,
-      progress: userProfile.savingsRate > 0 ? 100 : Math.max(0, userProfile.savingsRate + 100),
+      unlocked: (profile?.savings_rate || 0) > 0,
+      progress: Math.max(0, profile?.savings_rate || 0),
       category: 'Budgeting'
     },
     {
@@ -89,8 +88,8 @@ const Profile: React.FC = () => {
       title: 'Wealth Builder',
       description: 'Built substantial net worth',
       icon: '🌱',
-      unlocked: userProfile.totalBalance > 10000,
-      progress: Math.min(100, (userProfile.totalBalance / 10000) * 100),
+      unlocked: (profile?.total_balance || 0) > 10000,
+      progress: Math.min(100, ((profile?.total_balance || 0) / 10000) * 100),
       category: 'Wealth'
     },
     {
@@ -110,23 +109,23 @@ const Profile: React.FC = () => {
       id: 'emergency_fund',
       title: 'Emergency Fund',
       target: 10000,
-      current: Math.max(0, userProfile.totalBalance * 0.3), // Assume 30% is emergency fund
+      current: Math.max(0, (profile?.total_balance || 0) * 0.3), // Assume 30% is emergency fund
       deadline: '2024-12-31',
       category: 'Savings'
     },
     {
       id: 'monthly_savings',
       title: 'Monthly Savings Target',
-      target: userProfile.monthlyIncome * 0.2, // 20% savings rate
-      current: Math.max(0, userProfile.monthlyIncome - userProfile.monthlyExpenses),
+      target: (profile?.monthly_income || 0) * 0.2, // 20% savings rate
+      current: Math.max(0, (profile?.monthly_income || 0) - (profile?.monthly_expenses || 0)),
       deadline: '2024-12-31',
       category: 'Budgeting'
     },
     {
       id: 'net_worth_growth',
       title: 'Net Worth Growth',
-      target: userProfile.totalBalance * 1.1, // 10% growth
-      current: userProfile.totalBalance,
+      target: (profile?.total_balance || 0) * 1.1, // 10% growth
+      current: profile?.total_balance || 0,
       deadline: '2025-12-31',
       category: 'Wealth'
     }
@@ -134,10 +133,32 @@ const Profile: React.FC = () => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsSaving(false);
+    try {
+      const result = await updateProfile(editData);
+      if (result.success) {
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleCancel = () => {
     setIsEditing(false);
+    // Reset edit data to current profile values
+    if (profile) {
+      setEditData({
+        first_name: profile.first_name || '',
+        last_name: profile.last_name || '',
+        email: profile.email || '',
+        phone: profile.phone || '',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        occupation: profile.occupation || ''
+      });
+    }
   };
 
   const tabs = [
@@ -147,6 +168,21 @@ const Profile: React.FC = () => {
     { id: 'settings', label: 'Account Settings', icon: Shield }
   ];
 
+  if (profileLoading) {
+    return (
+      <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-300/50 rounded w-48 mb-4"></div>
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-32 bg-gray-300/50 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const renderOverviewTab = () => (
     <div className="space-y-6">
       {/* Profile Header */}
@@ -154,7 +190,7 @@ const Profile: React.FC = () => {
         <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
           <div className="relative">
             <div className="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-r from-accent-blue to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl lg:text-4xl font-bold shadow-lg">
-              {userProfile.firstName.charAt(0)}{userProfile.lastName.charAt(0)}
+              {(profile?.first_name?.charAt(0) || 'U')}{(profile?.last_name?.charAt(0) || '')}
             </div>
             <motion.button
               className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-accent-blue transition-colors"
@@ -169,30 +205,37 @@ const Profile: React.FC = () => {
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
               <div>
                 <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
-                  {userProfile.firstName} {userProfile.lastName}
+                  {profile?.first_name || 'User'} {profile?.last_name || ''}
                 </h2>
-                <p className="text-gray-600">{userProfile.occupation}</p>
-                <p className="text-sm text-gray-500">{userProfile.location}</p>
+                <div className="flex items-center space-x-2 text-gray-600 mt-1">
+                  <Briefcase size={16} />
+                  <span>{profile?.occupation || 'Not specified'}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-gray-500 mt-1">
+                  <MapPin size={16} />
+                  <span>{profile?.location || 'Not specified'}</span>
+                </div>
               </div>
               
               <InteractiveHoverButton
                 variant={isEditing ? "blue" : "white"}
                 text={isEditing ? "Cancel" : "Edit Profile"}
                 icon={<Edit3 size={14} />}
-                onClick={() => setIsEditing(!isEditing)}
+                onClick={isEditing ? handleCancel : () => setIsEditing(true)}
                 className="mt-4 lg:mt-0 px-4 py-2"
               />
             </div>
             
             {isEditing ? (
               <textarea
-                value={profileData.bio}
-                onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                value={editData.bio}
+                onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
                 className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors resize-none"
                 rows={3}
+                placeholder="Tell us about yourself..."
               />
             ) : (
-              <p className="text-gray-700 leading-relaxed">{userProfile.bio}</p>
+              <p className="text-gray-700 leading-relaxed">{profile?.bio || 'No bio available'}</p>
             )}
           </div>
         </div>
@@ -204,11 +247,37 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-bold text-gray-900 mb-4">Personal Information</h3>
           <div className="space-y-4">
             {[
-              { icon: User, label: 'Full Name', value: `${userProfile.firstName} ${userProfile.lastName}`, editable: true },
-              { icon: Mail, label: 'Email', value: userProfile.email, editable: true },
-              { icon: Calendar, label: 'Member Since', value: new Date(userProfile.joinDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), editable: false },
-              { icon: CreditCard, label: 'Credit Score', value: userProfile.creditScore.toString(), editable: false }
-            ].map(({ icon: Icon, label, value, editable }) => (
+              { 
+                icon: User, 
+                label: 'Full Name', 
+                value: `${profile?.first_name || ''} ${profile?.last_name || ''}`.trim() || 'Not specified',
+                editKey: 'name',
+                editable: true 
+              },
+              { 
+                icon: Mail, 
+                label: 'Email', 
+                value: profile?.email || 'Not specified',
+                editKey: 'email',
+                editable: true 
+              },
+              { 
+                icon: Calendar, 
+                label: 'Member Since', 
+                value: profile?.join_date ? new Date(profile.join_date).toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric' 
+                }) : 'Not available',
+                editable: false 
+              },
+              { 
+                icon: CreditCard, 
+                label: 'Credit Score', 
+                value: profile?.credit_score?.toString() || '700',
+                editable: false 
+              }
+            ].map(({ icon: Icon, label, value, editKey, editable }) => (
               <div key={label} className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
                   <Icon size={18} className="text-gray-600" />
@@ -216,17 +285,90 @@ const Profile: React.FC = () => {
                 <div className="flex-1">
                   <div className="text-sm text-gray-500 uppercase tracking-wide">{label}</div>
                   {isEditing && editable ? (
-                    <input
-                      type="text"
-                      value={value}
-                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
-                    />
+                    editKey === 'name' ? (
+                      <div className="flex space-x-2 mt-1">
+                        <input
+                          type="text"
+                          value={editData.first_name}
+                          onChange={(e) => setEditData({ ...editData, first_name: e.target.value })}
+                          placeholder="First name"
+                          className="flex-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                        />
+                        <input
+                          type="text"
+                          value={editData.last_name}
+                          onChange={(e) => setEditData({ ...editData, last_name: e.target.value })}
+                          placeholder="Last name"
+                          className="flex-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                        />
+                      </div>
+                    ) : (
+                      <input
+                        type={editKey === 'email' ? 'email' : 'text'}
+                        value={editData[editKey as keyof typeof editData]}
+                        onChange={(e) => setEditData({ ...editData, [editKey]: e.target.value })}
+                        className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                      />
+                    )
                   ) : (
                     <div className="text-gray-900 font-medium">{value}</div>
                   )}
                 </div>
               </div>
             ))}
+
+            {/* Additional editable fields */}
+            {isEditing && (
+              <>
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                    <MapPin size={18} className="text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm text-gray-500 uppercase tracking-wide">Location</div>
+                    <input
+                      type="text"
+                      value={editData.location}
+                      onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                      placeholder="City, State"
+                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                    <Briefcase size={18} className="text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm text-gray-500 uppercase tracking-wide">Occupation</div>
+                    <input
+                      type="text"
+                      value={editData.occupation}
+                      onChange={(e) => setEditData({ ...editData, occupation: e.target.value })}
+                      placeholder="Your job title"
+                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+                    <User size={18} className="text-gray-600" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-sm text-gray-500 uppercase tracking-wide">Phone</div>
+                    <input
+                      type="tel"
+                      value={editData.phone}
+                      onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                      placeholder="+1 (555) 123-4567"
+                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                    />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -236,7 +378,7 @@ const Profile: React.FC = () => {
             <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-xl p-4">
               <div className="text-sm text-green-700 uppercase tracking-wide mb-1">Total Balance</div>
               <div className="text-2xl font-bold text-green-900">
-                ${userProfile.totalBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                ${(profile?.total_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </div>
             </div>
             
@@ -244,14 +386,14 @@ const Profile: React.FC = () => {
               <div className="bg-blue-50 border border-blue-200/50 rounded-xl p-4">
                 <div className="text-xs text-blue-700 uppercase tracking-wide mb-1">Monthly Income</div>
                 <div className="text-lg font-bold text-blue-900">
-                  ${userProfile.monthlyIncome.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  ${(profile?.monthly_income || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </div>
               </div>
               
               <div className="bg-orange-50 border border-orange-200/50 rounded-xl p-4">
                 <div className="text-xs text-orange-700 uppercase tracking-wide mb-1">Monthly Expenses</div>
                 <div className="text-lg font-bold text-orange-900">
-                  ${userProfile.monthlyExpenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                  ${(profile?.monthly_expenses || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </div>
               </div>
             </div>
@@ -259,7 +401,7 @@ const Profile: React.FC = () => {
             <div className="bg-purple-50 border border-purple-200/50 rounded-xl p-4">
               <div className="text-sm text-purple-700 uppercase tracking-wide mb-1">Savings Rate</div>
               <div className="text-xl font-bold text-purple-900">
-                {userProfile.savingsRate.toFixed(1)}%
+                {(profile?.savings_rate || 0).toFixed(1)}%
               </div>
             </div>
           </div>
@@ -271,7 +413,7 @@ const Profile: React.FC = () => {
           <InteractiveHoverButton
             variant="white"
             text="Cancel"
-            onClick={() => setIsEditing(false)}
+            onClick={handleCancel}
             className="px-6 py-3"
           />
           <InteractiveHoverButton
