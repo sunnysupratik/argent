@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import AnimatedSection from './AnimatedSection';
 import { useTransactions } from '../hooks/useTransactions';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
+import { convertToCSV, downloadCSV, formatTransactionsForCSV } from '../utils/csvExport';
 
 const Transactions: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -46,6 +47,17 @@ const Transactions: React.FC = () => {
       console.error('Failed to refresh transactions:', error);
     } finally {
       setIsRefreshing(false);
+    }
+  };
+
+  const handleExport = () => {
+    try {
+      const csvData = formatTransactionsForCSV(filteredTransactions);
+      const csvContent = convertToCSV(csvData);
+      const filename = `transactions_${new Date().toISOString().split('T')[0]}.csv`;
+      downloadCSV(csvContent, filename);
+    } catch (error) {
+      console.error('Failed to export transactions:', error);
     }
   };
 
@@ -152,6 +164,7 @@ const Transactions: React.FC = () => {
                 variant="white"
                 text="Export"
                 icon={<Download size={16} />}
+                onClick={handleExport}
                 className="px-4 py-3 text-sm"
               />
 

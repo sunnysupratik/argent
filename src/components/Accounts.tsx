@@ -4,6 +4,7 @@ import { useAccounts } from '../hooks/useAccounts';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
 import { motion } from 'framer-motion';
 import AnimatedSection from './AnimatedSection';
+import { convertToCSV, downloadCSV, formatAccountsForCSV } from '../utils/csvExport';
 
 const Accounts: React.FC = () => {
   const { accounts, loading, getTotalBalance, getAccountsByType } = useAccounts();
@@ -27,6 +28,17 @@ const Accounts: React.FC = () => {
   const checkingAccounts = getAccountsByType('checking');
   const savingsAccounts = getAccountsByType('savings');
   const investmentAccounts = getAccountsByType('investment');
+
+  const handleExport = () => {
+    try {
+      const csvData = formatAccountsForCSV(accounts);
+      const csvContent = convertToCSV(csvData);
+      const filename = `accounts_${new Date().toISOString().split('T')[0]}.csv`;
+      downloadCSV(csvContent, filename);
+    } catch (error) {
+      console.error('Failed to export accounts:', error);
+    }
+  };
 
   const getAccountIcon = (type: string) => {
     switch (type.toLowerCase()) {
@@ -84,6 +96,7 @@ const Accounts: React.FC = () => {
                 variant="white"
                 text="Export"
                 icon={<ExternalLink size={16} />}
+                onClick={handleExport}
                 className="px-4 py-3 text-sm"
               />
             </div>

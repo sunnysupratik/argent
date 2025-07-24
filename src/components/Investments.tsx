@@ -6,6 +6,7 @@ import AnimatedSection from './AnimatedSection';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
 import { useInvestments } from '../hooks/useInvestments';
+import { convertToCSV, downloadCSV, formatInvestmentsForCSV, formatAccountsForCSV } from '../utils/csvExport';
 
 const Investments: React.FC = () => {
   const [activeTab, setActiveTab] = useState('portfolio');
@@ -79,6 +80,59 @@ const Investments: React.FC = () => {
     setIsRefreshing(true);
     await refetchInvestments();
     setIsRefreshing(false);
+  };
+
+  const handleExport = () => {
+    try {
+      let csvData: any[] = [];
+      let filename = '';
+      
+      if (activeTab === 'portfolio') {
+        // Export both direct investments and investment accounts
+        const investmentData = formatInvestmentsForCSV(investments);
+        const accountData = formatAccountsForCSV(investmentAccounts);
+        
+        // Combine both datasets
+        csvData = [
+          ...investmentData,
+          ...accountData.map(acc => ({
+            'Symbol': 'ACCOUNT',
+            'Company Name': acc['Account Name'],
+            'Shares': 1,
+            'Current Price': acc['Current Balance'],
+            'Total Value': acc['Current Balance'],
+            'Day Change': 0,
+            'Day Change %': 0,
+            'Sector': 'Banking',
+            'Market Cap': 'N/A',
+            'P/E Ratio': 'N/A',
+            'Dividend': 0,
+            'Rating': 'N/A',
+            'Last Updated': acc['Created At']
+          }))
+        ];
+        filename = `portfolio_${new Date().toISOString().split('T')[0]}.csv`;
+      } else if (activeTab === 'watchlist') {
+        csvData = watchlist.map(stock => ({
+          'Symbol': stock.symbol,
+          'Company Name': stock.name,
+          'Current Price': stock.price,
+          'Day Change': stock.change,
+          'Day Change %': stock.changePercent,
+          'Rating': stock.rating
+        }));
+        filename = `watchlist_${new Date().toISOString().split('T')[0]}.csv`;
+      } else {
+        // Default to portfolio export
+        csvData = formatInvestmentsForCSV(investments);
+        filename = `investments_${new Date().toISOString().split('T')[0]}.csv`;
+      }
+      
+      const csvContent = convertToCSV(csvData);
+      downloadCSV(csvContent, filename);
+    } catch (error) {
+      console.error('Failed to export investment data:', error);
+    }
   };
 
   const getRatingColor = (rating: string) => {
@@ -197,6 +251,7 @@ const Investments: React.FC = () => {
               variant="white"
               text="Export"
               icon={<Download size={16} />}
+              onClick={handleExport}
               className="px-4 py-3 text-sm"
             />
           </div>

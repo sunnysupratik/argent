@@ -9,6 +9,7 @@ import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
 import { useAuth } from '../hooks/useAuth';
 import { InteractiveHoverButton } from './ui/interactive-hover-button';
+import { convertToCSV, downloadCSV, formatTransactionsForCSV, formatAccountsForCSV } from '../utils/csvExport';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -45,6 +46,32 @@ const Dashboard: React.FC = () => {
     }
     const email = user?.email?.split('@')[0] || 'User';
     return email.replace(/\s*(test|user|demo).*$/i, '');
+  };
+
+  const handleExportDashboard = () => {
+    try {
+      // Create a comprehensive dashboard export
+      const dashboardData = [
+        {
+          'Report Type': 'Dashboard Summary',
+          'Generated Date': new Date().toLocaleDateString(),
+          'User': getUserName(),
+          'Total Net Worth': finalValues.netWorth,
+          'Monthly Income': finalValues.income,
+          'Monthly Expenses': finalValues.expenses,
+          'Net Income': finalValues.income - finalValues.expenses,
+          'Savings Rate': finalValues.income > 0 ? ((finalValues.income - finalValues.expenses) / finalValues.income * 100).toFixed(2) + '%' : '0%',
+          'Total Accounts': getAccountsCount(),
+          'Total Transactions': getTransactionsCount()
+        }
+      ];
+      
+      const csvContent = convertToCSV(dashboardData);
+      const filename = `dashboard_summary_${new Date().toISOString().split('T')[0]}.csv`;
+      downloadCSV(csvContent, filename);
+    } catch (error) {
+      console.error('Failed to export dashboard data:', error);
+    }
   };
 
   const getGreeting = () => {
@@ -435,11 +462,11 @@ const Dashboard: React.FC = () => {
                       className="p-3 lg:p-4 bg-green-50 hover:bg-green-100 rounded-xl transition-colors text-center"
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => navigate('/app/accounts')}
+                      onClick={handleExportDashboard}
                     >
-                      <Plus size={20} className="text-green-600 mx-auto mb-2 lg:hidden" />
-                      <Plus size={24} className="text-green-600 mx-auto mb-2 hidden lg:block" />
-                      <div className="text-xs lg:text-sm font-medium text-green-900">Add Account</div>
+                      <Download size={20} className="text-green-600 mx-auto mb-2 lg:hidden" />
+                      <Download size={24} className="text-green-600 mx-auto mb-2 hidden lg:block" />
+                      <div className="text-xs lg:text-sm font-medium text-green-900">Export Data</div>
                     </motion.button>
                     
                     <motion.button
