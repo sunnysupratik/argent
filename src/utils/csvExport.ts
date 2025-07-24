@@ -64,11 +64,11 @@ export function formatTransactionsForCSV(transactions: any[]) {
   return transactions.map(transaction => ({
     'Date': new Date(transaction.transaction_date).toLocaleDateString(),
     'Description': transaction.description,
-    'Category': transaction.category?.name || transaction.category || 'Uncategorized',
-    'Account': transaction.account?.account_name || transaction.account_name || 'Unknown Account',
+    'Category': transaction.category || 'Uncategorized',
+    'Account': transaction.account_name,
     'Type': transaction.type,
     'Amount': transaction.amount,
-    'Created At': transaction.created_at ? new Date(transaction.created_at).toLocaleDateString() : 'N/A'
+    'Created At': new Date(transaction.created_at).toLocaleDateString()
   }));
 }
 
@@ -77,7 +77,7 @@ export function formatAccountsForCSV(accounts: any[]) {
     'Account Name': account.account_name,
     'Account Type': account.account_type,
     'Current Balance': account.current_balance,
-    'Created At': account.created_at ? new Date(account.created_at).toLocaleDateString() : 'N/A'
+    'Created At': new Date(account.created_at).toLocaleDateString()
   }));
 }
 
@@ -95,6 +95,6 @@ export function formatInvestmentsForCSV(investments: any[]) {
     'P/E Ratio': investment.pe,
     'Dividend': investment.dividend,
     'Rating': investment.rating,
-    'Last Updated': investment.updated_at ? new Date(investment.updated_at).toLocaleDateString() : 'N/A'
+    'Last Updated': new Date(investment.updated_at).toLocaleDateString()
   }));
 }
