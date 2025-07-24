@@ -171,62 +171,74 @@ const Investments: React.FC = () => {
       {/* Portfolio Summary - Real Data */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div 
-          className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 rounded-xl p-6"
+          className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 rounded-lg lg:rounded-xl p-4 lg:p-6"
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-              <DollarSign size={20} className="text-white" />
+          <div className="flex items-center space-x-2 lg:space-x-3 mb-3 lg:mb-4">
+            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg lg:rounded-xl flex items-center justify-center">
+              <DollarSign size={16} className="text-white lg:hidden" />
+              <DollarSign size={20} className="text-white hidden lg:block" />
             </div>
-            <div className="text-sm font-medium text-blue-700 uppercase tracking-wide">Total Portfolio Value</div>
+            <div className="text-xs lg:text-sm font-medium text-blue-700 uppercase tracking-wide">Total Portfolio Value</div>
           </div>
-          <div className="text-3xl font-bold text-blue-900">
+          <div className="text-xl lg:text-2xl xl:text-3xl font-bold text-blue-900">
             ${totalPortfolioValue.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </div>
-          <div className="text-sm text-blue-600 mt-2">
+          <div className="text-xs lg:text-sm text-blue-600 mt-1 lg:mt-2">
             {investments.length + investmentAccounts.length} holdings
           </div>
         </motion.div>
         
         <motion.div 
-          className={`bg-gradient-to-r ${dailyChange >= 0 ? 'from-green-50 to-emerald-50 border-green-200/50' : 'from-red-50 to-rose-50 border-red-200/50'} border rounded-xl p-6`}
+          className={`bg-gradient-to-r ${dailyChange >= 0 ? 'from-green-50 to-emerald-50 border-green-200/50' : 'from-red-50 to-rose-50 border-red-200/50'} border rounded-lg lg:rounded-xl p-4 lg:p-6`}
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="flex items-center space-x-3 mb-4">
-            <div className={`w-12 h-12 bg-gradient-to-r ${dailyChange >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-xl flex items-center justify-center`}>
-              {dailyChange >= 0 ? <TrendingUp size={20} className="text-white" /> : <TrendingDown size={20} className="text-white" />}
+          <div className="flex items-center space-x-2 lg:space-x-3 mb-3 lg:mb-4">
+            <div className={`w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r ${dailyChange >= 0 ? 'from-green-500 to-green-600' : 'from-red-500 to-red-600'} rounded-lg lg:rounded-xl flex items-center justify-center`}>
+              {dailyChange >= 0 ? (
+                <>
+                  <TrendingUp size={16} className="text-white lg:hidden" />
+                  <TrendingUp size={20} className="text-white hidden lg:block" />
+                </>
+              ) : (
+                <>
+                  <TrendingDown size={16} className="text-white lg:hidden" />
+                  <TrendingDown size={20} className="text-white hidden lg:block" />
+                </>
+              )}
             </div>
-            <div className={`text-sm font-medium ${dailyChange >= 0 ? 'text-green-700' : 'text-red-700'} uppercase tracking-wide`}>Today's Change</div>
+            <div className={`text-xs lg:text-sm font-medium ${dailyChange >= 0 ? 'text-green-700' : 'text-red-700'} uppercase tracking-wide`}>Today's Change</div>
           </div>
-          <div className={`text-3xl font-bold ${dailyChange >= 0 ? 'text-green-900' : 'text-red-900'}`}>
+          <div className={`text-xl lg:text-2xl xl:text-3xl font-bold ${dailyChange >= 0 ? 'text-green-900' : 'text-red-900'}`}>
             {dailyChange >= 0 ? '+' : ''}${Math.abs(dailyChange).toFixed(2)}
           </div>
-          <div className={`text-sm ${dailyChange >= 0 ? 'text-green-600' : 'text-red-600'} mt-2`}>
+          <div className={`text-xs lg:text-sm ${dailyChange >= 0 ? 'text-green-600' : 'text-red-600'} mt-1 lg:mt-2`}>
             {dailyChangePercent >= 0 ? '+' : ''}{dailyChangePercent.toFixed(2)}%
           </div>
         </motion.div>
         
         <motion.div 
-          className="bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200/50 rounded-xl p-6"
+          className="bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200/50 rounded-lg lg:rounded-xl p-4 lg:p-6"
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.2 }}
         >
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <BarChart3 size={20} className="text-white" />
+          <div className="flex items-center space-x-2 lg:space-x-3 mb-3 lg:mb-4">
+            <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg lg:rounded-xl flex items-center justify-center">
+              <BarChart3 size={16} className="text-white lg:hidden" />
+              <BarChart3 size={20} className="text-white hidden lg:block" />
             </div>
-            <div className="text-sm font-medium text-purple-700 uppercase tracking-wide">Performance</div>
+            <div className="text-xs lg:text-sm font-medium text-purple-700 uppercase tracking-wide">Performance</div>
           </div>
-          <div className="text-3xl font-bold text-purple-900">+18.67%</div>
-          <div className="text-sm text-purple-600 mt-2">YTD Return</div>
+          <div className="text-xl lg:text-2xl xl:text-3xl font-bold text-purple-900">+18.67%</div>
+          <div className="text-xs lg:text-sm text-purple-600 mt-1 lg:mt-2">YTD Return</div>
         </motion.div>
       </div>
 
       {/* Enhanced Search and Filter */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-        <div className="flex flex-col lg:flex-row gap-4">
+      <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-4 lg:p-6">
+        <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
           <div className="flex-1 relative">
             <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -234,14 +246,14 @@ const Investments: React.FC = () => {
               placeholder="Search investments by name or symbol..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+              className="w-full pl-10 pr-4 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm lg:text-base"
             />
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 lg:gap-3">
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="px-4 py-3 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+              className="px-3 py-2 lg:py-3 border border-gray-200 rounded-lg lg:rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
             >
               <option value="value">Sort by Value</option>
               <option value="change">Sort by Change</option>
@@ -252,7 +264,7 @@ const Investments: React.FC = () => {
               text="Export"
               icon={<Download size={16} />}
               onClick={handleExport}
-              className="px-4 py-3 text-sm"
+              className="px-3 py-2 text-xs lg:text-sm"
             />
           </div>
         </div>
@@ -260,40 +272,41 @@ const Investments: React.FC = () => {
 
       {/* Holdings Table */}
       {investments.length === 0 && investmentAccounts.length === 0 ? (
-        <div className="text-center py-12 bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <PieChart size={24} className="text-gray-400" />
+        <div className="text-center py-8 lg:py-12 bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50">
+          <div className="w-14 h-14 lg:w-16 lg:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 lg:mb-4">
+            <PieChart size={20} className="text-gray-400 lg:hidden" />
+            <PieChart size={24} className="text-gray-400 hidden lg:block" />
           </div>
-          <h3 className="text-xl font-bold text-gray-900 mb-2">No investments found</h3>
-          <p className="text-gray-500 mb-6 max-w-md mx-auto">
+          <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-2">No investments found</h3>
+          <p className="text-gray-500 mb-4 lg:mb-6 max-w-md mx-auto text-sm lg:text-base">
             Connect your investment accounts or add individual investments to start tracking your portfolio.
           </p>
           <InteractiveHoverButton
             variant="blue"
             text="Connect Investment Account"
             icon={<Plus size={16} />}
-            className="px-8 py-3"
+            className="px-6 py-2 lg:px-8 lg:py-3 text-sm lg:text-base"
           />
         </div>
       ) : (
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 overflow-hidden">
+        <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 overflow-hidden">
           {/* Direct Investments Section */}
           {investments.length > 0 && (
             <div>
-              <div className="p-6 border-b border-gray-200/50">
-                <h3 className="text-lg font-bold text-gray-900">Direct Investments</h3>
+              <div className="p-4 lg:p-6 border-b border-gray-200/50">
+                <h3 className="text-base lg:text-lg font-bold text-gray-900">Direct Investments</h3>
               </div>
               
               {/* Desktop Header */}
-              <div className="hidden lg:grid grid-cols-8 gap-4 p-6 border-b border-gray-200/50 bg-gray-50/50">
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide">Symbol</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide">Company</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-center">Shares</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-right">Price</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-right">Day Change</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-right">Total Value</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-center">Rating</div>
-                <div className="font-bold text-gray-700 text-sm uppercase tracking-wide text-center">Actions</div>
+              <div className="hidden lg:grid grid-cols-8 gap-3 lg:gap-4 p-4 lg:p-6 border-b border-gray-200/50 bg-gray-50/50">
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide">Symbol</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide">Company</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide text-center">Shares</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide text-right">Price</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide text-right">Day Change</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide text-right">Total Value</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide text-center">Rating</div>
+                <div className="font-bold text-gray-700 text-xs lg:text-sm uppercase tracking-wide text-center">Actions</div>
               </div>
 
               {/* Investment Rows */}
@@ -646,35 +659,35 @@ const Investments: React.FC = () => {
     <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
       {/* Enhanced Page Header */}
       <AnimatedSection className="mb-8 lg:mb-12">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-6 lg:space-y-0">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
           <div>
-            <h1 className="text-xl lg:text-2xl mb-2 font-bold uppercase tracking-wide">INVESTMENTS</h1>
+            <h1 className="text-lg lg:text-2xl mb-2 font-bold uppercase tracking-wide">INVESTMENTS</h1>
             <motion.div 
               className="w-12 lg:w-16 h-px bg-accent-blue"
               initial={{ width: 0 }}
               animate={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
               transition={{ duration: 0.4, delay: 0.1 }}
             />
-            <p className="text-gray-600 mt-3">Monitor and manage your investment portfolio</p>
+            <p className="text-gray-600 mt-2 text-sm lg:text-base">Monitor and manage your investment portfolio</p>
           </div>
           
           {/* Enhanced Action Buttons */}
-          <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
-            <div className="flex gap-3">
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-3">
+            <div className="flex gap-2">
               <InteractiveHoverButton
                 variant="white"
                 text={isRefreshing ? "Refreshing..." : "Refresh"}
                 icon={<RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />}
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="px-4 py-3 disabled:opacity-50 text-sm"
+                className="px-3 py-2 disabled:opacity-50 text-xs lg:text-sm"
               />
 
               <InteractiveHoverButton
                 variant="white"
                 text="Export"
                 icon={<Download size={16} />}
-                className="px-4 py-3 text-sm"
+                className="px-3 py-2 text-xs lg:text-sm"
               />
             </div>
 
@@ -682,7 +695,7 @@ const Investments: React.FC = () => {
               variant="blue"
               text="Connect Account"
               icon={<Plus size={16} />}
-              className="px-6 py-3 text-sm font-medium"
+              className="px-4 py-2 text-xs lg:text-sm font-medium"
             />
           </div>
         </div>

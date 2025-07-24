@@ -136,28 +136,28 @@ const Transactions: React.FC = () => {
     <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
       {/* Enhanced Page Header */}
       <AnimatedSection className="mb-8 lg:mb-12">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-6 lg:space-y-0">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
           <div>
-            <h1 className="text-xl lg:text-2xl mb-2 font-bold uppercase tracking-wide">TRANSACTIONS</h1>
+            <h1 className="text-lg lg:text-2xl mb-2 font-bold uppercase tracking-wide">TRANSACTIONS</h1>
             <motion.div 
               className="w-12 lg:w-16 h-px bg-accent-blue"
               initial={{ width: 0 }}
               animate={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.4, delay: 0.1 }}
             />
-            <p className="text-gray-600 mt-3">Manage and track all your financial transactions</p>
+            <p className="text-gray-600 mt-2 text-sm lg:text-base">Manage and track all your financial transactions</p>
           </div>
           
           {/* Enhanced Action Buttons */}
-          <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
-            <div className="flex gap-3">
+          <div className="flex flex-col lg:flex-row gap-2 lg:gap-3">
+            <div className="flex gap-2">
               <InteractiveHoverButton
                 variant="white"
                 text={isRefreshing ? "Refreshing..." : "Refresh"}
                 icon={<RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />}
                 onClick={handleRefresh}
                 disabled={isRefreshing}
-                className="px-4 py-3 disabled:opacity-50 text-sm"
+                className="px-3 py-2 disabled:opacity-50 text-xs lg:text-sm"
               />
 
               <InteractiveHoverButton
@@ -165,14 +165,14 @@ const Transactions: React.FC = () => {
                 text="Export"
                 icon={<Download size={16} />}
                 onClick={handleExport}
-                className="px-4 py-3 text-sm"
+                className="px-3 py-2 text-xs lg:text-sm"
               />
 
               <InteractiveHoverButton
                 variant="white"
                 text="Filter"
                 icon={<Filter size={16} />}
-                className="px-4 py-3 text-sm lg:hidden"
+                className="px-3 py-2 text-xs lg:hidden"
               />
             </div>
 
@@ -180,16 +180,16 @@ const Transactions: React.FC = () => {
               variant="blue"
               text="New Transaction"
               icon={<Plus size={16} />}
-              className="px-6 py-3 text-sm font-medium"
+              className="px-4 py-2 text-xs lg:text-sm font-medium"
             />
           </div>
         </div>
       </AnimatedSection>
 
       {/* Enhanced Search and Filter Section */}
-      <AnimatedSection className="mb-6 lg:mb-8" delay={0.2}>
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-          <div className="flex flex-col lg:flex-row gap-4">
+      <AnimatedSection className="mb-4 lg:mb-6" delay={0.2}>
+        <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-4 lg:p-6">
+          <div className="flex flex-col lg:flex-row gap-3 lg:gap-4">
             {/* Search Input */}
             <div className="flex-1 relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2 sleek-icon p-1 flex items-center justify-center">
@@ -200,17 +200,17 @@ const Transactions: React.FC = () => {
                 placeholder="Search transactions, categories, or amounts..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-200/50 rounded-xl bg-white/80 backdrop-blur-xl text-text-primary placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-all duration-300"
+                className="w-full pl-12 pr-4 py-2 lg:py-3 border border-gray-200/50 rounded-lg lg:rounded-xl bg-white/80 backdrop-blur-xl text-text-primary placeholder-gray-500 focus:outline-none focus:border-accent-blue transition-all duration-300 text-sm lg:text-base"
                 whileFocus={{ scale: 1.01 }}
               />
             </div>
             
             {/* Filter Controls - Desktop */}
-            <div className="hidden lg:flex gap-3">
+            <div className="hidden lg:flex gap-2">
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="px-4 py-3 border border-gray-200/50 rounded-xl bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors"
+                className="px-3 py-2 border border-gray-200/50 rounded-lg bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors text-sm"
               >
                 <option value="all">All Types</option>
                 <option value="income">Income</option>
@@ -220,7 +220,7 @@ const Transactions: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="px-4 py-3 border border-gray-200/50 rounded-xl bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors"
+                className="px-3 py-2 border border-gray-200/50 rounded-lg bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors text-sm"
               >
                 <option value="date">Sort by Date</option>
                 <option value="amount">Sort by Amount</option>
@@ -231,16 +231,16 @@ const Transactions: React.FC = () => {
                 variant="white"
                 text="Date Range"
                 icon={<Calendar size={16} />}
-                className="px-4 py-3 text-sm"
+                className="px-3 py-2 text-xs"
               />
             </div>
 
             {/* Mobile Filter Toggle */}
-            <div className="lg:hidden flex gap-3">
+            <div className="lg:hidden flex gap-2">
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="flex-1 px-4 py-3 border border-gray-200/50 rounded-xl bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors"
+                className="flex-1 px-3 py-2 border border-gray-200/50 rounded-lg bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors text-sm"
               >
                 <option value="all">All Types</option>
                 <option value="income">Income</option>
@@ -250,7 +250,7 @@ const Transactions: React.FC = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="flex-1 px-4 py-3 border border-gray-200/50 rounded-xl bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors"
+                className="flex-1 px-3 py-2 border border-gray-200/50 rounded-lg bg-white/80 backdrop-blur-xl focus:outline-none focus:border-accent-blue transition-colors text-sm"
               >
                 <option value="date">Date</option>
                 <option value="amount">Amount</option>
@@ -260,26 +260,26 @@ const Transactions: React.FC = () => {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-6 pt-6 border-t border-gray-200/50">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-4 lg:mt-6 pt-4 lg:pt-6 border-t border-gray-200/50">
             <div className="text-center">
-              <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Total</div>
-              <div className="text-lg font-bold text-text-primary">{filteredTransactions.length}</div>
+              <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide mb-1">Total</div>
+              <div className="text-base lg:text-lg font-bold text-text-primary">{filteredTransactions.length}</div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Income</div>
-              <div className="text-lg font-bold text-green-600">
+              <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide mb-1">Income</div>
+              <div className="text-base lg:text-lg font-bold text-green-600">
                 {filteredTransactions.filter(t => t.type === 'income').length}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">Expenses</div>
-              <div className="text-lg font-bold text-red-600">
+              <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide mb-1">Expenses</div>
+              <div className="text-base lg:text-lg font-bold text-red-600">
                 {filteredTransactions.filter(t => t.type === 'expense').length}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-sm text-gray-500 uppercase tracking-wide mb-1">This Month</div>
-              <div className="text-lg font-bold text-accent-blue">
+              <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide mb-1">This Month</div>
+              <div className="text-base lg:text-lg font-bold text-accent-blue">
                 {filteredTransactions.filter(t => {
                   const date = new Date(t.transaction_date);
                   const now = new Date();
@@ -324,16 +324,16 @@ const Transactions: React.FC = () => {
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Search size={24} className="text-gray-400" />
             </div>
-            <p className="text-gray-500 text-lg mb-2">
+            <p className="text-gray-500 text-base lg:text-lg mb-2">
               {searchTerm ? 'No transactions match your search' : 'No transactions found'}
             </p>
-            <p className="text-gray-400 text-sm">
+            <p className="text-gray-400 text-xs lg:text-sm">
               {searchTerm ? 'Try adjusting your search terms' : 'Add your first transaction to get started'}
             </p>
           </div>
         ) : (
           <motion.div 
-            className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 overflow-hidden"
+            className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 overflow-hidden"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -342,7 +342,7 @@ const Transactions: React.FC = () => {
               <React.Fragment key={transaction.id}>
                 {/* Desktop Layout */}
                 <motion.div 
-                  className="hidden lg:grid table-row-interactive grid-cols-5 gap-4 py-4 px-6 cursor-pointer"
+                  className="hidden lg:grid table-row-interactive grid-cols-5 gap-3 lg:gap-4 py-3 lg:py-4 px-4 lg:px-6 cursor-pointer"
                   variants={itemVariants}
                   whileHover={{ 
                     backgroundColor: 'rgba(0, 122, 255, 0.02)',
@@ -373,7 +373,7 @@ const Transactions: React.FC = () => {
 
                 {/* Mobile Layout */}
                 <motion.div 
-                  className="lg:hidden mobile-table-row table-row-interactive p-4"
+                  className="lg:hidden mobile-table-row table-row-interactive p-3 lg:p-4"
                   variants={itemVariants}
                   whileHover={{ 
                     backgroundColor: 'rgba(0, 122, 255, 0.02)',
@@ -382,28 +382,28 @@ const Transactions: React.FC = () => {
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex-1">
-                      <div className="font-medium text-text-primary row-main-text mb-1">
+                      <div className="font-medium text-text-primary row-main-text mb-1 text-sm lg:text-base">
                         {transaction.description}
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-gray-100 text-gray-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs lg:text-sm bg-gray-100 text-gray-800">
                           {transaction.category?.name || 'Uncategorized'}
                         </span>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className={`font-bold text-lg ${
+                      <div className={`font-bold text-base lg:text-lg ${
                         transaction.type === 'income' ? 'text-green-600' : 'text-red-600'
                       }`}>
                         {transaction.type === 'income' ? '+' : '-'}${Math.abs(Number(transaction.amount)).toFixed(2)}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs lg:text-sm text-gray-500">
                         {new Date(transaction.transaction_date).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
                   
-                  <div className="text-sm text-gray-600">
+                  <div className="text-xs lg:text-sm text-gray-600">
                     {transaction.account?.account_name || 'Unknown Account'}
                   </div>
                 </motion.div>

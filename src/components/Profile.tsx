@@ -186,34 +186,37 @@ const Profile: React.FC = () => {
   const renderOverviewTab = () => (
     <div className="space-y-6">
       {/* Profile Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 rounded-2xl p-6 lg:p-8">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-4 lg:space-y-0 lg:space-x-6">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/50 rounded-xl lg:rounded-2xl p-4 lg:p-6 xl:p-8">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-3 lg:space-y-0 lg:space-x-4 xl:space-x-6">
           <div className="relative">
-            <div className="w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-r from-accent-blue to-blue-600 rounded-2xl flex items-center justify-center text-white text-2xl lg:text-4xl font-bold shadow-lg">
+            <div className="w-20 h-20 lg:w-24 lg:h-24 xl:w-32 xl:h-32 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl lg:rounded-2xl flex items-center justify-center text-white text-lg lg:text-2xl xl:text-4xl font-bold shadow-lg">
               {(profile?.first_name?.charAt(0) || 'U')}{(profile?.last_name?.charAt(0) || '')}
             </div>
             <motion.button
-              className="absolute -bottom-2 -right-2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-accent-blue transition-colors"
+              className="absolute -bottom-1 -right-1 lg:-bottom-2 lg:-right-2 w-6 h-6 lg:w-8 lg:h-8 bg-white rounded-full shadow-lg flex items-center justify-center text-gray-600 hover:text-accent-blue transition-colors"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
-              <Camera size={16} />
+              <Camera size={12} className="lg:hidden" />
+              <Camera size={16} className="hidden lg:block" />
             </motion.button>
           </div>
           
           <div className="flex-1">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-3 lg:mb-4">
               <div>
-                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">
+                <h2 className="text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900">
                   {profile?.first_name || 'User'} {profile?.last_name || ''}
                 </h2>
-                <div className="flex items-center space-x-2 text-gray-600 mt-1">
-                  <Briefcase size={16} />
-                  <span>{profile?.occupation || 'Not specified'}</span>
+                <div className="flex items-center space-x-2 text-gray-600 mt-1 text-sm lg:text-base">
+                  <Briefcase size={14} className="lg:hidden" />
+                  <Briefcase size={16} className="hidden lg:block" />
+                  <span className="text-sm lg:text-base">{profile?.occupation || 'Not specified'}</span>
                 </div>
-                <div className="flex items-center space-x-2 text-gray-500 mt-1">
-                  <MapPin size={16} />
-                  <span>{profile?.location || 'Not specified'}</span>
+                <div className="flex items-center space-x-2 text-gray-500 mt-1 text-sm lg:text-base">
+                  <MapPin size={14} className="lg:hidden" />
+                  <MapPin size={16} className="hidden lg:block" />
+                  <span className="text-sm lg:text-base">{profile?.location || 'Not specified'}</span>
                 </div>
               </div>
               
@@ -222,7 +225,7 @@ const Profile: React.FC = () => {
                 text={isEditing ? "Cancel" : "Edit Profile"}
                 icon={<Edit3 size={14} />}
                 onClick={isEditing ? handleCancel : () => setIsEditing(true)}
-                className="mt-4 lg:mt-0 px-4 py-2"
+                className="mt-3 lg:mt-0 px-3 py-2 text-xs lg:text-sm"
               />
             </div>
             
@@ -230,22 +233,22 @@ const Profile: React.FC = () => {
               <textarea
                 value={editData.bio}
                 onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
-                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors resize-none"
-                rows={3}
+                className="w-full p-2 lg:p-3 border border-gray-200 rounded-lg lg:rounded-xl bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors resize-none text-sm lg:text-base"
+                rows={2}
                 placeholder="Tell us about yourself..."
               />
             ) : (
-              <p className="text-gray-700 leading-relaxed">{profile?.bio || 'No bio available'}</p>
+              <p className="text-gray-700 leading-relaxed text-sm lg:text-base">{profile?.bio || 'No bio available'}</p>
             )}
           </div>
         </div>
       </div>
 
       {/* Personal Information */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Personal Information</h3>
-          <div className="space-y-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+        <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-4 lg:p-6">
+          <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Personal Information</h3>
+          <div className="space-y-3 lg:space-y-4">
             {[
               { 
                 icon: User, 
@@ -279,27 +282,28 @@ const Profile: React.FC = () => {
               }
             ].map(({ icon: Icon, label, value, editKey, editable }) => (
               <div key={label} className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                  <Icon size={18} className="text-gray-600" />
+                <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-100 rounded-lg lg:rounded-xl flex items-center justify-center">
+                  <Icon size={14} className="text-gray-600 lg:hidden" />
+                  <Icon size={18} className="text-gray-600 hidden lg:block" />
                 </div>
                 <div className="flex-1">
-                  <div className="text-sm text-gray-500 uppercase tracking-wide">{label}</div>
+                  <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide">{label}</div>
                   {isEditing && editable ? (
                     editKey === 'name' ? (
-                      <div className="flex space-x-2 mt-1">
+                      <div className="flex space-x-1 lg:space-x-2 mt-1">
                         <input
                           type="text"
                           value={editData.first_name}
                           onChange={(e) => setEditData({ ...editData, first_name: e.target.value })}
                           placeholder="First name"
-                          className="flex-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                          className="flex-1 p-1 lg:p-2 border border-gray-200 rounded-md lg:rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
                         />
                         <input
                           type="text"
                           value={editData.last_name}
                           onChange={(e) => setEditData({ ...editData, last_name: e.target.value })}
                           placeholder="Last name"
-                          className="flex-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                          className="flex-1 p-1 lg:p-2 border border-gray-200 rounded-md lg:rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
                         />
                       </div>
                     ) : (
@@ -307,11 +311,11 @@ const Profile: React.FC = () => {
                         type={editKey === 'email' ? 'email' : 'text'}
                         value={editData[editKey as keyof typeof editData]}
                         onChange={(e) => setEditData({ ...editData, [editKey]: e.target.value })}
-                        className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                        className="w-full mt-1 p-1 lg:p-2 border border-gray-200 rounded-md lg:rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
                       />
                     )
                   ) : (
-                    <div className="text-gray-900 font-medium">{value}</div>
+                    <div className="text-gray-900 font-medium text-sm lg:text-base">{value}</div>
                   )}
                 </div>
               </div>
@@ -321,49 +325,52 @@ const Profile: React.FC = () => {
             {isEditing && (
               <>
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <MapPin size={18} className="text-gray-600" />
+                  <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-100 rounded-lg lg:rounded-xl flex items-center justify-center">
+                    <MapPin size={14} className="text-gray-600 lg:hidden" />
+                    <MapPin size={18} className="text-gray-600 hidden lg:block" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm text-gray-500 uppercase tracking-wide">Location</div>
+                    <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide">Location</div>
                     <input
                       type="text"
                       value={editData.location}
                       onChange={(e) => setEditData({ ...editData, location: e.target.value })}
                       placeholder="City, State"
-                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                      className="w-full mt-1 p-1 lg:p-2 border border-gray-200 rounded-md lg:rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
                     />
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <Briefcase size={18} className="text-gray-600" />
+                  <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-100 rounded-lg lg:rounded-xl flex items-center justify-center">
+                    <Briefcase size={14} className="text-gray-600 lg:hidden" />
+                    <Briefcase size={18} className="text-gray-600 hidden lg:block" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm text-gray-500 uppercase tracking-wide">Occupation</div>
+                    <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide">Occupation</div>
                     <input
                       type="text"
                       value={editData.occupation}
                       onChange={(e) => setEditData({ ...editData, occupation: e.target.value })}
                       placeholder="Your job title"
-                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                      className="w-full mt-1 p-1 lg:p-2 border border-gray-200 rounded-md lg:rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
                     />
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <User size={18} className="text-gray-600" />
+                  <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gray-100 rounded-lg lg:rounded-xl flex items-center justify-center">
+                    <User size={14} className="text-gray-600 lg:hidden" />
+                    <User size={18} className="text-gray-600 hidden lg:block" />
                   </div>
                   <div className="flex-1">
-                    <div className="text-sm text-gray-500 uppercase tracking-wide">Phone</div>
+                    <div className="text-xs lg:text-sm text-gray-500 uppercase tracking-wide">Phone</div>
                     <input
                       type="tel"
                       value={editData.phone}
                       onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
                       placeholder="+1 (555) 123-4567"
-                      className="w-full mt-1 p-2 border border-gray-200 rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors"
+                      className="w-full mt-1 p-1 lg:p-2 border border-gray-200 rounded-md lg:rounded-lg bg-white/80 backdrop-blur-sm focus:outline-none focus:border-accent-blue transition-colors text-sm"
                     />
                   </div>
                 </div>
@@ -372,35 +379,35 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-6">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">Financial Summary</h3>
-          <div className="space-y-4">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-xl p-4">
-              <div className="text-sm text-green-700 uppercase tracking-wide mb-1">Total Balance</div>
-              <div className="text-2xl font-bold text-green-900">
+        <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-4 lg:p-6">
+          <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Financial Summary</h3>
+          <div className="space-y-3 lg:space-y-4">
+            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-lg lg:rounded-xl p-3 lg:p-4">
+              <div className="text-xs lg:text-sm text-green-700 uppercase tracking-wide mb-1">Total Balance</div>
+              <div className="text-lg lg:text-xl xl:text-2xl font-bold text-green-900">
                 ${(profile?.total_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-blue-50 border border-blue-200/50 rounded-xl p-4">
-                <div className="text-xs text-blue-700 uppercase tracking-wide mb-1">Monthly Income</div>
-                <div className="text-lg font-bold text-blue-900">
+            <div className="grid grid-cols-2 gap-3 lg:gap-4">
+              <div className="bg-blue-50 border border-blue-200/50 rounded-lg lg:rounded-xl p-3 lg:p-4">
+                <div className="text-xs lg:text-sm text-blue-700 uppercase tracking-wide mb-1">Monthly Income</div>
+                <div className="text-sm lg:text-base xl:text-lg font-bold text-blue-900">
                   ${(profile?.monthly_income || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </div>
               </div>
               
-              <div className="bg-orange-50 border border-orange-200/50 rounded-xl p-4">
-                <div className="text-xs text-orange-700 uppercase tracking-wide mb-1">Monthly Expenses</div>
-                <div className="text-lg font-bold text-orange-900">
+              <div className="bg-orange-50 border border-orange-200/50 rounded-lg lg:rounded-xl p-3 lg:p-4">
+                <div className="text-xs lg:text-sm text-orange-700 uppercase tracking-wide mb-1">Monthly Expenses</div>
+                <div className="text-sm lg:text-base xl:text-lg font-bold text-orange-900">
                   ${(profile?.monthly_expenses || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </div>
               </div>
             </div>
             
-            <div className="bg-purple-50 border border-purple-200/50 rounded-xl p-4">
-              <div className="text-sm text-purple-700 uppercase tracking-wide mb-1">Savings Rate</div>
-              <div className="text-xl font-bold text-purple-900">
+            <div className="bg-purple-50 border border-purple-200/50 rounded-lg lg:rounded-xl p-3 lg:p-4">
+              <div className="text-xs lg:text-sm text-purple-700 uppercase tracking-wide mb-1">Savings Rate</div>
+              <div className="text-base lg:text-lg xl:text-xl font-bold text-purple-900">
                 {(profile?.savings_rate || 0).toFixed(1)}%
               </div>
             </div>
@@ -409,12 +416,12 @@ const Profile: React.FC = () => {
       </div>
 
       {isEditing && (
-        <div className="flex justify-end space-x-3">
+        <div className="flex flex-col lg:flex-row justify-end space-y-2 lg:space-y-0 lg:space-x-3">
           <InteractiveHoverButton
             variant="white"
             text="Cancel"
             onClick={handleCancel}
-            className="px-6 py-3"
+            className="px-4 py-2 text-sm"
           />
           <InteractiveHoverButton
             variant="blue"
@@ -422,7 +429,7 @@ const Profile: React.FC = () => {
             icon={isSaving ? <RefreshCw size={14} className="animate-spin" /> : <Save size={14} />}
             onClick={handleSave}
             disabled={isSaving}
-            className="px-6 py-3 disabled:opacity-50"
+            className="px-4 py-2 disabled:opacity-50 text-sm"
           />
         </div>
       )}
@@ -649,25 +656,26 @@ const Profile: React.FC = () => {
     <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
       {/* Page Header */}
       <AnimatedSection className="mb-8 lg:mb-12">
-        <h1 className="text-xl lg:text-2xl mb-2 font-bold uppercase tracking-wide">PROFILE</h1>
+        <h1 className="text-lg lg:text-2xl mb-2 font-bold uppercase tracking-wide">PROFILE</h1>
         <motion.div 
           className="w-12 lg:w-16 h-px bg-accent-blue"
           initial={{ width: 0 }}
           animate={{ width: window.innerWidth >= 1024 ? 64 : 48 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         />
+        <p className="text-gray-600 mt-2 text-sm lg:text-base">Manage your personal information and preferences</p>
       </AnimatedSection>
 
       {/* Tab Navigation */}
-      <div className="bg-white/80 backdrop-blur-xl rounded-2xl border border-gray-200/50 p-2">
-        <nav className="flex space-x-1 overflow-x-auto">
+      <div className="bg-white/80 backdrop-blur-xl rounded-xl lg:rounded-2xl border border-gray-200/50 p-1 lg:p-2">
+        <nav className="flex space-x-1 overflow-x-auto scrollbar-hide">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             return (
               <motion.button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center space-x-2 px-4 py-3 rounded-xl transition-all whitespace-nowrap ${
+                className={`flex items-center space-x-1 lg:space-x-2 px-3 lg:px-4 py-2 lg:py-3 rounded-lg lg:rounded-xl transition-all whitespace-nowrap ${
                   activeTab === tab.id
                     ? 'bg-accent-blue text-white shadow-lg'
                     : 'text-gray-700 hover:bg-gray-100'
@@ -675,8 +683,9 @@ const Profile: React.FC = () => {
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <Icon size={16} />
-                <span className="font-medium">{tab.label}</span>
+                <Icon size={14} className="lg:hidden" />
+                <Icon size={16} className="hidden lg:block" />
+                <span className="font-medium text-xs lg:text-sm">{tab.label}</span>
               </motion.button>
             );
           })}
