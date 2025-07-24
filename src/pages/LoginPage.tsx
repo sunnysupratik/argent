@@ -126,17 +126,17 @@ const LoginPage: React.FC = () => {
           >
             <button 
               onClick={() => navigate('/')}
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center space-x-2"
+              className="text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center space-x-2 font-inter"
             >
               <ArrowLeft size={16} />
               <span>Back to Home</span>
             </button>
             
             <div>
-              <h1 className="text-3xl font-light text-gray-900 mb-2">
+              <h1 className="text-3xl font-inter font-medium text-gray-900 mb-2">
                 {isSignUp ? 'Create Account' : 'Welcome Back'}
               </h1>
-              <p className="text-gray-500 text-sm">
+              <p className="text-gray-500 text-sm font-inter">
                 {isSignUp 
                   ? 'Start your financial journey' 
                   : 'Sign in to your dashboard'
@@ -157,23 +157,23 @@ const LoginPage: React.FC = () => {
               <motion.button
                 onClick={() => handleDemoLogin(demoAccount.username, demoAccount.password)}
                 disabled={loading}
-                className="w-full p-4 border border-gray-100 hover:border-gray-200 rounded-2xl text-left transition-all duration-300 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed group"
+                className="w-full p-4 border border-gray-100 hover:border-gray-200 rounded-2xl text-left transition-all duration-300 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed group font-inter"
                 whileHover={{ y: -1 }}
                 whileTap={{ scale: 0.99 }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 font-medium text-sm">
+                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 font-inter font-medium text-sm">
                       JD
                     </div>
                     <div>
-                      <div className="font-medium text-gray-900 text-sm">
+                      <div className="font-inter font-medium text-gray-900 text-sm">
                         {demoAccount.name}
                       </div>
-                      <div className="text-xs text-gray-500">@{demoAccount.username}</div>
+                      <div className="text-xs text-gray-500 font-inter">@{demoAccount.username}</div>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors">
+                  <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors font-inter">
                     {loading ? 'Signing in...' : 'Click to login'}
                   </div>
                 </div>
@@ -184,7 +184,7 @@ const LoginPage: React.FC = () => {
                   <div className="w-full border-t border-gray-100"></div>
                 </div>
                 <div className="relative flex justify-center text-xs">
-                  <span className="px-3 bg-white text-gray-400">Or continue with</span>
+                  <span className="px-3 bg-white text-gray-400 font-inter">Or continue with</span>
                 </div>
               </div>
             </motion.div>
@@ -198,7 +198,7 @@ const LoginPage: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
             >
               <CheckCircle className="w-4 h-4 text-green-600" />
-              <p className="text-green-700 text-sm">{successMessage}</p>
+              <p className="text-green-700 text-sm font-inter">{successMessage}</p>
             </motion.div>
           )}
 
@@ -209,7 +209,7 @@ const LoginPage: React.FC = () => {
               animate={{ opacity: 1, scale: 1 }}
             >
               <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
-              <p className="text-red-700 text-sm">{error}</p>
+              <p className="text-red-700 text-sm font-inter">{error}</p>
             </motion.div>
           )}
 
@@ -230,7 +230,7 @@ const LoginPage: React.FC = () => {
                   value={formData.username}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm"
+                  className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
                   placeholder="Username"
                 />
               </div>
@@ -245,7 +245,7 @@ const LoginPage: React.FC = () => {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       required={isSignUp}
-                      className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm"
+                      className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
                       placeholder="Full Name"
                     />
                   </div>
@@ -258,7 +258,7 @@ const LoginPage: React.FC = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required={isSignUp}
-                      className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm"
+                      className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
                       placeholder="Email Address"
                     />
                   </div>
@@ -273,7 +273,7 @@ const LoginPage: React.FC = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 pr-10 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm"
+                  className="w-full px-4 py-3 pr-10 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
                   placeholder="Password"
                 />
                 <button
@@ -294,7 +294,7 @@ const LoginPage: React.FC = () => {
                     value={formData.confirmPassword}
                     onChange={handleInputChange}
                     required={isSignUp}
-                    className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm"
+                    className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
                     placeholder="Confirm Password"
                   />
                 </div>
@@ -302,7 +302,7 @@ const LoginPage: React.FC = () => {
             </div>
 
             {!isSignUp && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-sm font-inter">
                 <label className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -320,7 +320,7 @@ const LoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+              className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-inter font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
             >
               {loading ? 'Loading...' : (isSignUp ? 'Create Account' : 'Sign In')}
             </button>
@@ -333,11 +333,11 @@ const LoginPage: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 font-inter">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
                 onClick={toggleMode}
-                className="text-gray-700 hover:text-gray-900 font-medium transition-colors"
+                className="text-gray-700 hover:text-gray-900 font-inter font-medium transition-colors"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </button>
@@ -362,7 +362,7 @@ const LoginPage: React.FC = () => {
           {/* Minimal Logo */}
           <div className="relative">
             <motion.div 
-              className="text-6xl font-light text-white tracking-tight"
+              className="text-6xl font-inter font-black text-white tracking-tight"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -371,7 +371,7 @@ const LoginPage: React.FC = () => {
               <span className="relative">
                 G
                 <motion.div 
-                  className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 transform rotate-45"
+                  className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45"
                   animate={{ rotate: [45, 90, 45] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 />
@@ -379,7 +379,7 @@ const LoginPage: React.FC = () => {
               ENT
             </motion.div>
             <motion.div 
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-blue-500"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-accent-blue"
               initial={{ width: 0 }}
               animate={{ width: 64 }}
               transition={{ duration: 0.8, delay: 0.6 }}
@@ -393,27 +393,13 @@ const LoginPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-xl font-light text-white">
+            <h2 className="text-xl font-inter font-medium text-white">
               Financial Excellence
             </h2>
-            <p className="text-white/70 text-sm leading-relaxed font-light">
+            <p className="text-white/70 text-sm leading-relaxed font-inter">
               Experience the perfect balance of simplicity and sophistication 
               in financial management.
             </p>
-          </motion.div>
-
-          {/* Minimal Demo Info */}
-          <motion.div 
-            className="bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <div className="text-xs text-white/50 uppercase tracking-wide mb-3">Demo Access</div>
-            <div className="text-sm text-white/90">
-              <div className="font-medium">{demoAccount.name}</div>
-              <div className="text-white/60 text-xs mt-1">{demoAccount.username} / {demoAccount.password}</div>
-            </div>
           </motion.div>
 
           {/* Minimal Grid Pattern */}
