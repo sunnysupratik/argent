@@ -1,14 +1,32 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, Investment } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
-import { useAccounts } from './useAccounts';
+
+interface DirectInvestment {
+  id: string;
+  user_name: string;
+  symbol: string;
+  name: string;
+  shares: number;
+  current_price: number;
+  total_value: number;
+  day_change: number;
+  day_change_percent: number;
+  sector: string;
+  market_cap: string;
+  pe: number;
+  dividend: number;
+  rating: string;
+  created_at: string;
+  updated_at: string;
+  custom_user_id: string | null;
+}
 
 export function useInvestments() {
-  const [investments, setInvestments] = useState<Investment[]>([]);
+  const [investments, setInvestments] = useState<DirectInvestment[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
-  const { getAccountsByType } = useAccounts();
 
   const fetchInvestments = useCallback(async () => {
     try {
@@ -16,47 +34,44 @@ export function useInvestments() {
       setError(null);
       
       if (!user?.username) {
-        console.log('useInvestments.fetchInvestments - No username available');
+        console.log('No username available for investments');
         setInvestments([]);
         return;
       }
 
-      console.log('useInvestments.fetchInvestments - Fetching investments for username:', user.username);
+      console.log('Fetching investments for user:', user.username);
 
-      // Query direct_investments table using user_name field
-      const { data: directInvestments, error: directError } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('direct_investments')
         .select('*')
         .eq('user_name', user.username)
         .order('symbol', { ascending: true });
 
-      if (directError) {
-        console.error('useInvestments.fetchInvestments - Error from direct_investments:', directError);
-        // Don't throw error, just log it and continue with empty array
+      if (fetchError) {
+        console.error('Error fetching investments:', fetchError);
+        // Don't throw error for investments, just log and continue
         setInvestments([]);
         return;
       }
 
-      console.log('useInvestments.fetchInvestments - Found', directInvestments?.length || 0, 'investments');
-      
-      if (directInvestments && directInvestments.length > 0) {
-        console.log('useInvestments.fetchInvestments - Sample investments:', directInvestments.slice(0, 3).map(inv => ({
-          id: inv.id,
+      console.log('Raw investment data:', data);
+      console.log('Number of investments found:', data?.length || 0);
+
+      if (data && data.length > 0) {
+        console.log('Investment details:', data.map(inv => ({
           symbol: inv.symbol,
           name: inv.name,
           shares: inv.shares,
-          current_price: inv.current_price,
-          total_value: inv.total_value
+          value: inv.total_value
         })));
-        
-        setInvestments(directInvestments);
+        setInvestments(data);
       } else {
-        console.log('useInvestments.fetchInvestments - No investments found for user:', user.username);
+        console.log('No investments found');
         setInvestments([]);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load investments';
-      console.error('useInvestments.fetchInvestments - Error:', errorMessage);
+      console.error('Investment fetch error:', errorMessage);
       setError(errorMessage);
       setInvestments([]);
     } finally {
@@ -65,21 +80,15 @@ export function useInvestments() {
   }, [user?.username]);
 
   useEffect(() => {
-    if (user?.username) {
-      fetchInvestments();
-    } else {
-      console.log('useInvestments - No username, clearing investments');
-      setLoading(false);
-      setInvestments([]);
-    }
-  }, [user?.username, fetchInvestments]);
+    fetchInvestments();
+  }, [fetchInvestments]);
 
   const getTotalInvestmentValue = useCallback(() => {
     const total = investments.reduce((sum, investment) => {
       return sum + Number(investment.total_value);
     }, 0);
     
-    console.log('useInvestments.getTotalInvestmentValue - Calculated total:', total);
+    console.log('Total investment value:', total);
     return total;
   }, [investments]);
 
@@ -88,7 +97,7 @@ export function useInvestments() {
       return sum + Number(investment.day_change);
     }, 0);
     
-    console.log('useInvestments.getDailyChange - Calculated daily change:', change);
+    console.log('Daily change:', change);
     return change;
   }, [investments]);
 
@@ -99,25 +108,9 @@ export function useInvestments() {
     if (totalValue === 0 || dailyChange === 0) return 0;
     
     const changePercent = (dailyChange / (totalValue - dailyChange)) * 100;
-    console.log('useInvestments.getDailyChangePercent - Calculated daily change percent:', changePercent);
+    console.log('Daily change percent:', changePercent);
     return changePercent;
   }, [getTotalInvestmentValue, getDailyChange]);
-
-  const getInvestmentsBySymbol = useCallback((symbol: string) => {
-    const filtered = investments.filter(investment => 
-      investment.symbol.toLowerCase() === symbol.toLowerCase()
-    );
-    console.log('useInvestments.getInvestmentsBySymbol - Found', filtered.length, 'investments with symbol', symbol);
-    return filtered;
-  }, [investments]);
-
-  const getInvestmentsBySector = useCallback((sector: string) => {
-    const filtered = investments.filter(investment => 
-      investment.sector.toLowerCase().includes(sector.toLowerCase())
-    );
-    console.log('useInvestments.getInvestmentsBySector - Found', filtered.length, 'investments in sector', sector);
-    return filtered;
-  }, [investments]);
 
   const getInvestmentsCount = useCallback(() => {
     return investments.length;
@@ -135,8 +128,6 @@ export function useInvestments() {
     getTotalInvestmentValue,
     getDailyChange,
     getDailyChangePercent,
-    getInvestmentsBySymbol,
-    getInvestmentsBySector,
     getInvestmentsCount,
   };
 }

@@ -1,9 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, Account } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import { useAuth } from './useAuth';
 
+interface DirectAccount {
+  id: string;
+  user_name: string;
+  account_name: string;
+  account_type: string;
+  current_balance: number;
+  created_at: string;
+}
+
 export function useAccounts() {
-  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accounts, setAccounts] = useState<DirectAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
@@ -14,54 +23,43 @@ export function useAccounts() {
       setError(null);
       
       if (!user?.username) {
-        console.log('useAccounts.fetchAccounts - No username available');
+        console.log('No username available for accounts');
         setAccounts([]);
         return;
       }
 
-      console.log('useAccounts.fetchAccounts - Fetching accounts for username:', user.username);
+      console.log('Fetching accounts for user:', user.username);
 
-      // Query direct_accounts table using user_name field
-      const { data: directAccounts, error: directError } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('direct_accounts')
         .select('*')
         .eq('user_name', user.username)
         .order('account_name', { ascending: true });
 
-      if (directError) {
-        console.error('useAccounts.fetchAccounts - Error from direct_accounts:', directError);
-        throw directError;
+      if (fetchError) {
+        console.error('Error fetching accounts:', fetchError);
+        throw fetchError;
       }
 
-      console.log('useAccounts.fetchAccounts - Found', directAccounts?.length || 0, 'accounts');
-      
-      if (directAccounts && directAccounts.length > 0) {
-        console.log('useAccounts.fetchAccounts - Account details:', directAccounts.map(acc => ({
-          id: acc.id,
-          name: acc.account_name,
-          type: acc.account_type,
-          balance: acc.current_balance
-        })));
+      console.log('Raw account data:', data);
+      console.log('Number of accounts found:', data?.length || 0);
 
-        // Convert direct_accounts to match the Account interface
-        const convertedAccounts = directAccounts.map(da => ({
-          id: da.id,
-          custom_user_id: null,
-          account_name: da.account_name,
-          account_type: da.account_type,
-          current_balance: da.current_balance,
-          created_at: da.created_at,
-          user_name: da.user_name
-        }));
-        
-        setAccounts(convertedAccounts);
+      if (data) {
+        // Log account details for debugging
+        if (data.length > 0) {
+          console.log('Account details:', data.map(acc => ({
+            name: acc.account_name,
+            type: acc.account_type,
+            balance: acc.current_balance
+          })));
+        }
+        setAccounts(data);
       } else {
-        console.log('useAccounts.fetchAccounts - No accounts found for user:', user.username);
         setAccounts([]);
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load accounts';
-      console.error('useAccounts.fetchAccounts - Error:', errorMessage);
+      console.error('Account fetch error:', errorMessage);
       setError(errorMessage);
       setAccounts([]);
     } finally {
@@ -70,21 +68,20 @@ export function useAccounts() {
   }, [user?.username]);
 
   useEffect(() => {
-    if (user?.username) {
-      fetchAccounts();
-    } else {
-      console.log('useAccounts - No username, clearing accounts');
-      setLoading(false);
-      setAccounts([]);
-    }
-  }, [user?.username, fetchAccounts]);
+    fetchAccounts();
+  }, [fetchAccounts]);
 
   const getTotalBalance = useCallback(() => {
     const total = accounts.reduce((sum, account) => {
       return sum + Number(account.current_balance);
     }, 0);
     
-    console.log('useAccounts.getTotalBalance - Calculated total:', total, 'from', accounts.length, 'accounts');
+    console.log('Total balance calculation:', {
+      accountCount: accounts.length,
+      total,
+      accountBalances: accounts.map(a => ({ name: a.account_name, balance: a.current_balance }))
+    });
+    
     return total;
   }, [accounts]);
 
@@ -92,26 +89,27 @@ export function useAccounts() {
     const filtered = accounts.filter(account => 
       account.account_type.toLowerCase().includes(type.toLowerCase())
     );
-    console.log('useAccounts.getAccountsByType - Found', filtered.length, 'accounts of type', type);
-    return filtered;
+    console.log(`Accounts of type "${type}":`, filtered.length);
+    return filtered.map(acc => ({
+      id: acc.id,
+      custom_user_id: null,
+      account_name: acc.account_name,
+      account_type: acc.account_type,
+      current_balance: acc.current_balance,
+      created_at: acc.created_at,
+      user_name: acc.user_name
+    }));
   }, [accounts]);
 
   const getAccountsCount = useCallback(() => {
     return accounts.length;
   }, [accounts]);
 
-  const getAccountBalance = useCallback((accountType: string) => {
-    const account = accounts.find(acc => acc.account_type === accountType);
-    const balance = account ? Number(account.current_balance) : 0;
-    console.log('useAccounts.getAccountBalance - Balance for', accountType, ':', balance);
-    return balance;
-  }, [accounts]);
-
   const getNetWorth = useCallback(() => {
     const netWorth = accounts.reduce((sum, account) => {
       return sum + Number(account.current_balance);
     }, 0);
-    console.log('useAccounts.getNetWorth - Calculated net worth:', netWorth);
+    console.log('Net worth calculation:', netWorth);
     return netWorth;
   }, [accounts]);
 
@@ -120,14 +118,21 @@ export function useAccounts() {
   }, [fetchAccounts]);
 
   return {
-    accounts,
+    accounts: accounts.map(acc => ({
+      id: acc.id,
+      custom_user_id: null,
+      account_name: acc.account_name,
+      account_type: acc.account_type,
+      current_balance: acc.current_balance,
+      created_at: acc.created_at,
+      user_name: acc.user_name
+    })),
     loading,
     error,
     refetch,
     getTotalBalance,
     getAccountsByType,
     getAccountsCount,
-    getAccountBalance,
     getNetWorth,
   };
 }
