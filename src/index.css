@@ -742,13 +742,13 @@
   /* Responsive Grid Adjustments */
   .responsive-grid {
     display: grid;
-    gap: clamp(1rem, 3vw, 2rem);
+    gap: clamp(0.75rem, 2.5vw, 1.5rem);
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   }
   
   .responsive-stats-grid {
     display: grid;
-    gap: clamp(1rem, 3vw, 2rem);
+    gap: clamp(0.75rem, 2.5vw, 1.5rem);
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   }
   

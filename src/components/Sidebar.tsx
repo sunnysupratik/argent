@@ -200,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
 
       {/* Enhanced Greeting Section - Below Logo */}
       <motion.div 
-        className="px-4 lg:px-8 py-6 lg:py-8 bg-gradient-to-r from-accent-blue/5 via-indigo-50/30 to-violet-50/20 border-b border-gray-200/30"
+        className="px-4 lg:px-8 py-4 lg:py-6 bg-gradient-to-r from-accent-blue/5 via-indigo-50/30 to-violet-50/20 border-b border-gray-200/30"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
@@ -212,10 +212,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <div className="greeting-text-large text-gray-900 mb-1">
+            <div className="text-lg lg:text-2xl font-black text-gray-900 mb-1">
               {getGreeting()}
             </div>
-            <div className="greeting-text-medium text-gray-900">
+            <div className="text-base lg:text-xl font-black text-gray-900">
               Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">{getUserName()}</span>
             </div>
           </motion.div>
@@ -223,12 +223,13 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
       </motion.div>
 
       {/* Navigation Menu Section - At Bottom */}
-      <div className="relative px-4 lg:px-8">
-        <div className="flex justify-center py-4 max-w-7xl mx-auto">
+      <div className="relative px-4 lg:px-8 py-4">
+        <div className="flex justify-center max-w-7xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.0 }}
+            className="w-full flex justify-center"
           >
             <GradientMenu menuItems={gradientMenuItems} />
           </motion.div>

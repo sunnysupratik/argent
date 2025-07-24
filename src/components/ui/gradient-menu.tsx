@@ -16,14 +16,14 @@ interface GradientMenuProps {
 
 export default function GradientMenu({ menuItems }: GradientMenuProps) {
   return (
-    <div className="flex justify-center items-center">
-      <ul className="flex gap-6">
+    <div className="flex justify-center items-center w-full">
+      <ul className="flex gap-3 lg:gap-6 flex-wrap justify-center max-w-full">
         {menuItems.map(({ id, label, icon: Icon, gradientFrom, gradientTo, onClick, isActive }) => (
           <li
             key={id}
             style={{ '--gradient-from': gradientFrom, '--gradient-to': gradientTo } as React.CSSProperties}
-            className={`relative w-[60px] h-[60px] bg-white shadow-lg rounded-full flex items-center justify-center transition-all duration-500 ${
-              isActive ? 'w-[60px]' : 'hover:w-[180px] hover:shadow-none'
+            className={`relative w-[50px] h-[50px] lg:w-[60px] lg:h-[60px] bg-white shadow-lg rounded-full flex items-center justify-center transition-all duration-500 ${
+              isActive ? 'w-[50px] lg:w-[60px]' : 'hover:w-[140px] lg:hover:w-[180px] hover:shadow-none'
             } group cursor-pointer`}
             onClick={onClick}
           >
@@ -39,15 +39,16 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
 
             {/* Icon - always visible and stays in center when active, moves to left when hovering inactive */}
             <span className={`relative z-10 transition-all duration-300 ${
-              isActive ? 'text-white' : 'text-gray-500 group-hover:text-white group-hover:absolute group-hover:left-5'
+              isActive ? 'text-white' : 'text-gray-500 group-hover:text-white group-hover:absolute group-hover:left-3 lg:group-hover:left-5'
             }`}>
-              <Icon size={24} />
+              <Icon size={20} className="lg:hidden" />
+              <Icon size={24} className="hidden lg:block" />
             </span>
 
             {/* Title - only visible on hover when not active */}
             <span className={`absolute text-white uppercase tracking-wide text-sm transition-all duration-500 ${
               isActive ? 'opacity-0 scale-0' : 'opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100'
-            } delay-150 left-16`}>
+            } delay-150 left-10 lg:left-16 text-xs lg:text-sm`}>
               {label}
             </span>
           </li>
