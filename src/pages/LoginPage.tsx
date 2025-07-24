@@ -113,158 +113,182 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       {/* Left Side - Form */}
-      <div className="w-full lg:w-1/2 flex flex-col justify-center px-6 lg:px-20 py-8 lg:py-0">
-        <div className="max-w-sm mx-auto w-full space-y-8">
-          {/* Minimal Header */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center px-4 lg:px-16 py-8 lg:py-0">
+        <div className="max-w-md mx-auto w-full space-y-6 lg:space-y-8">
+          {/* Header */}
           <motion.div 
-            className="space-y-6"
+            className="space-y-4 lg:space-y-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <button 
+            <InteractiveHoverButton 
+              variant="white" 
+              text="Back to Home" 
+              icon={<ArrowLeft size={14} />}
               onClick={() => navigate('/')}
-              className="text-sm text-gray-500 hover:text-gray-700 transition-colors flex items-center space-x-2 font-inter"
-            >
-              <ArrowLeft size={16} />
-              <span>Back to Home</span>
-            </button>
+              className="text-sm px-4 py-2"
+            />
             
             <div>
-              <h1 className="text-3xl font-inter font-medium text-gray-900 mb-2">
+              <h1 className="text-2xl lg:text-3xl inter-subheading text-text-primary mb-2">
                 {isSignUp ? 'Create Account' : 'Welcome Back'}
               </h1>
-              <p className="text-gray-500 text-sm font-inter">
+              <p className="inter-body text-text-primary">
                 {isSignUp 
-                  ? 'Start your financial journey' 
-                  : 'Sign in to your dashboard'
+                  ? 'Start your financial journey with Argent' 
+                  : 'Sign in to access your dashboard'
                 }
               </p>
             </div>
           </motion.div>
 
-          {/* Subtle Demo Account - Only for sign in */}
+          {/* Demo Account - Show prominently */}
           {!isSignUp && (
             <motion.div 
-              className="space-y-3"
+              className="space-y-4"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <div className="text-xs text-gray-400 uppercase tracking-wide">Try Demo</div>
+              <h3 className="text-sm font-medium text-gray-700 uppercase tracking-wide">Try Demo Account</h3>
               <motion.button
                 onClick={() => handleDemoLogin(demoAccount.username, demoAccount.password)}
                 disabled={loading}
-                className="w-full p-4 border border-gray-100 hover:border-gray-200 rounded-2xl text-left transition-all duration-300 hover:shadow-sm disabled:opacity-50 disabled:cursor-not-allowed group font-inter"
-                whileHover={{ y: -1 }}
+                className="group relative overflow-hidden w-full p-4 border-2 border-accent-blue bg-gradient-to-r from-accent-blue/5 to-accent-blue/10 hover:from-accent-blue/10 hover:to-accent-blue/15 rounded-2xl text-left transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={{ y: -2, scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: 0.3 }}
               >
-                <div className="flex items-center justify-between">
+                <div className="relative flex justify-between items-center">
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 font-inter font-medium text-sm">
-                      JD
+                    <div className={`w-12 h-12 bg-gradient-to-r ${demoAccount.gradient} rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-lg`}>
+                      {demoAccount.name.split(' ').map(n => n[0]).join('')}
                     </div>
                     <div>
-                      <div className="font-inter font-medium text-gray-900 text-sm">
+                      <p className="font-bold text-gray-900 group-hover:text-gray-800">
                         {demoAccount.name}
-                      </div>
-                      <div className="text-xs text-gray-500 font-inter">@{demoAccount.username}</div>
+                      </p>
+                      <p className="text-sm text-gray-600">@{demoAccount.username}</p>
+                      <p className="text-xs text-gray-500 mt-1">{demoAccount.description}</p>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400 group-hover:text-gray-600 transition-colors font-inter">
-                    {loading ? 'Signing in...' : 'Click to login'}
+                  <div className="text-right">
+                    <div className="text-xs font-medium text-accent-blue">
+                      {loading ? 'Signing in...' : 'Click to login'}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      {demoAccount.password}
+                    </div>
                   </div>
                 </div>
               </motion.button>
               
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-100"></div>
+                  <div className="w-full border-t border-gray-300"></div>
                 </div>
-                <div className="relative flex justify-center text-xs">
-                  <span className="px-3 bg-white text-gray-400 font-inter">Or continue with</span>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-background text-gray-500">Or sign in manually</span>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {/* Success/Error Messages */}
+          {/* Success Message */}
           {successMessage && (
             <motion.div 
-              className="p-3 bg-green-50 border border-green-100 rounded-xl flex items-center space-x-2"
+              className="p-4 bg-green-50 border border-green-200 rounded-lg flex items-center space-x-2"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <CheckCircle className="w-4 h-4 text-green-600" />
-              <p className="text-green-700 text-sm font-inter">{successMessage}</p>
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              <p className="text-green-700 text-sm">{successMessage}</p>
             </motion.div>
           )}
 
+          {/* Error Message */}
           {error && (
             <motion.div 
-              className="p-3 bg-red-50 border border-red-100 rounded-xl flex items-start space-x-2"
+              className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-2"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
             >
-              <AlertCircle className="w-4 h-4 text-red-600 mt-0.5 flex-shrink-0" />
-              <p className="text-red-700 text-sm font-inter">{error}</p>
+              <AlertCircle className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-red-700 text-sm">{error}</p>
+              </div>
             </motion.div>
           )}
 
-          {/* Minimal Form */}
+          {/* Form */}
           <motion.form 
             onSubmit={handleSubmit} 
-            className="space-y-5"
+            className="space-y-4 lg:space-y-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <div className="space-y-4">
-              <div>
-                <input
-                  type="text"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
-                  placeholder="Username"
-                />
-              </div>
+            <div>
+              <label htmlFor="username" className="block text-sm inter-navigation text-text-primary mb-2">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                required
+                className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                placeholder="johndoe"
+              />
+            </div>
 
-              {isSignUp && (
-                <>
-                  <div>
-                    <input
-                      type="text"
-                      id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleInputChange}
-                      required={isSignUp}
-                      className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
-                      placeholder="Full Name"
-                    />
-                  </div>
-                  
-                  <div>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required={isSignUp}
-                      className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
-                      placeholder="Email Address"
-                    />
-                  </div>
-                </>
-              )}
+            {isSignUp && (
+              <>
+                <div>
+                  <label htmlFor="fullName" className="block text-sm inter-navigation text-text-primary mb-2">
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    id="fullName"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    required={isSignUp}
+                    className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                    placeholder="John Doe"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="email" className="block text-sm inter-navigation text-text-primary mb-2">
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required={isSignUp}
+                    className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                    placeholder="john@example.com"
+                  />
+                </div>
+              </>
+            )}
 
+            <div>
+              <label htmlFor="password" className="block text-sm inter-navigation text-text-primary mb-2">
+                Password
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -273,57 +297,60 @@ const LoginPage: React.FC = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-3 pr-10 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
-                  placeholder="Password"
+                  className="w-full px-4 py-3 pr-12 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                  placeholder="••••••••"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-0 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 apple-glass-icon-dark p-1 flex items-center justify-center"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-
-              {isSignUp && (
-                <div>
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={formData.confirmPassword}
-                    onChange={handleInputChange}
-                    required={isSignUp}
-                    className="w-full px-4 py-3 border-0 border-b border-gray-200 bg-transparent text-gray-900 placeholder-gray-400 focus:outline-none focus:border-gray-400 transition-colors text-sm font-inter"
-                    placeholder="Confirm Password"
-                  />
-                </div>
-              )}
             </div>
 
+            {isSignUp && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm inter-navigation text-text-primary mb-2">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required={isSignUp}
+                  className="w-full px-4 py-3 border border-graphic-subtle bg-overlay-bg text-text-primary focus:outline-none focus:border-accent-blue transition-colors inter-body rounded-xl"
+                  placeholder="••••••••"
+                />
+              </div>
+            )}
+
             {!isSignUp && (
-              <div className="flex items-center justify-between text-sm font-inter">
-                <label className="flex items-center space-x-2">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                <label className="flex items-center">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-blue-600 border-gray-200 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-accent-blue border-graphic-subtle focus:ring-accent-blue rounded"
                   />
-                  <span className="text-gray-500">Remember me</span>
+                  <span className="ml-2 text-sm inter-navigation text-text-primary">Remember me</span>
                 </label>
                 
-                <a href="#" className="text-gray-400 hover:text-gray-600 transition-colors">
+                <a href="#" className="text-sm inter-navigation text-accent-blue hover:underline">
                   Forgot password?
                 </a>
               </div>
             )}
 
-            <button
+            <InteractiveHoverButton
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-inter font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-            >
-              {loading ? 'Loading...' : (isSignUp ? 'Create Account' : 'Sign In')}
-            </button>
+              variant="blue"
+              text={loading ? 'Loading...' : (isSignUp ? 'Create Account' : 'Sign In')}
+              className="w-full py-3 text-base lg:text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            />
           </motion.form>
 
           {/* Toggle Mode */}
@@ -333,11 +360,11 @@ const LoginPage: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <p className="text-sm text-gray-500 font-inter">
+            <p className="inter-body text-text-primary">
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
               <button
                 onClick={toggleMode}
-                className="text-gray-700 hover:text-gray-900 font-inter font-medium transition-colors"
+                className="inter-navigation text-accent-blue hover:underline"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </button>
@@ -346,23 +373,17 @@ const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side - Minimal Visual */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gray-900 items-center justify-center p-16 relative overflow-hidden">
-        {/* Subtle background pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-transparent to-purple-500"></div>
-        </div>
-        
+      {/* Right Side - Visual (Hidden on Mobile) */}
+      <div className="hidden lg:flex lg:w-1/2 bg-text-primary items-center justify-center p-16">
         <motion.div 
-          className="max-w-md text-center space-y-8 relative z-10"
+          className="max-w-md text-center space-y-8"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Minimal Logo */}
           <div className="relative">
             <motion.div 
-              className="text-6xl font-inter font-black text-white tracking-tight"
+              className="text-5xl lg:text-7xl font-black text-overlay-bg tracking-tight inter-headline"
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -371,7 +392,7 @@ const LoginPage: React.FC = () => {
               <span className="relative">
                 G
                 <motion.div 
-                  className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45"
+                  className="absolute -top-2 -right-2 w-3 h-3 bg-accent-blue transform rotate-45"
                   animate={{ rotate: [45, 90, 45] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                 />
@@ -379,43 +400,58 @@ const LoginPage: React.FC = () => {
               ENT
             </motion.div>
             <motion.div 
-              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-0.5 bg-accent-blue"
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-16 h-1 bg-accent-blue"
               initial={{ width: 0 }}
               animate={{ width: 64 }}
               transition={{ duration: 0.8, delay: 0.6 }}
             />
           </div>
           
-          {/* Minimal Text */}
           <motion.div 
             className="space-y-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <h2 className="text-xl font-inter font-medium text-white">
+            <h2 className="text-xl lg:text-2xl inter-subheading text-overlay-bg">
               Financial Excellence
             </h2>
-            <p className="text-white/70 text-sm leading-relaxed font-inter">
+            <p className="inter-body text-overlay-bg leading-relaxed">
               Experience the perfect balance of simplicity and sophistication 
               in financial management.
             </p>
           </motion.div>
 
-          {/* Minimal Grid Pattern */}
+          {/* Demo Credentials */}
           <motion.div 
-            className="grid grid-cols-4 gap-2 mt-12 opacity-20"
+            className="bg-white bg-opacity-10 p-6 rounded-2xl backdrop-blur-sm border border-white border-opacity-20"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <h3 className="text-lg font-bold text-overlay-bg mb-4">Demo Account</h3>
+            <div className="text-sm text-overlay-bg text-left">
+              <p className="font-medium">{demoAccount.name}</p>
+              <p className="opacity-80">{demoAccount.username} / {demoAccount.password}</p>
+            </div>
+          </motion.div>
+
+          {/* Geometric Pattern */}
+          <motion.div 
+            className="grid grid-cols-3 gap-4 mt-12"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.2 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            {[...Array(12)].map((_, i) => (
+            {[...Array(9)].map((_, i) => (
               <motion.div
                 key={i}
-                className="aspect-square border border-white/20 rounded-sm"
+                className={`aspect-square border border-overlay-bg rounded-lg ${
+                  i % 2 === 0 ? 'bg-overlay-bg bg-opacity-20' : 'bg-transparent'
+                }`}
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.9 + i * 0.02 }}
+                transition={{ duration: 0.3, delay: 0.9 + i * 0.05 }}
               />
             ))}
           </motion.div>
