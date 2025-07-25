@@ -204,6 +204,20 @@ const Dashboard: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="p-3 lg:p-8">
         <div className="max-w-7xl mx-auto space-y-4 lg:space-y-6">
+          {/* Enhanced Page Header */}
+          <AnimatedSection className="mb-8 lg:mb-12">
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
+              <div>
+                <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl mb-2 font-bold tracking-wide">Dashboard</h1>
+                <motion.div 
+                  className="w-8 md:w-10 lg:w-12 xl:w-16 h-px bg-accent-blue"
+                  initial={{ width: 0 }}
+                  animate={{ width: window.innerWidth >= 1280 ? 64 : window.innerWidth >= 1024 ? 48 : window.innerWidth >= 768 ? 40 : 32 }}
+                  transition={{ duration: 0.4, delay: 0.1 }}
+                />
+                <p className="text-gray-600 mt-2 text-xs md:text-sm lg:text-base">Comprehensive financial overview and insights</p>
+              </div>
+
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
             {/* Left Column */}

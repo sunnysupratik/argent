@@ -464,7 +464,7 @@ const Settings: React.FC = () => {
     <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
       {/* Page Header */}
       <AnimatedSection className="mb-8 lg:mb-12">
-        <h1 className="text-xl lg:text-2xl mb-2 font-bold uppercase tracking-wide">SETTINGS</h1>
+        <h1 className="text-xl lg:text-2xl mb-2 font-bold tracking-wide">Settings</h1>
         <motion.div 
           className="w-12 lg:w-16 h-px bg-accent-blue"
           initial={{ width: 0 }}

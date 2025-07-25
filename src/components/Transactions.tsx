@@ -138,7 +138,7 @@ const Transactions: React.FC = () => {
       <AnimatedSection className="mb-8 lg:mb-12">
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
           <div>
-            <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl mb-2 font-bold uppercase tracking-wide">TRANSACTIONS</h1>
+            <h1 className="text-base md:text-lg lg:text-xl xl:text-2xl mb-2 font-bold tracking-wide">Transactions</h1>
             <motion.div 
               className="w-8 md:w-10 lg:w-12 xl:w-16 h-px bg-accent-blue"
               initial={{ width: 0 }}
