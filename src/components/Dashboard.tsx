@@ -218,6 +218,8 @@ const Dashboard: React.FC = () => {
                 <p className="text-gray-600 mt-2 text-xs md:text-sm lg:text-base">Comprehensive financial overview and insights</p>
               </div>
 
+            </AnimatedSection>
+
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
             {/* Left Column */}
