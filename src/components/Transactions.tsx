@@ -133,7 +133,9 @@ const Transactions: React.FC = () => {
   }
 
   return (
-    <div className="mobile-spacing lg:p-8 space-y-6 lg:space-y-8">
+    <div className="min-h-screen bg-gray-50">
+      <div className="p-3 lg:p-8">
+        <div className="max-w-7xl mx-auto space-y-4 lg:space-y-6">
       {/* Enhanced Page Header */}
       <AnimatedSection className="mb-8 lg:mb-12">
         <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-4 lg:space-y-0">
@@ -421,6 +423,9 @@ const Transactions: React.FC = () => {
           </motion.div>
         )}
       </AnimatedSection>
+        </div>
+      </div>
+    </div>
 
       {/* Enhanced Summary Section */}
       <AnimatedSection className="pt-6" delay={0.6}>
