@@ -174,18 +174,18 @@ const HomePage: React.FC = () => {
                 onClick={() => navigate('/login')}
                 className="text-sm px-6 py-2"
               />
-            )}
-          </div>
+              title: 'Safe & Secure',
+              description: 'Your financial information is protected with bank-level security. Free to use with no hidden fees.'
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              title: 'Smart Money Management',
+              description: 'Simple tools to track spending, find savings opportunities, and build wealth gradually over time.'
             whileTap={{ scale: 0.95 }}
           >
             {isMobileMenuOpen ? 
-              <X size={20} className="text-white" /> : 
-              <Menu size={20} className="text-white" />
+              title: 'Easy-to-Understand Reports',
+              description: 'Clear, simple charts and reports that help you understand where your money goes and how to improve.'
             }
           </motion.button>
         </nav>

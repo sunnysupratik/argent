@@ -1,15 +1,23 @@
-# Argent - AI-Powered Financial Management Platform
+# Argent - Free Financial Tools for Everyone
 
-A modern financial management application with AI-powered video consultation capabilities.
+A free, accessible financial management platform designed to help middle-class families, people with disabilities, and those with limited income take control of their finances.
 
 ## Features
 
-- **Dashboard**: Comprehensive financial overview with real-time data
-- **Transactions**: Track and categorize all financial transactions
-- **Accounts**: Manage multiple bank accounts and investment portfolios
-- **Investments**: Monitor investment performance and portfolio analytics
-- **AI Advisor**: Video chat with AI financial advisor powered by Tavus
-- **Profile & Settings**: Personalized user experience
+- **Simple Dashboard**: Easy-to-understand overview of your money
+- **Transaction Tracking**: See where your money goes with clear categories
+- **Account Management**: Connect all your bank accounts in one place
+- **Basic Investing**: Learn about low-cost investment options
+- **AI Helper**: Get free financial advice and budgeting help
+- **Goal Setting**: Save for emergencies, education, or other important goals
+
+## Who This Is For
+
+- **Middle-class families** looking to stretch their budget further
+- **People with disabilities** who need accessible financial tools
+- **Low-income individuals** seeking free financial guidance
+- **Students** learning to manage money responsibly
+- **Anyone** who wants simple, honest financial tools without fees
 
 ## AI Video Chat Integration
 

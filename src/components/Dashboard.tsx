@@ -211,7 +211,12 @@ const Dashboard: React.FC = () => {
               {/* Account Summary */}
               <AnimatedSection delay={0.1}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                  <h2 className="text-lg lg:text-xl font-bold text-gray-900 mb-4 lg:mb-6">Account Summary</h2>
+                  <div className="flex items-center justify-between mb-4 lg:mb-6">
+                    <h2 className="text-lg lg:text-xl font-bold text-gray-900">Financial Overview</h2>
+                    <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                      Free Tools
+                    </div>
+                  </div>
                   
                   <div className="grid grid-cols-1 gap-3 lg:gap-4">
                     {/* Net Worth */}
@@ -220,11 +225,11 @@ const Dashboard: React.FC = () => {
                       whileHover={{ scale: 1.02 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <div className="text-xs lg:text-sm text-blue-700 font-medium mb-1">Total Net Worth</div>
+                      <div className="text-xs lg:text-sm text-blue-700 font-medium mb-1">Total Money Available</div>
                       <div className="text-xl lg:text-2xl font-bold text-blue-900">
                         ${animatedValues.netWorth.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </div>
-                      <div className="text-xs text-blue-600 mt-1">{getBalanceChange()} from last month</div>
+                      <div className="text-xs text-blue-600 mt-1">All your accounts combined</div>
                     </motion.div>
 
                     {/* Monthly Income */}
@@ -237,7 +242,7 @@ const Dashboard: React.FC = () => {
                       <div className="text-xl lg:text-2xl font-bold text-green-900">
                         ${animatedValues.income.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </div>
-                      <div className="text-xs text-green-600 mt-1">{getIncomeChange()} from last month</div>
+                      <div className="text-xs text-green-600 mt-1">Money coming in this month</div>
                     </motion.div>
 
                     {/* Monthly Expenses */}
@@ -250,7 +255,7 @@ const Dashboard: React.FC = () => {
                       <div className="text-xl lg:text-2xl font-bold text-orange-900">
                         ${animatedValues.expenses.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                       </div>
-                      <div className="text-xs text-orange-600 mt-1">{getExpenseChange()} from last month</div>
+                      <div className="text-xs text-orange-600 mt-1">Money spent this month</div>
                     </motion.div>
                   </div>
                 </div>
@@ -261,11 +266,11 @@ const Dashboard: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
                   {/* Credit Utilization */}
                   <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Credit Utilization</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Credit Card Usage</h3>
                     <div className="space-y-3 lg:space-y-4">
                       <div className="flex justify-between text-xs lg:text-sm">
-                        <span className="text-gray-600">Used: ${creditUsed.toLocaleString()}</span>
-                        <span className="text-gray-600">Available: ${creditAvailable.toLocaleString()}</span>
+                        <span className="text-gray-600">Spent: ${creditUsed.toLocaleString()}</span>
+                        <span className="text-gray-600">Can still spend: ${creditAvailable.toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 lg:h-3">
                         <motion.div 
@@ -281,18 +286,18 @@ const Dashboard: React.FC = () => {
                       </div>
                       <div className="text-center">
                         <div className="text-xl lg:text-2xl font-bold text-gray-900">{creditUtilization.toFixed(1)}%</div>
-                        <div className="text-xs lg:text-sm text-gray-500">Utilization Rate</div>
+                        <div className="text-xs lg:text-sm text-gray-500">of credit limit used</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Savings Rate */}
                   <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Savings Rate</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Money Left Over</h3>
                     <div className="space-y-3 lg:space-y-4">
                       <div className="flex justify-between text-xs lg:text-sm">
-                        <span className="text-gray-600">Saved: ${(finalValues.income - finalValues.expenses).toLocaleString()}</span>
-                        <span className="text-gray-600">Income: ${finalValues.income.toLocaleString()}</span>
+                        <span className="text-gray-600">Left over: ${(finalValues.income - finalValues.expenses).toLocaleString()}</span>
+                        <span className="text-gray-600">Total income: ${finalValues.income.toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2 lg:h-3">
                         <motion.div 
@@ -308,7 +313,7 @@ const Dashboard: React.FC = () => {
                       </div>
                       <div className="text-center">
                         <div className="text-xl lg:text-2xl font-bold text-gray-900">{savingsRate.toFixed(1)}%</div>
-                        <div className="text-xs lg:text-sm text-gray-500">Monthly Savings Rate</div>
+                        <div className="text-xs lg:text-sm text-gray-500">of income saved</div>
                       </div>
                     </div>
                   </div>
@@ -319,10 +324,10 @@ const Dashboard: React.FC = () => {
               <AnimatedSection delay={0.3}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-4 lg:mb-6">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Cash Flow Overview</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Money In vs Money Out</h3>
                     <InteractiveHoverButton
                       variant="white"
-                      text="View Details"
+                      text="See All Transactions"
                       icon={<BarChart3 size={14} />}
                       onClick={() => navigate('/app/transactions')}
                       className="px-3 lg:px-4 py-2 text-xs lg:text-sm"
@@ -338,10 +343,10 @@ const Dashboard: React.FC = () => {
               <AnimatedSection delay={0.35}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-4 lg:mb-6">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Monthly Trends</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">How You're Doing Over Time</h3>
                     <InteractiveHoverButton
                       variant="white"
-                      text="Analyze"
+                      text="Get Help"
                       icon={<TrendingUp size={14} />}
                       onClick={() => navigate('/app/chat')}
                       className="px-3 lg:px-4 py-2 text-xs lg:text-sm"
@@ -357,10 +362,10 @@ const Dashboard: React.FC = () => {
               <AnimatedSection delay={0.4}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-4 lg:mb-6">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Expense Breakdown</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Where Your Money Goes</h3>
                     <InteractiveHoverButton
                       variant="white"
-                      text="Optimize"
+                      text="Find Savings"
                       icon={<PieChart size={14} />}
                       onClick={() => navigate('/app/chat')}
                       className="px-3 lg:px-4 py-2 text-xs lg:text-sm"
@@ -376,7 +381,7 @@ const Dashboard: React.FC = () => {
               <AnimatedSection delay={0.45}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-4 lg:mb-6">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Recent Transactions</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Latest Money Activity</h3>
                     <InteractiveHoverButton
                       variant="white"
                       text="View All"
@@ -395,7 +400,7 @@ const Dashboard: React.FC = () => {
               {/* Account Balance Distribution */}
               <AnimatedSection delay={0.3}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Account Balances</h3>
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Money in Each Account</h3>
                   <div className="h-48 lg:h-56">
                     <AccountBalanceChart />
                   </div>
@@ -405,7 +410,7 @@ const Dashboard: React.FC = () => {
               {/* Savings Rate Trend */}
               <AnimatedSection delay={0.35}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Savings Rate Trend</h3>
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">How Much You're Saving</h3>
                   <div className="h-48 lg:h-56">
                     <SavingsRateChart />
                   </div>
@@ -415,7 +420,7 @@ const Dashboard: React.FC = () => {
               {/* Investment Performance */}
               <AnimatedSection delay={0.4}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Investment Performance</h3>
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Investment Growth</h3>
                   <div className="h-48 lg:h-56">
                     <InvestmentPerformanceChart />
                   </div>
@@ -425,12 +430,12 @@ const Dashboard: React.FC = () => {
               {/* Account Stats */}
               <AnimatedSection delay={0.45}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Account Overview</h3>
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Quick Summary</h3>
                   
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
                       <div>
-                        <div className="font-medium text-blue-900 text-sm lg:text-base">Total Accounts</div>
+                        <div className="font-medium text-blue-900 text-sm lg:text-base">Connected Accounts</div>
                         <div className="text-xs lg:text-sm text-blue-600">Connected</div>
                       </div>
                       <div className="text-xl lg:text-2xl font-bold text-blue-900">{getAccountsCount()}</div>
@@ -438,7 +443,7 @@ const Dashboard: React.FC = () => {
                     
                     <div className="flex justify-between items-center p-3 bg-green-50 rounded-xl">
                       <div>
-                        <div className="font-medium text-green-900 text-sm lg:text-base">Transactions</div>
+                        <div className="font-medium text-green-900 text-sm lg:text-base">Money Moves</div>
                         <div className="text-xs lg:text-sm text-green-600">This month</div>
                       </div>
                       <div className="text-xl lg:text-2xl font-bold text-green-900">{getTransactionsCount()}</div>
@@ -446,7 +451,7 @@ const Dashboard: React.FC = () => {
                     
                     <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
                       <div>
-                        <div className="font-medium text-purple-900 text-sm lg:text-base">Net Income</div>
+                        <div className="font-medium text-purple-900 text-sm lg:text-base">Money Left Over</div>
                         <div className="text-xs lg:text-sm text-purple-600">This month</div>
                       </div>
                       <div className={`text-lg lg:text-xl font-bold ${
@@ -463,7 +468,7 @@ const Dashboard: React.FC = () => {
               <AnimatedSection delay={0.5}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-3 lg:mb-4">
-                    <h3 className="text-base lg:text-lg font-bold text-gray-900">My Card</h3>
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">My Main Account</h3>
                     <button
                       onClick={() => setShowCardNumber(!showCardNumber)}
                       className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -510,6 +515,7 @@ const Dashboard: React.FC = () => {
                     <div className="text-lg lg:text-xl font-bold text-green-600">
                       ${cardBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </div>
+                    <div className="text-xs text-gray-500 mt-1">Money you can spend</div>
                   </div>
                 </div>
               </AnimatedSection>
@@ -517,7 +523,7 @@ const Dashboard: React.FC = () => {
               {/* Quick Actions */}
               <AnimatedSection delay={0.55}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
-                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Quick Actions</h3>
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">What You Can Do</h3>
                   
                   <div className="grid grid-cols-2 gap-2 lg:gap-3">
                     <motion.button
@@ -528,7 +534,7 @@ const Dashboard: React.FC = () => {
                     >
                       <BarChart3 size={20} className="text-blue-600 mx-auto mb-2 lg:hidden" />
                       <BarChart3 size={24} className="text-blue-600 mx-auto mb-2 hidden lg:block" />
-                      <div className="text-xs lg:text-sm font-medium text-blue-900">View Reports</div>
+                      <div className="text-xs lg:text-sm font-medium text-blue-900">See All Spending</div>
                     </motion.button>
                     
                     <motion.button
@@ -539,7 +545,7 @@ const Dashboard: React.FC = () => {
                     >
                       <Download size={20} className="text-green-600 mx-auto mb-2 lg:hidden" />
                       <Download size={24} className="text-green-600 mx-auto mb-2 hidden lg:block" />
-                      <div className="text-xs lg:text-sm font-medium text-green-900">Export Data</div>
+                      <div className="text-xs lg:text-sm font-medium text-green-900">Download Records</div>
                     </motion.button>
                     
                     <motion.button
@@ -550,7 +556,7 @@ const Dashboard: React.FC = () => {
                     >
                       <TrendingUp size={20} className="text-purple-600 mx-auto mb-2 lg:hidden" />
                       <TrendingUp size={24} className="text-purple-600 mx-auto mb-2 hidden lg:block" />
-                      <div className="text-xs lg:text-sm font-medium text-purple-900">Invest</div>
+                      <div className="text-xs lg:text-sm font-medium text-purple-900">Start Investing</div>
                     </motion.button>
                     
                     <motion.button
@@ -561,7 +567,7 @@ const Dashboard: React.FC = () => {
                     >
                       <MessageCircle size={20} className="text-orange-600 mx-auto mb-2 lg:hidden" />
                       <MessageCircle size={24} className="text-orange-600 mx-auto mb-2 hidden lg:block" />
-                      <div className="text-xs lg:text-sm font-medium text-orange-900">AI Advisor</div>
+                      <div className="text-xs lg:text-sm font-medium text-orange-900">Get Help</div>
                     </motion.button>
                   </div>
                 </div>
