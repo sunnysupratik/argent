@@ -105,12 +105,18 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="text-lg font-black text-gray-900 mb-1">
+          <div className="text-xl md:text-2xl font-black text-gray-900 mb-1 tracking-tight">
             {getGreeting()}
           </div>
-          <div className="text-xl font-black text-gray-900">
-            Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">{getUserName()}</span>
+          <div className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+            Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-black">{getUserName()}</span>
           </div>
+          <motion.div 
+            className="w-12 md:w-16 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-2"
+            initial={{ width: 0 }}
+            animate={{ width: window.innerWidth >= 768 ? 64 : 48 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          />
         </motion.div>
 
         {/* Page Title */}

@@ -221,18 +221,24 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
 
               {/* Enhanced Welcome Message */}
               <motion.div 
-                className="mx-6 mt-6 mb-4 p-4 bg-gradient-to-r from-accent-blue/10 to-accent-blue/5 rounded-2xl border border-accent-blue/20 backdrop-blur-sm"
+                className="mx-6 mt-6 mb-4 p-5 bg-gradient-to-r from-accent-blue/10 to-accent-blue/5 rounded-2xl border border-accent-blue/20 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
-                    <User size={18} className="text-white" />
+                  <div className="w-12 h-12 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <User size={20} className="text-white" />
                   </div>
                   <div>
-                    <div className="text-xs text-gray-600 uppercase tracking-wide font-medium">Welcome back</div>
-                    <div className="text-lg font-bold text-accent-blue">{getUserName()}</div>
+                    <div className="text-sm text-gray-600 uppercase tracking-wide font-medium mb-1">{getGreeting()}</div>
+                    <div className="text-xl font-black text-accent-blue tracking-tight">Welcome back, {getUserName()}</div>
+                    <motion.div 
+                      className="w-8 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-1"
+                      initial={{ width: 0 }}
+                      animate={{ width: 32 }}
+                      transition={{ duration: 0.6, delay: 0.5 }}
+                    />
                   </div>
                 </div>
               </motion.div>
