@@ -8,6 +8,7 @@ import ExpenseBreakdownChart from './ExpenseBreakdownChart';
 import AccountBalanceChart from './AccountBalanceChart';
 import MonthlyTrendChart from './MonthlyTrendChart';
 import InvestmentPerformanceChart from './InvestmentPerformanceChart';
+import SavingsRateChart from './SavingsRateChart';
 import AnimatedSection from './AnimatedSection';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
