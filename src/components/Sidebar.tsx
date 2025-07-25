@@ -238,3 +238,5 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
 };
 
 export default Sidebar;
+  )
+}
