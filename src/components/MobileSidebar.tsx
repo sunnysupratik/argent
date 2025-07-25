@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, Home } from 'lucide-react';
+import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, Home, MessageCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
