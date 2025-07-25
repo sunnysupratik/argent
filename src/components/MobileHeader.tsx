@@ -94,8 +94,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
               <span className="text-white font-bold text-sm">
                 {getUserName().charAt(0).toUpperCase()}
               </span>
-        <div className="text-sm md:text-base font-medium text-gray-700 mb-1 tracking-wide">
-          </div>
+          </motion.div>
         </div>
 
         {/* Enhanced Welcome Section */}
