@@ -82,26 +82,26 @@ const ChatContainer: React.FC = () => {
   const quickPrompts = [
     {
       icon: TrendingUp,
-      text: "Find ways to save money",
-      prompt: "I'm on a tight budget. Can you help me find practical ways to save money on everyday expenses like groceries, utilities, and transportation?",
+      text: "Analyze spending patterns",
+      prompt: "Can you analyze my spending patterns and suggest areas where I can optimize my budget?",
       gradient: "from-blue-500 to-blue-600"
     },
     {
       icon: DollarSign,
-      text: "Start investing with little money",
-      prompt: "I don't have much money but want to start investing. What are some low-cost, beginner-friendly investment options I can start with?",
+      text: "Investment strategies",
+      prompt: "I'm looking for investment advice based on my current financial situation. What would you recommend?",
       gradient: "from-green-500 to-green-600"
     },
     {
       icon: Target,
-      text: "Create a realistic budget",
-      prompt: "Help me create a simple, realistic budget that works with my limited income and helps me avoid debt while covering essential expenses.",
+      text: "Budget optimization",
+      prompt: "Help me create a budget plan that maximizes my savings while maintaining my lifestyle.",
       gradient: "from-purple-500 to-purple-600"
     },
     {
       icon: BarChart3,
-      text: "Emergency fund planning",
-      prompt: "I want to build an emergency fund but don't have much extra money. What's the best way to start saving for emergencies on a tight budget?",
+      text: "Financial health check",
+      prompt: "Can you give me an overall assessment of my financial health and suggest improvements?",
       gradient: "from-orange-500 to-orange-600"
     }
   ];

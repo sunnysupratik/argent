@@ -73,11 +73,11 @@ function ElegantShape({
 }
 
 function HeroGeometric({
-    badge = "Financial Tools for Everyone",
-    title1 = "Money Management",
-    title2 = "Made Simple.",
-    title3 = "For Everyone.",
-    description = "Free financial tools designed to help you save money, avoid debt, and build a better financial future - no matter your income level.",
+    badge = "Argent Financial",
+    title1 = "Financial",
+    title2 = "Clarity.",
+    title3 = "Simplified.",
+    description = "Take control of your financial future with precision-engineered tools designed for the modern investor.",
 }: {
     badge?: string;
     title1?: string;

@@ -165,9 +165,9 @@ const AboutPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="text-white">Financial Tools</div>
+              <div className="text-white">Powerful Financial</div>
               <div className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent">
-                For Everyone
+                Management Suite
               </div>
             </motion.h1>
 
@@ -178,8 +178,9 @@ const AboutPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              Free, accessible financial tools designed to help everyone - regardless of income level or 
-              financial background - take control of their money, avoid debt, and build a more secure future.
+              Explore our comprehensive suite of financial tools designed to give you complete control 
+              over your money. From advanced analytics to secure banking, every feature is crafted 
+              for the modern investor.
             </motion.p>
 
             {/* Decorative Line */}

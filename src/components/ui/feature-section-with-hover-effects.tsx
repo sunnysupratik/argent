@@ -13,48 +13,48 @@ import {
 export function FeaturesSectionWithHoverEffects() {
   const features = [
     {
-      title: "Simple Money Insights",
+      title: "AI-Powered Insights",
       description:
-        "Easy-to-understand analysis of your spending that helps you find ways to save money and avoid overspending. No complex financial jargon - just clear, helpful advice.",
+        "Go beyond simple charts. Let your dedicated AI Analyst sift through your spending patterns to find hidden savings, identify trends, and help you understand where your money truly goes.",
       icon: <BarChart3 />,
     },
     {
-      title: "Debt Prevention & Management",
+      title: "Proactive Portfolio Monitoring",
       description:
-        "Tools to help you avoid debt traps, manage existing debt responsibly, and create realistic payment plans. Get alerts before you overspend and tips for staying within budget.",
+        "This isn't just a list of your stocks. Your AI Strategist actively monitors your portfolio, providing performance analytics and contextual market insights to help you see the bigger picture and guide your long-term vision.",
       icon: <TrendingUp />,
     },
     {
-      title: "100% Free & Secure",
+      title: "Fortified Security",
       description:
-        "Completely free to use with no hidden fees, premium tiers, or subscription costs. Your financial data is protected with bank-level security and never sold to third parties.",
+        "Bank-level, end-to-end encryption protecting all your sensitive financial data. This is the bedrock of our platform. Your trust and privacy are our foundation.",
       icon: <Shield />,
     },
     {
-      title: "Simple Budgeting Tools",
-      description: "Create budgets that actually work with your income. Set realistic goals, track essential expenses, and get helpful reminders to stay on track without overwhelming complexity.",
+      title: "Intelligent Budgeting",
+      description: "Forget spreadsheets. Create budgets that actually work for you. Your AI team helps you set realistic goals, automates tracking, and provides intelligent alerts to keep you on track without the hassle.",
       icon: <Target />,
     },
     {
-      title: "All Your Accounts in One Place",
-      description: "Safely connect your bank accounts, credit cards, and other financial accounts to see everything in one simple dashboard. No more logging into multiple apps or websites.",
+      title: "The Unified HQ",
+      description: "Securely connect all your banks, credit cards, and investment accounts into one seamless platform. This is your Financial Headquarters—the single source of truth that empowers your AI team.",
       icon: <Wallet />,
     },
     {
-      title: "Build Better Credit",
+      title: "Guided Credit Improvement",
       description:
-        "Learn how to improve your credit score with simple, actionable steps. Understand what affects your credit and get personalized tips to build a stronger financial foundation.",
+        "Don't just watch your credit score, improve it. Your AI Analyst provides clear, personalized recommendations to help you understand the key factors and build your credit with confidence over time.",
       icon: <CreditCard />,
     },
     {
-      title: "Achieve Your Financial Goals",
+      title: "AI-Driven Goal Planning",
       description:
-        "Set realistic savings goals for things that matter to you - emergency funds, education, home ownership, or retirement. Track progress and get encouragement along the way.",
+        "Whether you're saving for a home or planning for retirement, collaborate with your AI Strategist to build a clear path forward with progress tracking, projections, and motivational insights.",
       icon: <PieChart />,
     },
     {
-      title: "Free Support & Education",
-      description: "Access free financial education resources, helpful guides, and support when you need it. Learn about money management, debt reduction, and building wealth at your own pace.",
+      title: "Dedicated Human & AI Support",
+      description: "You're never alone. Get 24/7 access to our expert human support team for any technical assistance, and lean on your dedicated AI team for financial analysis and guidance anytime, day or night.",
       icon: <DollarSign />,
     },
   ];
