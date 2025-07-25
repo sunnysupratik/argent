@@ -22,7 +22,7 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
           <li
             key={id}
             style={{ '--gradient-from': gradientFrom, '--gradient-to': gradientTo } as React.CSSProperties}
-            } rounded-2xl flex items-center justify-center transition-all duration-300 ${
+            className={`relative w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
               isActive ? 'bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))]' : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
             } group cursor-pointer`}
             onClick={onClick}
