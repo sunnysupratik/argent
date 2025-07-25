@@ -94,7 +94,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
               <span className="text-white font-bold text-sm">
                 {getUserName().charAt(0).toUpperCase()}
               </span>
-            </motion.div>
+        <div className="text-sm md:text-base font-medium text-gray-700 mb-1 tracking-wide">
           </div>
         </div>
 
@@ -109,28 +109,28 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
             {getGreeting()}
           </div>
           <div className="text-xl md:text-2xl font-black text-gray-900 tracking-tight">
-            Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-black">{getUserName()}</span>
-          </div>
+        <div className="text-lg md:text-xl font-bold text-gray-900 tracking-tight">
+          Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-bold">{getUserName()}</span>
           <motion.div 
             className="w-12 md:w-16 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-2"
-            initial={{ width: 0 }}
+          className="w-10 md:w-12 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-1.5"
             animate={{ width: window.innerWidth >= 768 ? 64 : 48 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+          animate={{ width: window.innerWidth >= 768 ? 48 : 40 }}
           />
         </motion.div>
 
         {/* Page Title */}
         <motion.div 
           className="mt-4 pt-3 border-t border-gray-200/50"
-          initial={{ opacity: 0, y: 10 }}
+        className="mt-3 pt-3 border-t border-gray-200/40"
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}
         >
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-lg font-bold text-gray-900">{currentPage}</h1>
-              <div className="text-xs text-gray-600 mt-0.5">
-                {new Date().toLocaleDateString('en-US', { 
+            <h1 className="text-base font-semibold text-gray-900">{currentPage}</h1>
+            <div className="text-xs text-gray-500 mt-0.5">
                   weekday: 'long', 
                   year: 'numeric', 
                   month: 'long', 
@@ -151,7 +151,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
         </motion.div>
       </div>
     </motion.div>
-  );
+            className="px-3 py-1.5 bg-gradient-to-r from-accent-blue to-blue-600 text-white rounded-lg font-medium text-xs"
 };
 
 export default MobileHeader;

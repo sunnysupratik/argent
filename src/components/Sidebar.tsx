@@ -123,7 +123,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
               transition={{ duration: 0.6, delay: 0.2 }}
               whileHover={{ scale: 1.05 }}
             >
-              <div className="text-2xl lg:text-3xl font-black tracking-tight text-text-primary">
+              <div className="text-xl lg:text-2xl font-black tracking-tight text-text-primary">
                 AR
                 <span className="relative">
                   G
@@ -136,9 +136,9 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
                 ENT
               </div>
               <motion.div 
-                className="absolute -bottom-1 left-0 w-8 lg:w-12 h-0.5 bg-accent-blue"
+                className="absolute -bottom-0.5 left-0 w-6 lg:w-10 h-0.5 bg-accent-blue"
                 initial={{ width: 0 }}
-                animate={{ width: window.innerWidth >= 1024 ? 48 : 32 }}
+                animate={{ width: window.innerWidth >= 1024 ? 40 : 24 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               />
             </motion.div>
@@ -153,45 +153,45 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
               {/* Home Button */}
               <motion.button
                 onClick={handleGoHome}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl bg-gray-100/80 hover:bg-gray-200/80 transition-colors backdrop-blur-sm border border-gray-200/50"
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-50/80 hover:bg-gray-100/80 transition-all duration-200 backdrop-blur-sm border border-gray-200/30"
                 whileHover={{ 
-                  x: 2,
+                  scale: 1.02,
                   transition: { duration: 0.2 }
                 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <motion.div 
-                  className="w-7 h-7 bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg flex items-center justify-center"
+                  className="w-6 h-6 bg-gradient-to-r from-gray-600 to-gray-700 rounded-md flex items-center justify-center"
                   whileHover={{ 
                     scale: 1.1,
                     transition: { duration: 0.2 }
                   }}
                 >
-                  <Home size={14} className="text-white" />
+                  <Home size={12} className="text-white" />
                 </motion.div>
-                <span className="hidden lg:block text-sm font-medium text-gray-700">Home</span>
+                <span className="hidden lg:block text-xs font-medium text-gray-700">Home</span>
               </motion.button>
 
               {/* Sign Out Button */}
               <motion.button
                 onClick={handleSignOut}
-                className="flex items-center space-x-2 px-4 py-2 rounded-xl text-red-600 hover:bg-red-50/80 transition-colors backdrop-blur-sm border border-red-200/30"
+                className="flex items-center space-x-2 px-3 py-2 rounded-lg text-red-600 hover:bg-red-50/80 transition-all duration-200 backdrop-blur-sm border border-red-200/30"
                 whileHover={{ 
-                  x: 2,
+                  scale: 1.02,
                   transition: { duration: 0.2 }
                 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <motion.div 
-                  className="w-7 h-7 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center"
+                  className="w-6 h-6 bg-gradient-to-r from-red-500 to-red-600 rounded-md flex items-center justify-center"
                   whileHover={{ 
                     scale: 1.1,
                     transition: { duration: 0.2 }
                   }}
                 >
-                  <LogOut size={14} className="text-white" />
+                  <LogOut size={12} className="text-white" />
                 </motion.div>
-                <span className="hidden lg:block text-sm font-medium">Sign Out</span>
+                <span className="hidden lg:block text-xs font-medium">Sign Out</span>
               </motion.button>
             </motion.div>
           </div>
@@ -200,7 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
 
       {/* Enhanced Greeting Section - Below Logo */}
       <motion.div 
-        className="px-4 lg:px-8 py-3 md:py-4 lg:py-6 xl:py-8 bg-gradient-to-r from-accent-blue/5 via-indigo-50/30 to-violet-50/20 border-b border-gray-200/30"
+        className="px-4 lg:px-8 py-4 lg:py-6 bg-gradient-to-r from-accent-blue/3 via-indigo-50/20 to-violet-50/15 border-b border-gray-200/20"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
@@ -212,16 +212,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <div className="text-base md:text-lg lg:text-xl xl:text-3xl font-black text-gray-900 mb-1 lg:mb-2 tracking-tight">
+            <div className="text-sm md:text-base lg:text-lg font-semibold text-gray-800 mb-1 tracking-wide">
               {getGreeting()}
             </div>
-            <div className="text-base md:text-lg lg:text-xl xl:text-3xl font-black text-gray-900 tracking-tight">
-              Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-black">{getUserName()}</span>
+            <div className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 tracking-tight">
+              Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-bold">{getUserName()}</span>
             </div>
             <motion.div 
-              className="w-16 md:w-20 lg:w-24 xl:w-32 h-0.5 lg:h-1 bg-gradient-to-r from-accent-blue to-blue-600 mt-2 lg:mt-3"
+              className="w-12 md:w-16 lg:w-20 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-2"
               initial={{ width: 0 }}
-              animate={{ width: window.innerWidth >= 1280 ? 128 : window.innerWidth >= 1024 ? 96 : window.innerWidth >= 768 ? 80 : 64 }}
+              animate={{ width: window.innerWidth >= 1024 ? 80 : window.innerWidth >= 768 ? 64 : 48 }}
               transition={{ duration: 0.8, delay: 1.0 }}
             />
           </motion.div>
@@ -229,7 +229,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
       </motion.div>
 
       {/* Navigation Menu Section - At Bottom */}
-      <div className="relative px-2 md:px-4 lg:px-6 xl:px-8 py-2 md:py-3 lg:py-4">
+      <div className="relative px-4 lg:px-8 py-3 lg:py-4">
         <div className="flex justify-center max-w-7xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}

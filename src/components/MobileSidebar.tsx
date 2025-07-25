@@ -221,22 +221,22 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
 
               {/* Enhanced Welcome Message */}
               <motion.div 
-                className="mx-6 mt-6 mb-4 p-5 bg-gradient-to-r from-accent-blue/10 to-accent-blue/5 rounded-2xl border border-accent-blue/20 backdrop-blur-sm"
+                className="mx-6 mt-4 mb-4 p-4 bg-gradient-to-r from-accent-blue/8 to-accent-blue/4 rounded-xl border border-accent-blue/15 backdrop-blur-sm"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
-                    <User size={20} className="text-white" />
+                  <div className="w-10 h-10 bg-gradient-to-r from-accent-blue to-blue-600 rounded-lg flex items-center justify-center">
+                    <User size={18} className="text-white" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-600 tracking-wide font-medium mb-1">{getGreeting()}</div>
-                    <div className="text-lg font-black text-accent-blue tracking-tight">Welcome back, {getUserName()}</div>
+                    <div className="text-xs text-gray-600 tracking-wide font-medium mb-0.5">{getGreeting()}</div>
+                    <div className="text-base font-bold text-accent-blue tracking-tight">Welcome back, {getUserName()}</div>
                     <motion.div 
-                      className="w-8 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-1"
+                      className="w-6 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-1"
                       initial={{ width: 0 }}
-                      animate={{ width: 32 }}
+                      animate={{ width: 24 }}
                       transition={{ duration: 0.6, delay: 0.5 }}
                     />
                   </div>
@@ -245,30 +245,30 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
 
               {/* Home Button */}
               <motion.div 
-                className="mx-6 mb-4"
+                className="mx-6 mb-3"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
               >
                 <motion.button
                   onClick={handleGoHome}
-                  className="w-full flex items-center space-x-3 px-4 py-3 text-left rounded-2xl bg-gray-100/80 hover:bg-gray-200/80 transition-colors backdrop-blur-sm border border-gray-200/50"
+                  className="w-full flex items-center space-x-3 px-3 py-2.5 text-left rounded-xl bg-gray-50/80 hover:bg-gray-100/80 transition-all duration-200 backdrop-blur-sm border border-gray-200/40"
                   whileHover={{ 
-                    x: 4,
+                    scale: 1.01,
                     transition: { duration: 0.2 }
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
                   <motion.div 
-                    className="w-10 h-10 bg-gradient-to-r from-gray-600 to-gray-700 rounded-xl flex items-center justify-center"
+                    className="w-8 h-8 bg-gradient-to-r from-gray-600 to-gray-700 rounded-lg flex items-center justify-center"
                     whileHover={{ 
                       scale: 1.1,
                       transition: { duration: 0.2 }
                     }}
                   >
-                    <Home size={16} className="text-white" />
+                    <Home size={14} className="text-white" />
                   </motion.div>
-                  <span className="font-medium text-gray-700">Back to Home</span>
+                  <span className="text-sm font-medium text-gray-700">Back to Home</span>
                 </motion.button>
               </motion.div>
 
