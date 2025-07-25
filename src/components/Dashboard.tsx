@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import CashFlowChart from './CashFlowChart';
 import RecentTransactions from './RecentTransactions';
+import ExpenseBreakdownChart from './ExpenseBreakdownChart';
+import AccountBalanceChart from './AccountBalanceChart';
+import MonthlyTrendChart from './MonthlyTrendChart';
+import InvestmentPerformanceChart from './InvestmentPerformanceChart';
 import AnimatedSection from './AnimatedSection';
 import { useAccounts } from '../hooks/useAccounts';
 import { useTransactions } from '../hooks/useTransactions';
@@ -329,8 +333,46 @@ const Dashboard: React.FC = () => {
                 </div>
               </AnimatedSection>
 
-              {/* Recent Transactions */}
+              {/* Monthly Trend Analysis */}
+              <AnimatedSection delay={0.35}>
+                <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
+                  <div className="flex items-center justify-between mb-4 lg:mb-6">
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Monthly Trends</h3>
+                    <InteractiveHoverButton
+                      variant="white"
+                      text="Analyze"
+                      icon={<TrendingUp size={14} />}
+                      onClick={() => navigate('/app/chat')}
+                      className="px-3 lg:px-4 py-2 text-xs lg:text-sm"
+                    />
+                  </div>
+                  <div className="h-64 lg:h-80">
+                    <MonthlyTrendChart />
+                  </div>
+                </div>
+              </AnimatedSection>
+
+              {/* Expense Breakdown */}
               <AnimatedSection delay={0.4}>
+                <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
+                  <div className="flex items-center justify-between mb-4 lg:mb-6">
+                    <h3 className="text-base lg:text-lg font-bold text-gray-900">Expense Breakdown</h3>
+                    <InteractiveHoverButton
+                      variant="white"
+                      text="Optimize"
+                      icon={<PieChart size={14} />}
+                      onClick={() => navigate('/app/chat')}
+                      className="px-3 lg:px-4 py-2 text-xs lg:text-sm"
+                    />
+                  </div>
+                  <div className="h-64 lg:h-80">
+                    <ExpenseBreakdownChart />
+                  </div>
+                </div>
+              </AnimatedSection>
+
+              {/* Recent Transactions */}
+              <AnimatedSection delay={0.45}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-4 lg:mb-6">
                     <h3 className="text-base lg:text-lg font-bold text-gray-900">Recent Transactions</h3>
@@ -349,8 +391,38 @@ const Dashboard: React.FC = () => {
 
             {/* Right Column */}
             <div className="space-y-4 lg:space-y-6">
+              {/* Account Balance Distribution */}
+              <AnimatedSection delay={0.3}>
+                <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Account Balances</h3>
+                  <div className="h-48 lg:h-56">
+                    <AccountBalanceChart />
+                  </div>
+                </div>
+              </AnimatedSection>
+
+              {/* Savings Rate Trend */}
+              <AnimatedSection delay={0.35}>
+                <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Savings Rate Trend</h3>
+                  <div className="h-48 lg:h-56">
+                    <SavingsRateChart />
+                  </div>
+                </div>
+              </AnimatedSection>
+
+              {/* Investment Performance */}
+              <AnimatedSection delay={0.4}>
+                <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
+                  <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Investment Performance</h3>
+                  <div className="h-48 lg:h-56">
+                    <InvestmentPerformanceChart />
+                  </div>
+                </div>
+              </AnimatedSection>
+
               {/* Account Stats */}
-              <AnimatedSection delay={0.5}>
+              <AnimatedSection delay={0.45}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Account Overview</h3>
                   
@@ -387,7 +459,7 @@ const Dashboard: React.FC = () => {
               </AnimatedSection>
 
               {/* My Card - Use real account data */}
-              <AnimatedSection delay={0.6}>
+              <AnimatedSection delay={0.5}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <div className="flex items-center justify-between mb-3 lg:mb-4">
                     <h3 className="text-base lg:text-lg font-bold text-gray-900">My Card</h3>
@@ -442,7 +514,7 @@ const Dashboard: React.FC = () => {
               </AnimatedSection>
 
               {/* Quick Actions */}
-              <AnimatedSection delay={0.7}>
+              <AnimatedSection delay={0.55}>
                 <div className="bg-white rounded-2xl lg:rounded-3xl p-4 lg:p-6 shadow-sm border border-gray-100">
                   <h3 className="text-base lg:text-lg font-bold text-gray-900 mb-3 lg:mb-4">Quick Actions</h3>
                   
