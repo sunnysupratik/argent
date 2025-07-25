@@ -215,7 +215,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) => {
             <div className="text-base md:text-lg lg:text-xl xl:text-3xl font-black text-gray-900 mb-1 lg:mb-2 tracking-tight">
               {getGreeting()}
             </div>
-            <div className="text-lg md:text-xl lg:text-2xl xl:text-4xl font-black text-gray-900 tracking-tight">
+            <div className="text-base md:text-lg lg:text-xl xl:text-3xl font-black text-gray-900 tracking-tight">
               Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-black">{getUserName()}</span>
             </div>
             <motion.div 

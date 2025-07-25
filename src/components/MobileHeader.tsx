@@ -108,7 +108,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
           <div className="text-xl md:text-2xl font-black text-gray-900 mb-1 tracking-tight">
             {getGreeting()}
           </div>
-          <div className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">
+          <div className="text-xl md:text-2xl font-black text-gray-900 tracking-tight">
             Welcome back, <span className="bg-gradient-to-r from-accent-blue to-blue-600 bg-clip-text text-transparent font-black">{getUserName()}</span>
           </div>
           <motion.div 
