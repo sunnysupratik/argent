@@ -58,19 +58,19 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
               {[
                 { 
                   icon: <Users size={20} />, 
-                  label: "Counselor",
+                  label: "Strategist",
                   onClick: () => { onVideoClick(); setIsExpanded(false); },
                   active: activeAssistant === 'video'
                 },
                 { 
                   icon: <Mic size={20} />, 
-                  label: "Voice Help",
+                  label: "Advisor",
                   onClick: () => { onVoiceToggle(); setIsExpanded(false); },
                   active: activeAssistant === 'voice'
                 },
                 { 
                   icon: <Brain size={20} />, 
-                  label: "Chat Help",
+                  label: "Analyst",
                   onClick: () => { onChatClick(); setIsExpanded(false); },
                   active: activeAssistant === 'chat'
                 }
@@ -142,21 +142,21 @@ const AIAssistantHub: React.FC<AIAssistantHubProps> = ({
                   Icon: <Users size={22} className="text-white" />,
                   onClick: onVideoClick,
                   active: activeAssistant === 'video',
-                  label: "Counselor"
+                  label: "Strategist"
                 },
                 {
                   link: "#",
                   Icon: <Mic size={22} className="text-white" />,
                   onClick: onVoiceToggle,
                   active: activeAssistant === 'voice',
-                  label: "Voice Help"
+                  label: "Advisor"
                 },
                 {
                   link: "#",
                   Icon: <Brain size={22} className="text-white" />,
                   onClick: onChatClick,
                   active: activeAssistant === 'chat',
-                  label: "Chat Help"
+                  label: "Analyst"
                 }
               ]}
             />

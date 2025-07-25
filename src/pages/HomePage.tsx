@@ -57,18 +57,18 @@ const HomePage: React.FC = () => {
   const features = [
     {
       icon: Shield,
-      title: 'Safe & Secure',
-      description: 'Your financial information is protected with bank-level security. Free to use with no hidden fees.'
+      title: 'Secure Banking',
+      description: 'Bank-level security with end-to-end encryption for all your financial data.'
     },
     {
       icon: TrendingUp,
-      title: 'Build Your Future',
-      description: 'Start small and grow your savings. Track progress toward financial goals, no matter your income level.'
+      title: 'Investment Tracking',
+      description: 'Monitor your portfolio performance with real-time market data and analytics.'
     },
     {
       icon: PieChart,
-      title: 'Simple Budgeting',
-      description: 'Easy-to-understand tools that help you manage money, find savings, and access assistance programs.'
+      title: 'Smart Analytics',
+      description: 'Gain insights into your spending patterns with intelligent categorization.'
     }
   ];
 

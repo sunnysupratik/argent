@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, Home, MessageCircle } from 'lucide-react';
+import { BarChart3, Activity, Wallet, TrendingUp, Settings, User, X, LogOut, Home } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
@@ -52,15 +52,6 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
       gradientFrom: '#80FF72',
       gradientTo: '#7EE8FA',
       description: 'Portfolio & Stocks'
-    },
-    { 
-      id: 'chat', 
-      label: 'Financial Help', 
-      icon: MessageCircle, 
-      path: '/app/chat',
-      gradientFrom: '#FF6B6B',
-      gradientTo: '#FF8E53',
-      description: 'Free Financial Guidance'
     },
     { 
       id: 'profile', 
