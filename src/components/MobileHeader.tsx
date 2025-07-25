@@ -156,3 +156,5 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ isMenuOpen, onMenuToggle, c
 export default MobileHeader;
   )
 }
+  )
+}
