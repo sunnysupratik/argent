@@ -54,6 +54,15 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
       description: 'Portfolio & Stocks'
     },
     { 
+      id: 'chat', 
+      label: 'Financial Help', 
+      icon: MessageCircle, 
+      path: '/app/chat',
+      gradientFrom: '#FF6B6B',
+      gradientTo: '#FF8E53',
+      description: 'Free Financial Guidance'
+    },
+    { 
       id: 'profile', 
       label: 'Profile', 
       icon: User, 

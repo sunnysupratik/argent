@@ -273,8 +273,8 @@ const AppLayout: React.FC = () => {
                     <Brain size={20} className="text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-gray-900">Argent Analyst</h2>
-                    <p className="text-sm text-gray-600">Text consultation with your AI Analyst</p>
+                    <h2 className="text-lg font-bold text-gray-900">Financial Advocate</h2>
+                    <p className="text-sm text-gray-600">Free financial guidance and support</p>
                   </div>
                 </div>
                 

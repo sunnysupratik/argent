@@ -13,48 +13,48 @@ import {
 export function FeaturesSectionWithHoverEffects() {
   const features = [
     {
-      title: "AI-Powered Insights",
+      title: "Free Financial Guidance",
       description:
-        "Go beyond simple charts. Let your dedicated AI Analyst sift through your spending patterns to find hidden savings, identify trends, and help you understand where your money truly goes.",
+        "Get personalized advice on budgeting, saving, and building financial stability. Our AI understands the challenges of limited income and provides practical, actionable guidance at no cost.",
       icon: <BarChart3 />,
     },
     {
-      title: "Proactive Portfolio Monitoring",
+      title: "Assistance Program Finder",
       description:
-        "This isn't just a list of your stocks. Your AI Strategist actively monitors your portfolio, providing performance analytics and contextual market insights to help you see the bigger picture and guide your long-term vision.",
+        "Discover government assistance programs, food banks, utility assistance, and other resources in your area. We help connect you with support programs you may qualify for.",
       icon: <TrendingUp />,
     },
     {
-      title: "Fortified Security",
+      title: "Privacy & Security",
       description:
-        "Bank-level, end-to-end encryption protecting all your sensitive financial data. This is the bedrock of our platform. Your trust and privacy are our foundation.",
+        "Your financial information is completely private and secure. We never share your data, and our platform is designed to protect vulnerable users from financial exploitation.",
       icon: <Shield />,
     },
     {
-      title: "Intelligent Budgeting",
-      description: "Forget spreadsheets. Create budgets that actually work for you. Your AI team helps you set realistic goals, automates tracking, and provides intelligent alerts to keep you on track without the hassle.",
+      title: "Accessible Budgeting",
+      description: "Simple, easy-to-use budgeting tools designed for people with varying abilities and income levels. Set realistic goals and track progress with clear, visual feedback.",
       icon: <Target />,
     },
     {
-      title: "The Unified HQ",
-      description: "Securely connect all your banks, credit cards, and investment accounts into one seamless platform. This is your Financial Headquarters—the single source of truth that empowers your AI team.",
+      title: "Emergency Fund Builder",
+      description: "Start building financial security with any amount. Our tools help you save even $1 at a time and celebrate every milestone on your journey to financial independence.",
       icon: <Wallet />,
     },
     {
-      title: "Guided Credit Improvement",
+      title: "Credit Building Support",
       description:
-        "Don't just watch your credit score, improve it. Your AI Analyst provides clear, personalized recommendations to help you understand the key factors and build your credit with confidence over time.",
+        "Learn how to build or repair your credit with free, step-by-step guidance. Understand your rights, dispute errors, and access credit-building tools designed for people with limited credit history.",
       icon: <CreditCard />,
     },
     {
-      title: "AI-Driven Goal Planning",
+      title: "Achievable Goal Setting",
       description:
-        "Whether you're saving for a home or planning for retirement, collaborate with your AI Strategist to build a clear path forward with progress tracking, projections, and motivational insights.",
+        "Set realistic financial goals based on your income and circumstances. Whether it's saving $100 for emergencies or planning for education, we help you create achievable milestones.",
       icon: <PieChart />,
     },
     {
-      title: "Dedicated Human & AI Support",
-      description: "You're never alone. Get 24/7 access to our expert human support team for any technical assistance, and lean on your dedicated AI team for financial analysis and guidance anytime, day or night.",
+      title: "Community & Support",
+      description: "Access to financial counselors, peer support groups, and educational resources. Connect with others on similar journeys and get help from trained professionals who understand your challenges.",
       icon: <DollarSign />,
     },
   ];

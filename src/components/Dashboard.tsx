@@ -561,7 +561,7 @@ const Dashboard: React.FC = () => {
                     >
                       <MessageCircle size={20} className="text-orange-600 mx-auto mb-2 lg:hidden" />
                       <MessageCircle size={24} className="text-orange-600 mx-auto mb-2 hidden lg:block" />
-                      <div className="text-xs lg:text-sm font-medium text-orange-900">AI Advisor</div>
+                      <div className="text-xs lg:text-sm font-medium text-orange-900">Get Help</div>
                     </motion.button>
                   </div>
                 </div>
