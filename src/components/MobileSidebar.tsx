@@ -231,7 +231,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, activeVi
                     <User size={20} className="text-white" />
                   </div>
                   <div>
-                    <div className="text-sm text-gray-600 uppercase tracking-wide font-medium mb-1">{getGreeting()}</div>
+                    <div className="text-sm text-gray-600 tracking-wide font-medium mb-1">{getGreeting()}</div>
                     <div className="text-xl font-black text-accent-blue tracking-tight">Welcome back, {getUserName()}</div>
                     <motion.div 
                       className="w-8 h-0.5 bg-gradient-to-r from-accent-blue to-blue-600 mt-1"
