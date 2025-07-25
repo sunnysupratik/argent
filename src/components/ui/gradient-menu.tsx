@@ -22,8 +22,8 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
           <li
             key={id}
             style={{ '--gradient-from': gradientFrom, '--gradient-to': gradientTo } as React.CSSProperties}
-            className={`relative w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 xl:w-16 xl:h-16 rounded-2xl flex items-center justify-center transition-all duration-300 ${
-              isActive ? 'bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))]' : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+            className={`relative w-[40px] h-[40px] md:w-[45px] md:h-[45px] lg:w-[50px] lg:h-[50px] xl:w-[60px] xl:h-[60px] bg-white shadow-lg rounded-full flex items-center justify-center transition-all duration-500 ${
+              isActive ? 'w-[40px] md:w-[45px] lg:w-[50px] xl:w-[60px]' : 'hover:w-[120px] md:hover:w-[140px] lg:hover:w-[160px] xl:hover:w-[180px] hover:shadow-none'
             } group cursor-pointer`}
             onClick={onClick}
           >
@@ -32,10 +32,14 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
               isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
             }`}></span>
             
+            {/* Blur glow */}
+            <span className={`absolute top-[10px] inset-x-0 h-full rounded-full bg-[linear-gradient(45deg,var(--gradient-from),var(--gradient-to))] blur-[15px] -z-10 transition-all duration-500 ${
+              isActive ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'
+            }`}></span>
 
             {/* Icon - always visible and stays in center when active, moves to left when hovering inactive */}
             <span className={`relative z-10 transition-all duration-300 ${
-              isActive ? 'text-white' : 'text-gray-600 group-hover:text-white group-hover:absolute group-hover:left-2 md:group-hover:left-3 lg:group-hover:left-4 xl:group-hover:left-5'
+              isActive ? 'text-white' : 'text-gray-500 group-hover:text-white group-hover:absolute group-hover:left-2 md:group-hover:left-3 lg:group-hover:left-4 xl:group-hover:left-5'
             }`}>
               <Icon size={16} className="md:hidden" />
               <Icon size={18} className="hidden md:block lg:hidden" />
@@ -44,7 +48,7 @@ export default function GradientMenu({ menuItems }: GradientMenuProps) {
             </span>
 
             {/* Title - only visible on hover when not active */}
-            <span className={`absolute text-white tracking-wide text-sm transition-all duration-300 ${
+            <span className={`absolute text-white uppercase tracking-wide text-sm transition-all duration-500 ${
               isActive ? 'opacity-0 scale-0' : 'opacity-0 scale-0 group-hover:opacity-100 group-hover:scale-100'
             } delay-150 left-8 md:left-10 lg:left-12 xl:left-16 text-xs md:text-xs lg:text-sm`}>
               {label}
