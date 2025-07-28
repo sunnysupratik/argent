@@ -30,6 +30,7 @@ const FAQPage: React.FC = () => {
 
   const categories = [
     { id: 'all', name: 'All Questions', icon: HelpCircle },
+    { id: 'ai-agents', name: 'AI Agents', icon: Brain },
     { id: 'getting-started', name: 'Getting Started', icon: Smartphone },
     { id: 'security', name: 'Security & Privacy', icon: Shield },
     { id: 'billing', name: 'Billing & Plans', icon: CreditCard },
@@ -38,6 +39,26 @@ const FAQPage: React.FC = () => {
   ];
 
   const faqs = [
+    {
+      category: 'ai-agents',
+      question: "How do the three AI agents work together?",
+      answer: "Your AI team consists of three specialized agents: the AI Analyst (text chat) analyzes your data and provides insights, the AI Strategist (video consultations) offers strategic guidance and investment advice, and the AI Voice Advisor (voice conversations) provides hands-free assistance and daily financial coaching. They share your financial context to provide consistent, personalized advice."
+    },
+    {
+      category: 'ai-agents',
+      question: "What makes the AI Strategist video consultations special?",
+      answer: "Our AI Strategist uses advanced avatar technology powered by Tavus to provide face-to-face video consultations. Unlike chatbots, you can have natural conversations about complex financial strategies, see visual portfolio analysis, and receive personalized investment recommendations through an engaging video interface that feels like talking to a real advisor."
+    },
+    {
+      category: 'ai-agents',
+      question: "How natural are the voice conversations with the AI Advisor?",
+      answer: "The AI Voice Advisor, powered by ElevenLabs' advanced voice technology, provides remarkably natural conversations. You can ask about account balances, get spending insights, set budget goals, and receive financial coaching through voice commands - all while driving, exercising, or multitasking. The AI understands context and maintains conversation flow like a human advisor."
+    },
+    {
+      category: 'ai-agents',
+      question: "Can I switch between different AI agents during a session?",
+      answer: "Yes! You can seamlessly move between your AI agents based on your needs. Start with a quick voice query to the AI Advisor, dive deeper with the AI Analyst through text chat, and schedule a video consultation with the AI Strategist for complex planning. All agents share your context and previous conversations."
+    },
     {
       category: 'getting-started',
       question: "How do I get started with Argent?",

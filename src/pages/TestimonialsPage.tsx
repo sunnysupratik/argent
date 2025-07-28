@@ -22,11 +22,11 @@ const TestimonialsPage: React.FC = () => {
       company: "Tech Startup",
       image: "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=400",
       rating: 5,
-      quote: "Argent's AI insights helped me identify $400 in monthly savings I never knew existed. The automated budgeting is a game-changer for busy professionals like me.",
+      quote: "The AI Analyst found $400 in monthly savings I completely missed. But what really impressed me was the video consultation with the AI Strategist - it felt like talking to a real financial advisor who knew my entire financial history.",
       results: {
         savings: "$4,800",
         period: "annually",
-        improvement: "Credit score increased by 67 points"
+        improvement: "Plus AI Strategist video guidance"
       }
     },
     {
@@ -35,11 +35,11 @@ const TestimonialsPage: React.FC = () => {
       company: "Fortune 500",
       image: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
       rating: 5,
-      quote: "The portfolio monitoring feature caught a market downturn early and suggested rebalancing that saved me from significant losses. It's like having a personal financial advisor 24/7.",
+      quote: "During my morning jog, I asked the AI Voice Advisor about my portfolio performance. It instantly told me about a rebalancing opportunity that saved me $12,000 in potential losses. The voice interface is incredibly natural.",
       results: {
         savings: "$12,000",
         period: "in avoided losses",
-        improvement: "Portfolio performance up 23%"
+        improvement: "Voice-guided portfolio optimization"
       }
     },
     {
@@ -48,11 +48,11 @@ const TestimonialsPage: React.FC = () => {
       company: "Local Bakery",
       image: "https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=400",
       rating: 5,
-      quote: "Managing both personal and business finances was overwhelming until I found Argent. The unified dashboard gives me complete visibility, and the AI recommendations are spot-on.",
+      quote: "The AI Strategist's video consultations helped me separate my business and personal finances properly. Having face-to-face conversations with an AI that understands my specific situation is revolutionary.",
       results: {
         savings: "$8,500",
         period: "in tax optimization",
-        improvement: "Reduced financial stress by 80%"
+        improvement: "AI Strategist business guidance"
       }
     },
     {

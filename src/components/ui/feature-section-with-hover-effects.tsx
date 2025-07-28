@@ -13,31 +13,36 @@ import {
 export function FeaturesSectionWithHoverEffects() {
   const features = [
     {
-      title: "AI-Powered Insights",
+      title: "AI Analyst - Your Financial Detective",
       description:
-        "Go beyond simple charts. Let your dedicated AI Analyst sift through your spending patterns to find hidden savings, identify trends, and help you understand where your money truly goes. Our AI provides actionable recommendations that can save you hundreds of dollars monthly.",
+        "Your dedicated AI Analyst works 24/7 through intelligent chat conversations to analyze your financial data. It identifies spending patterns, discovers hidden savings opportunities, and provides personalized recommendations that can save you hundreds monthly. Chat naturally about your finances and get instant, actionable insights.",
       icon: <BarChart3 />,
     },
     {
-      title: "Proactive Portfolio Monitoring",
+      title: "AI Strategist - Video Financial Advisor",
       description:
-        "This isn't just a list of your stocks. Your AI Strategist actively monitors your portfolio 24/7, providing real-time performance analytics, risk assessments, and contextual market insights. Get alerts for rebalancing opportunities and market changes that affect your investments.",
-      icon: <TrendingUp />,
+        "Experience revolutionary video consultations with your AI Strategist powered by Tavus technology. Have face-to-face conversations about investment strategies, portfolio optimization, and financial planning. Your AI Strategist provides visual analysis, strategic guidance, and personalized investment recommendations through natural video interactions.",
+      icon: <DollarSign />,
     },
     {
-      title: "Fortified Security",
+      title: "AI Voice Advisor - Hands-Free Assistant",
       description:
-        "Bank-level, end-to-end 256-bit AES encryption protecting all your sensitive financial data. SOC 2 Type II compliant with multi-factor authentication and zero-knowledge architecture. This is the bedrock of our platform. Your trust and privacy are our foundation.",
-      icon: <Shield />,
+        "Talk naturally with your AI Voice Advisor powered by ElevenLabs technology. Get instant answers about account balances, spending insights, and financial guidance through voice commands. Perfect for busy lifestyles - manage your finances while driving, exercising, or multitasking with completely hands-free interactions.",
+      icon: <PieChart />,
     },
     {
-      title: "Intelligent Budgeting",
-      description: "Forget spreadsheets. Create budgets that actually work for you. Your AI team analyzes your spending history to set realistic goals, automates expense tracking across all accounts, and provides intelligent alerts before you overspend. Achieve your savings goals 3x faster.",
+      title: "Collaborative AI Team Intelligence",
+      description: "Your three AI agents work together seamlessly. The AI Analyst discovers insights, the AI Strategist develops strategies through video consultations, and the AI Voice Advisor provides daily guidance. They share context and learn from each interaction to provide increasingly personalized financial guidance.",
       icon: <Target />,
     },
     {
-      title: "The Unified HQ",
-      description: "Securely connect all your banks, credit cards, and investment accounts from 10,000+ institutions into one seamless platform. Real-time synchronization ensures your data is always current. This is your Financial Headquarters—the single source of truth that empowers your AI team.",
+      title: "Bank-Level Security for AI Interactions",
+      description: "All AI conversations are protected with bank-level 256-bit AES encryption. Your chat history with the AI Analyst, video sessions with the AI Strategist, and voice conversations with the AI Advisor are secured with zero-knowledge architecture. SOC 2 Type II compliant with multi-factor authentication.",
+      icon: <Shield />,
+    },
+    {
+      title: "Unified Financial Intelligence Hub",
+      description: "Your AI team accesses data from 10,000+ connected financial institutions to provide comprehensive insights. Real-time synchronization ensures your AI agents always have current information for accurate analysis, strategic planning, and voice-guided assistance across all your accounts.",
       icon: <Wallet />,
     },
     {

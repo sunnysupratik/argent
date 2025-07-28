@@ -32,31 +32,45 @@ const FeaturesPage: React.FC = () => {
   const features = [
     {
       id: 'ai-insights',
-      title: "AI-Powered Financial Insights",
-      description: "Go beyond simple charts. Let your dedicated AI Analyst sift through your spending patterns to find hidden savings, identify trends, and help you understand where your money truly goes.",
+      title: "AI Analyst - Your Financial Detective",
+      description: "Meet your dedicated AI Analyst who works 24/7 to uncover hidden patterns in your financial data. Through advanced machine learning, it identifies spending leaks, predicts cash flow issues, and discovers optimization opportunities you'd never find manually.",
       icon: Brain,
       benefits: [
-        "Automated spending pattern analysis",
-        "Hidden savings opportunity detection",
-        "Personalized financial recommendations",
-        "Real-time budget optimization alerts"
+        "Discovers $200-500 monthly savings opportunities",
+        "Predicts cash flow shortfalls 30 days in advance",
+        "Identifies subscription waste and duplicate charges",
+        "Provides personalized investment timing recommendations"
       ],
-      demoImage: "https://images.pexels.com/photos/590022/pexels-photo-590022.jpeg?auto=compress&cs=tinysrgb&w=800",
+      demoImage: "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800",
       videoDemo: "ai-insights-demo"
     },
     {
-      id: 'portfolio-monitoring',
-      title: "Proactive Portfolio Monitoring",
-      description: "This isn't just a list of your stocks. Your AI Strategist actively monitors your portfolio, providing performance analytics and contextual market insights to help you see the bigger picture.",
-      icon: TrendingUp,
+      id: 'ai-strategist',
+      title: "AI Strategist - Your Investment Advisor",
+      description: "Your AI Strategist provides sophisticated portfolio analysis and strategic investment guidance through interactive video consultations. Get personalized investment strategies, risk assessments, and market timing advice from your dedicated AI advisor.",
+      icon: Users,
       benefits: [
-        "Real-time portfolio performance tracking",
-        "Market trend analysis and alerts",
-        "Risk assessment and diversification tips",
-        "Automated rebalancing recommendations"
+        "Interactive video consultations with AI avatar",
+        "Personalized investment strategy development",
+        "Real-time market analysis and recommendations",
+        "Portfolio rebalancing with visual explanations"
       ],
-      demoImage: "https://images.pexels.com/photos/6801648/pexels-photo-6801648.jpeg?auto=compress&cs=tinysrgb&w=800",
-      videoDemo: "portfolio-demo"
+      demoImage: "https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=800",
+      videoDemo: "strategist-demo"
+    },
+    {
+      id: 'ai-advisor',
+      title: "AI Advisor - Your Voice Assistant",
+      description: "Experience natural voice conversations with your AI Advisor powered by ElevenLabs technology. Get instant answers to financial questions, voice-activated account management, and hands-free financial guidance while you're on the go.",
+      icon: Mic,
+      benefits: [
+        "Natural voice conversations about your finances",
+        "Hands-free account balance and transaction queries",
+        "Voice-activated budget adjustments and goal setting",
+        "Real-time financial coaching during daily activities"
+      ],
+      demoImage: "https://images.pexels.com/photos/7688460/pexels-photo-7688460.jpeg?auto=compress&cs=tinysrgb&w=800",
+      videoDemo: "voice-advisor-demo"
     },
     {
       id: 'security',
@@ -73,15 +87,15 @@ const FeaturesPage: React.FC = () => {
       videoDemo: "security-demo"
     },
     {
-      id: 'intelligent-budgeting',
-      title: "Intelligent Budgeting",
-      description: "Forget spreadsheets. Create budgets that actually work for you. Your AI team helps you set realistic goals, automates tracking, and provides intelligent alerts.",
+      id: 'ai-powered-budgeting',
+      title: "AI-Powered Smart Budgeting",
+      description: "Your AI team collaborates to create budgets that actually work. The AI Analyst identifies spending patterns, the Strategist sets realistic goals, and the Advisor provides daily guidance to keep you on track.",
       icon: Target,
       benefits: [
-        "Smart budget creation based on spending history",
-        "Automated expense categorization",
-        "Goal-based savings recommendations",
-        "Predictive spending alerts"
+        "AI-generated budgets based on your actual spending patterns",
+        "Collaborative goal-setting with your AI Strategist",
+        "Voice reminders and guidance from your AI Advisor",
+        "Predictive alerts before you exceed budget limits"
       ],
       demoImage: "https://images.pexels.com/photos/6801874/pexels-photo-6801874.jpeg?auto=compress&cs=tinysrgb&w=800",
       videoDemo: "budgeting-demo"
@@ -348,26 +362,37 @@ const FeaturesPage: React.FC = () => {
 
         {/* CTA Section */}
         <AnimatedSection className="text-center mt-24" delay={0.8}>
-          <div className="bg-white/[0.02] backdrop-blur-xl rounded-3xl border border-white/[0.08] p-8 lg:p-16">
+          <div className="bg-gradient-to-r from-accent-blue/10 to-blue-600/10 backdrop-blur-xl rounded-3xl border border-accent-blue/20 p-8 lg:p-16">
+            <div className="flex items-center justify-center space-x-4 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-accent-blue to-blue-600 rounded-xl flex items-center justify-center">
+                <Brain size={24} className="text-white" />
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                <Users size={24} className="text-white" />
+              </div>
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                <Mic size={24} className="text-white" />
+              </div>
+            </div>
             <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-              Ready to Experience These Features?
+              Ready to Meet Your AI Financial Team?
             </h2>
             <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
-              Join thousands of users who have transformed their financial lives with Argent's 
-              precision-engineered tools and AI-powered insights.
+              Experience the future of personal finance with your dedicated AI Analyst, Strategist, and Advisor. 
+              Get personalized guidance through text, video, and voice interactions.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <InteractiveHoverButton
                 variant="blue"
-                text="Start Free Trial"
+                text="Meet Your AI Team"
                 icon={<ArrowRight size={16} />}
                 onClick={() => navigate('/login')}
                 className="px-8 py-4 text-lg"
               />
               <InteractiveHoverButton
                 variant="white"
-                text="View Pricing"
+                text="Watch AI Demo"
                 onClick={() => navigate('/pricing')}
                 className="px-8 py-4 text-lg"
               />

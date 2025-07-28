@@ -31,10 +31,11 @@ const BlogPage: React.FC = () => {
 
   const categories = [
     { id: 'all', name: 'All Articles', count: 24 },
-    { id: 'investing', name: 'Investing', count: 8 },
+    { id: 'ai-agents', name: 'AI Agents', count: 12 },
+    { id: 'investing', name: 'Investing', count: 6 },
     { id: 'budgeting', name: 'Budgeting', count: 6 },
-    { id: 'credit', name: 'Credit & Debt', count: 5 },
-    { id: 'planning', name: 'Financial Planning', count: 5 }
+    { id: 'credit', name: 'Credit & Debt', count: 3 },
+    { id: 'planning', name: 'Financial Planning', count: 3 }
   ];
 
   const featuredArticle = {

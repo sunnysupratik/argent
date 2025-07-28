@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Shield, TrendingUp, PieChart, Menu, X, BarChart3 } from 'lucide-react';
+import { ArrowRight, Brain, Users, Mic, Menu, X, BarChart3 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSmoothScroll } from '../hooks/useSmoothScroll';
 import AnimatedSection from '../components/AnimatedSection';
