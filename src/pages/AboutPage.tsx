@@ -68,7 +68,32 @@ const AboutPage: React.FC = () => {
             >
               <InteractiveHoverButton 
                 variant="white" 
-                text="About" 
+                text="Features" 
+                onClick={() => navigate('/features')}
+                className="text-sm px-4 py-2"
+              />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="Pricing" 
+                onClick={() => navigate('/pricing')}
+                className="text-sm px-4 py-2"
+              />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="Testimonials" 
+                onClick={() => navigate('/testimonials')}
+                className="text-sm px-4 py-2"
+              />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="Blog" 
+                onClick={() => navigate('/blog')}
+                className="text-sm px-4 py-2"
+              />
+              <InteractiveHoverButton 
+                variant="white" 
+                text="FAQ" 
+                onClick={() => navigate('/faq')}
                 className="text-sm px-4 py-2"
               />
               <InteractiveHoverButton 
