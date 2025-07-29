@@ -93,23 +93,23 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen bg-[#030303] transition-colors duration-500">
       {/* Header with Mobile Navigation */}
       <motion.header 
-        className="px-4 lg:px-8 py-4 lg:py-6 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl transition-colors duration-500 relative z-50"
+        className="px-4 lg:px-8 py-6 lg:py-8 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl transition-colors duration-500 relative z-50"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <nav className="flex justify-between items-center max-w-7xl mx-auto">
+        <nav className="flex justify-between items-center max-w-7xl mx-auto min-h-[60px]">
           <motion.div 
-            className="relative"
+            className="relative flex-shrink-0 mr-8"
             whileHover={{ scale: 1.05 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="text-2xl lg:text-3xl font-black tracking-tight text-white transition-colors duration-500">
+            <div className="text-2xl lg:text-3xl font-black tracking-tight text-white transition-colors duration-500 pb-2">
               AR
               <span className="relative">
                 G
                 <motion.div 
-                  className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45"
+                  className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45 z-10"
                   animate={{ rotate: [45, 90, 45] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 />
@@ -117,7 +117,7 @@ const HomePage: React.FC = () => {
               ENT
             </div>
             <motion.div 
-              className="absolute -bottom-1 left-0 w-8 lg:w-12 h-0.5 bg-accent-blue"
+              className="absolute bottom-0 left-0 w-8 lg:w-12 h-0.5 bg-accent-blue"
               initial={{ width: 0 }}
               animate={{ width: window.innerWidth >= 1024 ? 48 : 32 }}
               transition={{ duration: 0.8, delay: 0.3 }}
@@ -125,9 +125,9 @@ const HomePage: React.FC = () => {
           </motion.div>
           
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-2 flex-wrap">
             <motion.div 
-              className="flex space-x-4"
+              className="flex space-x-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -136,37 +136,37 @@ const HomePage: React.FC = () => {
                 variant="white" 
                 text="Features" 
                 onClick={() => navigate('/features')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 min-w-[100px]"
               />
               <InteractiveHoverButton 
                 variant="white" 
                 text="Pricing" 
                 onClick={() => navigate('/pricing')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 min-w-[100px]"
               />
               <InteractiveHoverButton 
                 variant="white" 
                 text="Testimonials" 
                 onClick={() => navigate('/testimonials')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 min-w-[100px]"
               />
               <InteractiveHoverButton 
                 variant="white" 
                 text="Blog" 
                 onClick={() => navigate('/blog')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 min-w-[100px]"
               />
               <InteractiveHoverButton 
                 variant="white" 
                 text="About" 
                 onClick={() => navigate('/about')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 min-w-[100px]"
               />
               <InteractiveHoverButton 
                 variant="white" 
                 text="Contact" 
                 onClick={() => navigate('/contact')}
-                className="text-sm px-4 py-2"
+                className="text-sm px-4 py-2 min-w-[100px]"
               />
               
               {/* My Dashboard - Only show when logged in */}
@@ -176,19 +176,19 @@ const HomePage: React.FC = () => {
                   text="My Dashboard" 
                   icon={<BarChart3 size={16} />}
                   onClick={() => navigate('/app/dashboard')}
-                  className="text-sm px-4 py-2"
+                  className="text-sm px-4 py-2 min-w-[120px]"
                 />
               )}
             </motion.div>
 
             {user ? (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 ml-4">
                 {/* NO WELCOME MESSAGE HERE - HIDDEN ON HOME PAGE */}
                 <InteractiveHoverButton 
                   variant="white" 
                   text="Sign Out" 
                   onClick={handleSignOut}
-                  className="text-sm px-4 py-2"
+                  className="text-sm px-4 py-2 min-w-[100px]"
                 />
               </div>
             ) : (
@@ -196,7 +196,7 @@ const HomePage: React.FC = () => {
                 variant="blue" 
                 text="Sign In" 
                 onClick={() => navigate('/login')}
-                className="text-sm px-6 py-2"
+                className="text-sm px-6 py-2 min-w-[100px] ml-4"
               />
             )}
           </div>
