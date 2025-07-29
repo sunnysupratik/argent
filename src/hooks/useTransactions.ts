@@ -25,6 +25,18 @@ export function useTransactions() {
       setLoading(true);
       setError(null);
       
+      // Check if Supabase is properly configured
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseAnonKey || 
+          supabaseUrl.includes('your-project-id') || 
+          supabaseAnonKey.includes('your-anon-key')) {
+        setError('Supabase not configured. Please set up your environment variables.');
+        setTransactions([]);
+        return;
+      }
+      
       if (!user?.username) {
         console.log('No username available for transactions');
         setTransactions([]);
