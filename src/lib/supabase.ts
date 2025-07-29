@@ -13,6 +13,7 @@ if (supabaseUrl?.includes('your-project-id') || supabaseAnonKey?.includes('your-
   console.error('Supabase environment variables contain placeholder values. Please update with actual credentials.');
 }
 
+export const supabase = createClient(supabaseUrl!, supabaseAnonKey!);
 
 // Database types
 export interface CustomUser {
