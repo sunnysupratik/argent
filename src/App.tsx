@@ -9,6 +9,8 @@ import PricingPage from './pages/PricingPage';
 import TestimonialsPage from './pages/TestimonialsPage';
 import BlogPage from './pages/BlogPage';
 import FAQPage from './pages/FAQPage';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
 import AppLayout from './pages/AppLayout';
 
 function App() {
@@ -24,6 +26,8 @@ function App() {
         <Route path="/faq" element={<FAQPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
         <Route path="/app/*" element={<AppLayout />} />
       </Routes>
     </Router>

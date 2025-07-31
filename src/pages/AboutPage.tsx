@@ -1,20 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Home, User, LogOut, BarChart3 } from 'lucide-react';
 import AnimatedSection from '../components/AnimatedSection';
 import { FeaturesSectionWithHoverEffects } from '../components/ui/feature-section-with-hover-effects';
-import { useAuth } from '../hooks/useAuth';
-import { InteractiveHoverButton } from '../components/ui/interactive-hover-button';
+import MainNavBar from '../components/MainNavBar';
 
 const AboutPage: React.FC = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
-  };
 
   return (
     <div className="min-h-screen bg-[#030303] transition-colors duration-500 relative overflow-hidden">
@@ -23,137 +15,7 @@ const AboutPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50/5 via-indigo-50/3 to-violet-50/5 animate-aurora opacity-30" />
       </div>
 
-      {/* Header - Same Black Style as Homepage */}
-      <motion.header 
-        className="px-4 lg:px-8 py-6 lg:py-8 border-b border-white/10 bg-[#030303]/95 backdrop-blur-xl transition-colors duration-500 relative z-50"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <nav className="flex justify-between items-center max-w-7xl mx-auto min-h-[60px]">
-          <motion.div 
-            className="relative flex-shrink-0 mr-8"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => navigate('/')}
-            style={{ cursor: 'pointer' }}
-          >
-            <div className="text-2xl lg:text-3xl font-black tracking-tight text-white transition-colors duration-500 pb-2">
-              AR
-              <span className="relative">
-                G
-                <motion.div 
-                  className="absolute -top-1 -right-1 w-2 h-2 bg-accent-blue transform rotate-45 z-10"
-                  animate={{ rotate: [45, 90, 45] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-              </span>
-              ENT
-            </div>
-            <motion.div 
-              className="absolute bottom-0 left-0 w-8 lg:w-12 h-0.5 bg-accent-blue"
-              initial={{ width: 0 }}
-              animate={{ width: window.innerWidth >= 1024 ? 48 : 32 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            />
-          </motion.div>
-          
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-2 flex-wrap">
-            <motion.div 
-              className="flex space-x-2"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-            >
-              <InteractiveHoverButton 
-                variant="white" 
-                text="Features" 
-                onClick={() => navigate('/features')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              <InteractiveHoverButton 
-                variant="white" 
-                text="Pricing" 
-                onClick={() => navigate('/pricing')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              <InteractiveHoverButton 
-                variant="white" 
-                text="Testimonials" 
-                onClick={() => navigate('/testimonials')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              <InteractiveHoverButton 
-                variant="white" 
-                text="Blog" 
-                onClick={() => navigate('/blog')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              <InteractiveHoverButton 
-                variant="white" 
-                text="FAQ" 
-                onClick={() => navigate('/faq')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              <InteractiveHoverButton 
-                variant="white" 
-                text="Contact" 
-                onClick={() => navigate('/contact')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              <InteractiveHoverButton 
-                variant="blue" 
-                text="Home" 
-                onClick={() => navigate('/')}
-                className="text-sm px-4 py-2 min-w-[100px]"
-              />
-              
-              {/* My Dashboard - Only show when logged in */}
-              {user && (
-                <InteractiveHoverButton 
-                  variant="blue" 
-                  text="My Dashboard" 
-                  icon={<BarChart3 size={16} />}
-                  onClick={() => navigate('/app/dashboard')}
-                  className="text-sm px-4 py-2 min-w-[120px]"
-                />
-              )}
-            </motion.div>
-
-            {user ? (
-              <div className="flex items-center space-x-2 ml-4">
-                <InteractiveHoverButton 
-                  variant="white" 
-                  text="Sign Out" 
-                  onClick={handleSignOut}
-                  className="text-sm px-4 py-2 min-w-[100px]"
-                />
-              </div>
-            ) : (
-              <InteractiveHoverButton 
-                variant="blue" 
-                text="Sign In" 
-                onClick={() => navigate('/login')}
-                className="text-sm px-6 py-2 min-w-[100px] ml-4"
-              />
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="lg:hidden p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-            whileTap={{ scale: 0.95 }}
-            onClick={() => navigate('/')}
-          >
-            <div className="w-6 h-6 flex flex-col justify-center space-y-1">
-              <div className="w-full h-0.5 bg-white"></div>
-              <div className="w-full h-0.5 bg-white"></div>
-              <div className="w-full h-0.5 bg-white"></div>
-            </div>
-          </motion.button>
-        </nav>
-      </motion.header>
+      <MainNavBar />
 
       <div className="relative mobile-spacing lg:p-8 space-y-8 lg:space-y-12">
         {/* Enhanced Page Header */}
@@ -317,8 +179,8 @@ const AboutPage: React.FC = () => {
             </div>
             
             <div className="flex space-x-6 lg:space-x-8">
-              <a href="#" className="text-white/70 hover:text-accent-blue transition-colors">Privacy</a>
-              <a href="#" className="text-white/70 hover:text-accent-blue transition-colors">Terms</a>
+              <a href="/privacy" className="text-white/70 hover:text-accent-blue transition-colors">Privacy</a>
+              <a href="/terms" className="text-white/70 hover:text-accent-blue transition-colors">Terms</a>
               <a href="/contact" className="text-white/70 hover:text-accent-blue transition-colors">Support</a>
             </div>
             
